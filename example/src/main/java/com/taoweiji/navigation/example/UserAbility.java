@@ -41,7 +41,7 @@ public class UserAbility extends AbilityContainer {
             NavController nav = NavController.findNavController(view);
             Bundle bundle = new Bundle();
             bundle.putInt("id", id + 1);
-            nav.navigate(new TestFragment(), bundle);
+            nav.navigate(new UserAbility(), bundle);
         });
     }
 }

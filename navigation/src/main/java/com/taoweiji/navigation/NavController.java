@@ -1,5 +1,8 @@
 package com.taoweiji.navigation;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
@@ -9,9 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +27,7 @@ public class NavController {
     private final NavOptions defaultNavOptions;
     private final GenerateRoute onGenerateRoute;
     private final Context context;
+    private final OnBackPressedCallback onBackPressedCallback;
 
     public static NavController findNavController(View view) {
         if (view instanceof AbilityViewGroup) {
@@ -81,7 +87,17 @@ public class NavController {
         this.defaultNavOptions = defaultNavOptions;
         this.onGenerateRoute = onGenerateRoute;
         this.context = container.getContext();
+        this.onBackPressedCallback = new OnBackPressedCallback(false) {
 
+            @Override
+            public void handleOnBackPressed() {
+                if (canBack()) {
+                    pop();
+                }
+            }
+        };
+        FragmentActivity fragmentActivity = ((FragmentActivity) context);
+        fragmentActivity.getOnBackPressedDispatcher().addCallback(onBackPressedCallback);
     }
 
 
@@ -123,22 +139,37 @@ public class NavController {
     }
 
     public AbilityResultContracts navigate(Destination destination) {
+        int x = container.getWidth();
         if (destination.ability != null) {
             Ability ability = destination.ability;
             ability.setContext(context);
             ability.setArguments(destination.arguments);
             AbilityViewGroup abilityViewGroup = new AbilityViewGroup(context, this);
             container.addView(abilityViewGroup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            ability.setNavController(this);
             ability.onCreate(null);
             View view = ability.onCreateView(LayoutInflater.from(context), abilityViewGroup, null);
             abilityViewGroup.addView(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             ability.onViewCreated(view == null ? new View(context) : view, null);
+            move(abilityViewGroup, 300, x, 0f);
         }
-
-
+        if (container.getChildCount() > 1) {
+            View last = container.getChildAt(container.getChildCount() - 2);
+            move(last, 500, 0f, -x);
+        }
+        onBackPressedCallback.setEnabled(canBack());
         // TODO
         return null;
+    }
+
+    public void pushAnimation(View view) {
+
+    }
+
+    private final ObjectAnimator move(View view, long duration, float start, float end) {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(view, "translationX", new float[]{start, end});
+        animator.setDuration(duration);
+        animator.start();
+        return animator;
     }
 
     public void popUntil(PopUntil popUntil) {
@@ -146,9 +177,24 @@ public class NavController {
     }
 
     public void pop() {
-        if (container.getChildCount() > 1) {
-            container.removeViewAt(container.getChildCount() - 1);
+        if (canBack()) {
+            int x = container.getWidth();
+            View dismiss = container.getChildAt(container.getChildCount() - 1);
+            View show = container.getChildAt(container.getChildCount() - 2);
+            move(dismiss, 200, 0f, x).addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    container.removeView(dismiss);
+                    onBackPressedCallback.setEnabled(canBack());
+                }
+            });
+            move(show, 300, -x, 0f);
         }
+        onBackPressedCallback.setEnabled(canBack());
+    }
+
+    public boolean canBack() {
+        return container.getChildCount() > 1;
     }
 
     public void popAndPush(Destination destination) {
@@ -164,12 +210,8 @@ public class NavController {
 
     }
 
-
     interface PopUntil {
         boolean popUntil(AbilityRouteBuilder builder);
     }
 
-    public AbilityResultContracts registerProvider(Navigator navigator) {
-        return null;
-    }
 }

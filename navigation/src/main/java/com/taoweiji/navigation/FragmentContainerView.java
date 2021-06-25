@@ -7,7 +7,7 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class FragmentContainerView extends FrameLayout implements NavContainer {
+public class FragmentContainerView extends FrameLayout {
     public FragmentContainerView(@NonNull Context context) {
         super(context);
     }

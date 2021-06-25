@@ -16,9 +16,13 @@ import androidx.lifecycle.LifecycleRegistry;
 
 public abstract class AbilityContainer implements Ability, ActivityResultCaller {
     LifecycleRegistry mLifecycleRegistry;
-    NavController navController;
     private Context context;
     private Bundle arguments;
+
+    @Override
+    public void setContext(Context context) {
+        this.context = context;
+    }
 
     @Override
     public Context getContext() {
@@ -28,11 +32,6 @@ public abstract class AbilityContainer implements Ability, ActivityResultCaller 
     @Override
     public Bundle getArguments() {
         return arguments;
-    }
-
-    @Override
-    public void setContext(Context context) {
-        this.context = context;
     }
 
     @Override
@@ -95,23 +94,8 @@ public abstract class AbilityContainer implements Ability, ActivityResultCaller 
     }
 
     @Override
-    public void finish() {
-
-    }
-
-    @Override
     public Ability getStarter() {
         return null;
-    }
-
-    @Override
-    public NavController getNavController() {
-        return this.navController;
-    }
-
-    @Override
-    public void setNavController(NavController navController) {
-        this.navController = navController;
     }
 
     public void preGenerate(Context context) {

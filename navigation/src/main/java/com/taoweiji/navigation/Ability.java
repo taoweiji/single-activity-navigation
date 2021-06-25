@@ -18,7 +18,6 @@ public interface Ability extends LifecycleOwner {
 
     Bundle getArguments();
 
-    void setContext(Context context);
 
     void setArguments(Bundle arguments);
 
@@ -37,13 +36,7 @@ public interface Ability extends LifecycleOwner {
 
     void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState);
 
-    void finish();
-
-//    void onResult(Bundle bundle);
-
     Ability getStarter();
 
-    NavController getNavController();
-
-    void setNavController(NavController navController);
+    void setContext(Context context);
 }

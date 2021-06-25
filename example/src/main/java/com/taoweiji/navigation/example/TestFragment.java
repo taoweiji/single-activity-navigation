@@ -14,6 +14,8 @@ import androidx.fragment.app.Fragment;
 import org.jetbrains.annotations.NotNull;
 
 public class TestFragment extends Fragment {
+
+
     @Nullable
     @org.jetbrains.annotations.Nullable
     @Override
@@ -28,4 +30,5 @@ public class TestFragment extends Fragment {
         TextView info = view.findViewById(R.id.info);
         info.setText("TestFragment");
     }
+
 }
