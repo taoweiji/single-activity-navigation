@@ -123,7 +123,7 @@ nav.navigate(Uri.parse("myScheme://host/hello?msg=Hello"));
 
 ### 跳转到 Fragment
 
-框架是完全支持 Fragment 跳转，但是推荐使用 Ability，Ability 更加像一个 Activity，提供了更加强大的功能用于构建页面，比如状态栏颜色管理等。Fragment 的支持也是通过 FragmentAbility 封装实现的，实际上还是包了一层 Ability。可以通过 `NavController.findAbility(fragment)` 获取 Ability 对象，使用其功能。
+框架是完全支持 Fragment 跳转，但是推荐使用 Ability，Ability 更加像一个 Activity，提供了更加强大的功能用于构建页面，比如setStatusBarColor、finish 等，而且还支持预创建 preCreateView 方法。Fragment 的支持也是通过 FragmentAbility 封装实现的，实际上还是包了一层 Ability。可以通过 `NavController.findAbility(fragment)` 获取 Ability 对象，使用其丰富的功能。
 
 ```java
 NavController nav = new NavController.Builder().create(this, R.id.container);

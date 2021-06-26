@@ -2,13 +2,16 @@ package com.taoweiji.navigation;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.LinearLayout;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultCaller;
@@ -23,6 +26,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Lifecycle;
@@ -31,7 +35,7 @@ import androidx.lifecycle.LifecycleRegistry;
 
 public abstract class Ability implements ActivityResultCaller, LifecycleOwner {
     LifecycleRegistry mLifecycleRegistry;
-    private Context context;
+    Context context;
     private Bundle arguments;
     private Integer statusBarColor;
     private StatusBarTextStyle statusBarTextStyle;
@@ -124,13 +128,9 @@ public abstract class Ability implements ActivityResultCaller, LifecycleOwner {
     }
 
     public void preCreateView(NavController navController) {
-        setContext(navController.context);
+        context = navController.context;
         performCreateViewParent(navController);
         performCreateView(null);
-    }
-
-    public void setContext(Context context) {
-        this.context = context;
     }
 
     public Context getContext() {
@@ -143,13 +143,13 @@ public abstract class Ability implements ActivityResultCaller, LifecycleOwner {
 
 
     @NonNull
-    View performCreateView(@Nullable Bundle savedInstanceState) {
+    void performCreateView(@Nullable Bundle savedInstanceState) {
         if (view != null) {
-            return view;
+            return;
         }
         view = onCreateView(LayoutInflater.from(context), viewParent, savedInstanceState);
         viewParent.addView(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        return view;
+        this.onViewCreated(view, null);
     }
 
     public View getView() {
@@ -239,5 +239,67 @@ public abstract class Ability implements ActivityResultCaller, LifecycleOwner {
 
     public NavController findNavController() {
         return NavController.findNavController(viewParent);
+    }
+
+    public AbilityViewParent getViewParent() {
+        return viewParent;
+    }
+
+    public void finish() {
+        findNavController().finish(this);
+    }
+
+    protected void onAbilityEvent(Message message) {
+
+    }
+
+    public void sendAbilityEvent(Message message) {
+        findNavController().sendAbilityEvent(message);
+    }
+
+    private Toolbar toolbar;
+    private CharSequence title;
+
+    public Toolbar createDefaultToolbar() {
+        if (this.viewParent.getChildCount() > 0) {
+            if (this.viewParent.getChildAt(0) instanceof Toolbar) {
+                return (Toolbar) this.viewParent.getChildAt(0);
+            }
+        }
+        Toolbar toolbar = new Toolbar(getContext());
+        TypedArray array = getActivity().getTheme().obtainStyledAttributes(new int[]{
+                R.attr.colorPrimary,
+                R.attr.colorOnPrimary,
+                R.attr.actionBarSize,
+        });
+        int actionBarSize = (int) array.getDimension(2, ViewUtils.dp2px(getContext(), 56));
+        toolbar.setBackgroundColor(array.getColor(0, 0));
+        toolbar.setTitleTextColor(array.getColor(1, 0));
+        this.viewParent.addView(toolbar, 0, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, actionBarSize));
+        setToolbar(toolbar);
+        return toolbar;
+    }
+
+    public Toolbar getToolbar() {
+        return toolbar;
+    }
+
+    public void setToolbar(Toolbar toolbar) {
+        this.toolbar = toolbar;
+    }
+
+    public void setTitle(CharSequence title) {
+        this.title = title;
+        if (this.toolbar != null) {
+            this.toolbar.setTitle(title);
+        }
+    }
+
+    public void setTitle(int titleId) {
+        setTitle(getText(titleId));
+    }
+
+    public CharSequence getTitle() {
+        return title;
     }
 }

@@ -2,10 +2,11 @@ package com.taoweiji.navigation;
 
 import android.content.Context;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 
-class AbilityViewParent extends FrameLayout {
+class AbilityViewParent extends LinearLayout {
     private final NavController navController;
     private final Ability ability;
 
@@ -13,6 +14,7 @@ class AbilityViewParent extends FrameLayout {
         super(context);
         this.navController = navController;
         this.ability = ability;
+        setOrientation(LinearLayout.VERTICAL);
     }
 
     public NavController getNavController() {

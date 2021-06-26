@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment;
 
 public class Destination {
     public Uri uri;
-    public Fragment fragment;
     public Ability ability;
     public Bundle arguments = new Bundle();
     public NavOptions navOptions;
@@ -25,13 +24,6 @@ public class Destination {
     public static Destination with(String name, Bundle arguments) {
         Destination destination = new Destination();
         destination.name = name;
-        destination.arguments = arguments;
-        return destination;
-    }
-
-    public static Destination with(Fragment fragment, Bundle arguments) {
-        Destination destination = new Destination();
-        destination.fragment = fragment;
         destination.arguments = arguments;
         return destination;
     }

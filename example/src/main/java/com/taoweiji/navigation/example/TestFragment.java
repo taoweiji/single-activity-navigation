@@ -18,11 +18,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class TestFragment extends Fragment {
 
-
     @Nullable
-    @org.jetbrains.annotations.Nullable
     @Override
-    public View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.ability_user, null);
     }
 
@@ -30,6 +28,10 @@ public class TestFragment extends Fragment {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         view.setBackgroundColor(Color.WHITE);
+        Ability ability = NavController.findAbility(this);
+        ability.setBackgroundColor(Color.WHITE);
+        ability.createDefaultToolbar();
+        ability.setTitle("直接跳转 Fragment");
         TextView info = view.findViewById(R.id.info);
         info.setText("TestFragment");
         info.setOnClickListener(new View.OnClickListener() {

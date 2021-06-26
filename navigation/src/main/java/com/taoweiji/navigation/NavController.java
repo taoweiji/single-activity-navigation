@@ -7,14 +7,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.IdRes;
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Lifecycle;
@@ -27,7 +28,6 @@ import java.util.Stack;
 public class NavController {
     private final Map<String, AbilityRouteBuilder> routes;
     private final FrameLayout navContainer;
-    private final Stack<Ability> abilityStack = new Stack<>();
     private final NavOptions defaultNavOptions;
     private final GenerateRoute onGenerateRoute;
     final Context context;
@@ -46,7 +46,6 @@ public class NavController {
                 return findNavController((View) view.getParent());
             }
         }
-        // TODO 需要考虑 Fragment
         return null;
     }
 
@@ -59,33 +58,47 @@ public class NavController {
                 return findAbility((View) view.getParent());
             }
         }
-        // TODO 需要考虑 Fragment
         return null;
     }
 
     public static Ability findAbility(Fragment fragment) {
-
-        // TODO 需要考虑 Fragment
-//        if (view instanceof AbilityViewParent) {
-//            AbilityViewParent abilityViewParent = (AbilityViewParent) view;
-//            return abilityViewParent.getAbility();
-//        } else {
-//            if (view.getParent() instanceof View) {
-//                return findAbility((View) view.getParent());
-//            }
-//        }
         return findAbility(fragment.getView());
     }
 
 
     private void destroy() {
-        while (!abilityStack.isEmpty()) {
+        while (navContainer.getChildCount() > 0) {
             pop(false, true);
         }
     }
 
     public void registerRoute(String name, AbilityRouteBuilder abilityRouteBuilder) {
         routes.put(name, abilityRouteBuilder);
+    }
+
+    void finish(Ability ability) {
+        int index = navContainer.indexOfChild(ability.getViewParent());
+        if (index < 0) return;
+        if (index == navContainer.getChildCount() - 1) {
+            pop();
+        } else {
+            ability.onDestroy();
+            navContainer.removeView(ability.getViewParent());
+        }
+    }
+
+    public void sendAbilityEvent(Message message) {
+        Runnable runnable = () -> {
+            for (int i = 0; i < navContainer.getChildCount(); i++) {
+                AbilityViewParent viewParent = (AbilityViewParent) navContainer.getChildAt(i);
+                viewParent.getAbility().onAbilityEvent(message);
+            }
+        };
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            runnable.run();
+        } else {
+            new Handler(Looper.getMainLooper()).post(runnable);
+        }
     }
 
     public interface GenerateRoute {
@@ -155,43 +168,48 @@ public class NavController {
     }
 
     public AbilityResultContracts navigate(Destination destination, boolean animation) {
-        if (destination.name != null) {
-            AbilityRouteBuilder builder = routes.get(destination.name);
-            if (builder != null) {
-                destination.ability = builder.builder(context);
+        if (destination.ability == null) {
+            if (onGenerateRoute != null) {
+                destination.ability = onGenerateRoute.onGenerateRoute(destination);
+            }
+            if (destination.ability == null && destination.name != null) {
+                AbilityRouteBuilder builder = routes.get(destination.name);
+                if (builder != null) {
+                    destination.ability = builder.builder(context);
+                }
             }
         }
-
-        int x = navContainer.getWidth();
+        int navContainerWidth = navContainer.getWidth();
         if (destination.ability != null) {
             Ability ability = destination.ability;
-            ability.setContext(context);
+            ability.context = context;
             ability.setArguments(destination.arguments);
             ability.onCreate(null);
             AbilityViewParent abilityViewParent = ability.performCreateViewParent(this);
             navContainer.addView(abilityViewParent, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            View abilityView = ability.performCreateView(null);
-            ability.onViewCreated(abilityView, null);
-            if (animation) {
-                move(abilityViewParent, 300, x, 0f);
+            ability.performCreateView(null);
+            if (navContainer.getChildCount() > 0 && animation) {
+                move(abilityViewParent, 200, navContainerWidth, 0f);
             }
             ability.onStart();
             ability.onResume();
-            abilityStack.add(ability);
-        }
-        if (navContainer.getChildCount() > 1) {
-            View dismissAbilityView = navContainer.getChildAt(navContainer.getChildCount() - 2);
-            Ability dismissAbility = abilityStack.get(navContainer.getChildCount() - 1);
-            move(dismissAbilityView, 500, 0f, -x).addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation, boolean isReverse) {
-                    dismissAbilityView.setTranslationX(0);
-                    dismissAbilityView.setTranslationY(0);
+
+            if (navContainer.getChildCount() > 1) {
+                AbilityViewParent inviableView = (AbilityViewParent) navContainer.getChildAt(navContainer.getChildCount() - 2);
+                if (animation) {
+                    move(inviableView, 400, 0f, -navContainerWidth).addListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation, boolean isReverse) {
+                            inviableView.setTranslationX(0);
+                            inviableView.setTranslationY(0);
+                        }
+                    });
                 }
-            });
-            dismissAbility.onStop();
-            dismissAbility.onPause();
+                inviableView.getAbility().onStop();
+                inviableView.getAbility().onPause();
+            }
         }
+
         onBackPressedCallback.setEnabled(canBack());
         // TODO
         return new AbilityResultContracts();
@@ -217,44 +235,39 @@ public class NavController {
     }
 
     public int stackCount() {
-        return abilityStack.size();
+        return navContainer.getChildCount();
     }
 
     public void pop(boolean animation, boolean popRoot) {
         if (canBack() || (popRoot && stackCount() > 0)) {
             int x = navContainer.getWidth();
-            View dismiss = navContainer.getChildAt(navContainer.getChildCount() - 1);
-            Ability dismissAbility = abilityStack.get(navContainer.getChildCount() - 1);
-            View show = null;
-            Ability showAbility = null;
+            AbilityViewParent destroyView = (AbilityViewParent) navContainer.getChildAt(navContainer.getChildCount() - 1);
+            AbilityViewParent showView = null;
             if (stackCount() >= 2) {
-                show = navContainer.getChildAt(navContainer.getChildCount() - 2);
-                showAbility = abilityStack.get(navContainer.getChildCount() - 2);
+                showView = (AbilityViewParent) navContainer.getChildAt(navContainer.getChildCount() - 2);
             }
 
             if (animation) {
-                move(dismiss, 200, 0f, x).addListener(new AnimatorListenerAdapter() {
+                move(destroyView, 200, 0f, x).addListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        navContainer.removeView(dismiss);
+                        navContainer.removeView(destroyView);
                         onBackPressedCallback.setEnabled(canBack());
-                        abilityStack.remove(dismissAbility);
                     }
                 });
-                if (show != null) {
-                    move(show, 300, -x, 0f);
+                if (showView != null) {
+                    move(showView, 200, -x, 0f);
                 }
             } else {
-                navContainer.removeView(dismiss);
-                abilityStack.remove(dismissAbility);
-                move(show, 0, -x, 0f);
+                navContainer.removeView(destroyView);
+                move(showView, 0, -x, 0f);
             }
-            dismissAbility.onStop();
-            dismissAbility.onPause();
-            dismissAbility.onDestroy();
-            if (show != null) {
-                showAbility.onStop();
-                showAbility.onResume();
+            destroyView.getAbility().onStop();
+            destroyView.getAbility().onPause();
+            destroyView.getAbility().onDestroy();
+            if (showView != null) {
+                showView.getAbility().onStop();
+                showView.getAbility().onResume();
             }
         }
         onBackPressedCallback.setEnabled(canBack());
@@ -274,7 +287,8 @@ public class NavController {
     }
 
     public Ability peek() {
-        return abilityStack.peek();
+        AbilityViewParent viewParent = (AbilityViewParent) navContainer.getChildAt(navContainer.getChildCount() - 1);
+        return viewParent.getAbility();
     }
 
     interface PopUntil {

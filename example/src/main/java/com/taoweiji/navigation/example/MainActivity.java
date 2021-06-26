@@ -22,8 +22,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Map<String, AbilityRouteBuilder> routes = new HashMap<>();
+        routes.put("index", context -> new IndexAbility());
         routes.put("user", context -> new UserAbility());
         routes.put("weather", context -> new WeatherAbility());
+        routes.put("fragment", context -> new FragmentAbility(new TestFragment()));
         NavController nav = new NavController.Builder().routes(routes).onGenerateRoute(destination -> {
             if (destination.uri != null && destination.uri.getPath().equals("/hello")) {
                 destination.arguments.putString("msg", destination.uri.getQueryParameter("msg"));
@@ -31,8 +33,10 @@ public class MainActivity extends AppCompatActivity {
             }
             return null;
         }).create(this, R.id.container);
-//        nav.navigate("user", new BundleBuilder().put("id", 0).build());
-        nav.navigate(new TestFragment());
+        nav.navigate("index");
+        getSupportActionBar();
+//        setTitle();
+//        nav.navigate(new TestFragment());
 //        new WeatherAbility().preCreateView(nav);
     }
 }

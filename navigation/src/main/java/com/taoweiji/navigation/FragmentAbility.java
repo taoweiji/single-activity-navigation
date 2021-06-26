@@ -24,11 +24,8 @@ public class FragmentAbility extends Ability {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         FrameLayout layout = new FrameLayout(getContext());
         FragmentActivity activity = (FragmentActivity) getContext();
-        int id = this.hashCode();
-        if (container != null) {
-            container.setId(id);
-            activity.getSupportFragmentManager().beginTransaction().add(id, fragment, null).commit();
-        }
+        layout.setId(this.hashCode());
+        activity.getSupportFragmentManager().beginTransaction().add(layout.getId(), fragment, null).commit();
         return layout;
     }
 }

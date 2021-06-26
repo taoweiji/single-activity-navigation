@@ -32,8 +32,8 @@ public class WeatherAbility extends Ability {
         button = new Button(getContext());
         info.setGravity(Gravity.CENTER);
         button.setText("更新");
-        linearLayout.addView(info);
-        linearLayout.addView(button);
+        linearLayout.addView(info, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        linearLayout.addView(button, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         setBackgroundColor(Color.WHITE);
         return linearLayout;
     }
@@ -41,22 +41,7 @@ public class WeatherAbility extends Ability {
     @Override
     protected void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        weatherViewModel.weatherData.observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer temperature) {
-                info.setText("当前温度：" + temperature);
-            }
-        });
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                weatherViewModel.updateWeather();
-            }
-        });
-
-
-//        registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-//            String url = result.getData().getStringExtra("url");
-//        }).launch(new Intent(getContext(), QrcodeActivity.class));
+        weatherViewModel.weatherData.observe(this, temperature -> info.setText("当前温度：" + temperature));
+        button.setOnClickListener(v -> weatherViewModel.updateWeather());
     }
 }

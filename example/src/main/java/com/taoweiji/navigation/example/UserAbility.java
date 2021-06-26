@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class UserAbility extends Ability {
 
+
     @Nullable
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -33,6 +34,8 @@ public class UserAbility extends Ability {
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        createDefaultToolbar();
+        setTitle("直接跳转 Ability");
         view.setBackgroundColor(Color.WHITE);
         TextView info = view.findViewById(R.id.info);
         int id = getArguments().getInt("id");
@@ -48,7 +51,6 @@ public class UserAbility extends Ability {
             bundle.putInt("id", id + 1);
             nav.navigate(new UserAbility(), bundle);
         });
-        setStatusBarColor(getResources().getColor(R.color.purple_500) * id);
-        setStatusBarTextStyle(id % 2 == 0 ? StatusBarTextStyle.DARK : StatusBarTextStyle.LIGHT);
+        setStatusBarColor(getResources().getColor(R.color.purple_500));
     }
 }
