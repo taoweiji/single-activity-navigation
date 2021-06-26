@@ -1,20 +1,10 @@
 package com.taoweiji.navigation.example;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
-import android.os.Bundle;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
 import com.taoweiji.navigation.Ability;
-import com.taoweiji.navigation.AbilityBuilder;
-import com.taoweiji.navigation.AbilityContainer;
 import com.taoweiji.navigation.AbilityRouteBuilder;
 import com.taoweiji.navigation.Destination;
 import com.taoweiji.navigation.NavController;

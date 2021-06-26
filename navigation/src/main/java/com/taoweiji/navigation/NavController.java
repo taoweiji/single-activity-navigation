@@ -20,10 +20,12 @@ import androidx.fragment.app.FragmentActivity;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 
 public class NavController {
     private final Map<String, AbilityRouteBuilder> routes;
     private final FrameLayout container;
+    private final Stack<Ability> abilityStack = new Stack<>();
     private final NavOptions defaultNavOptions;
     private final GenerateRoute onGenerateRoute;
     private final Context context;
@@ -39,6 +41,10 @@ public class NavController {
             }
         }
         return null;
+    }
+
+    public void destroy() {
+
     }
 
     public interface GenerateRoute {
@@ -139,6 +145,10 @@ public class NavController {
     }
 
     public AbilityResultContracts navigate(Destination destination) {
+        return navigate(destination, true);
+    }
+
+    public AbilityResultContracts navigate(Destination destination, boolean animation) {
         int x = container.getWidth();
         if (destination.ability != null) {
             Ability ability = destination.ability;
@@ -150,11 +160,19 @@ public class NavController {
             View view = ability.onCreateView(LayoutInflater.from(context), abilityViewGroup, null);
             abilityViewGroup.addView(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             ability.onViewCreated(view == null ? new View(context) : view, null);
-            move(abilityViewGroup, 300, x, 0f);
+            if (animation) {
+                move(abilityViewGroup, 300, x, 0f);
+            }
+            ability.onStart();
+            ability.onResume();
+            abilityStack.add(ability);
         }
         if (container.getChildCount() > 1) {
-            View last = container.getChildAt(container.getChildCount() - 2);
-            move(last, 500, 0f, -x);
+            View dismiss = container.getChildAt(container.getChildCount() - 2);
+            Ability dismissAbility = abilityStack.get(container.getChildCount() - 1);
+            move(dismiss, 500, 0f, -x);
+            dismissAbility.onStop();
+            dismissAbility.onPause();
         }
         onBackPressedCallback.setEnabled(canBack());
         // TODO
@@ -165,7 +183,7 @@ public class NavController {
 
     }
 
-    private final ObjectAnimator move(View view, long duration, float start, float end) {
+    private ObjectAnimator move(View view, long duration, float start, float end) {
         ObjectAnimator animator = ObjectAnimator.ofFloat(view, "translationX", new float[]{start, end});
         animator.setDuration(duration);
         animator.start();
@@ -177,18 +195,48 @@ public class NavController {
     }
 
     public void pop() {
-        if (canBack()) {
+        pop(true, false);
+    }
+
+    public int stackCount() {
+        return abilityStack.size();
+    }
+
+    public void pop(boolean animation, boolean popRoot) {
+        if (canBack() || (popRoot && stackCount() > 0)) {
             int x = container.getWidth();
             View dismiss = container.getChildAt(container.getChildCount() - 1);
-            View show = container.getChildAt(container.getChildCount() - 2);
-            move(dismiss, 200, 0f, x).addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    container.removeView(dismiss);
-                    onBackPressedCallback.setEnabled(canBack());
+            Ability dismissAbility = abilityStack.get(container.getChildCount() - 1);
+            View show = null;
+            Ability showAbility = null;
+            if (stackCount() >= 2) {
+                show = container.getChildAt(container.getChildCount() - 2);
+                showAbility = abilityStack.get(container.getChildCount() - 2);
+            }
+
+            if (animation) {
+                move(dismiss, 200, 0f, x).addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        container.removeView(dismiss);
+                        onBackPressedCallback.setEnabled(canBack());
+                        abilityStack.remove(dismissAbility);
+                    }
+                });
+                if (show != null) {
+                    move(show, 300, -x, 0f);
                 }
-            });
-            move(show, 300, -x, 0f);
+            } else {
+                container.removeView(dismiss);
+                abilityStack.remove(dismissAbility);
+                move(show, 0, -x, 0f);
+            }
+            dismissAbility.onStop();
+            dismissAbility.onPause();
+            if (show != null) {
+                showAbility.onStop();
+                showAbility.onResume();
+            }
         }
         onBackPressedCallback.setEnabled(canBack());
     }
@@ -198,16 +246,16 @@ public class NavController {
     }
 
     public void popAndPush(Destination destination) {
-
+        pop(false, true);
+        navigate(destination);
     }
 
     public void pushAndRemoveUntil(Destination destination) {
 
     }
 
-
-    public void pop(int count) {
-
+    public Ability peek() {
+        return abilityStack.peek();
     }
 
     interface PopUntil {

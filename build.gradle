@@ -19,6 +19,18 @@ allprojects {
         jcenter() // Warning: this repository is going to shut down soon
     }
 }
+subprojects {
+    apply plugin: 'maven'
+    group = "com.taoweiji.single-activity-navigation"
+    version = "1.0.0"
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                repository(url: uri("${System.getProperty('user.home')}/.m2/repository"))
+            }
+        }
+    }
+}
 
 task clean(type: Delete) {
     delete rootProject.buildDir
