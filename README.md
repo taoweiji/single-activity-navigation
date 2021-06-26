@@ -59,7 +59,6 @@ public class HelloAbility extends Ability {
 
 ```java
 NavController nav = new NavController.Builder()
-  .registerRoute("helloAbility", context -> new HelloAbility())
   .create(this, R.id.container);
 // 跳转页面
 nav.navigate(new HelloAbility());
@@ -118,6 +117,22 @@ NavController nav = new NavController.Builder()
   }).create(this, R.id.container);
 // 通过uri跳转
 nav.navigate(Uri.parse("myScheme://host/hello?msg=Hello"));
+```
+
+
+
+### 跳转到 Fragment
+
+框架是完全支持 Fragment 跳转，但是推荐使用 Ability，Ability 更加像一个 Activity，提供了更加强大的功能用于构建页面，比如状态栏颜色管理等。Fragment 的支持也是通过 FragmentAbility 封装实现的，实际上还是包了一层 Ability。可以通过 `NavController.findAbility(fragment)` 获取 Ability 对象，使用其功能。
+
+```java
+NavController nav = new NavController.Builder().create(this, R.id.container);
+// 方式一
+nav.navigate(new UserFragment());
+// 方式二
+nav.navigate(new FragmentAbility(new UserFragment()));
+// 通过 Fragment 获取 Ability 对象
+NavController.findAbility(fragment).setStatusBarColor()
 ```
 
 
@@ -202,6 +217,8 @@ public void onViewCreated(View view, Bundle savedInstanceState) {
 框架默认的动画是左右的动画，开发者也根据自己的需求开发动画
 
 
+
+### 在 ViewPager 使用 Ability
 
 
 

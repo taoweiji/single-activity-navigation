@@ -1,7 +1,6 @@
 package com.taoweiji.navigation.example.mvvm;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -11,9 +10,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
@@ -28,7 +24,7 @@ public class WeatherAbility extends Ability {
     private Button button;
 
     @Override
-    public View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+    protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         LinearLayout linearLayout = new LinearLayout(getContext());
         linearLayout.setGravity(Gravity.CENTER);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
@@ -38,11 +34,12 @@ public class WeatherAbility extends Ability {
         button.setText("更新");
         linearLayout.addView(info);
         linearLayout.addView(button);
+        setBackgroundColor(Color.WHITE);
         return linearLayout;
     }
 
     @Override
-    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+    protected void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         weatherViewModel.weatherData.observe(this, new Observer<Integer>() {
             @Override
@@ -57,10 +54,9 @@ public class WeatherAbility extends Ability {
             }
         });
 
-        registerForActivityResult()
 
-        registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-            String url = result.getData().getStringExtra("url");
-        }).launch(new Intent(getContext(), QrcodeActivity.class));
+//        registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+//            String url = result.getData().getStringExtra("url");
+//        }).launch(new Intent(getContext(), QrcodeActivity.class));
     }
 }

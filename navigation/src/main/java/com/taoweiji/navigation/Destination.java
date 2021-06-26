@@ -22,28 +22,30 @@ public class Destination {
         return destination;
     }
 
-    public static Destination with(String name, Bundle arguments, NavOptions navOptions) {
+    public static Destination with(String name, Bundle arguments) {
         Destination destination = new Destination();
         destination.name = name;
         destination.arguments = arguments;
-        destination.navOptions = navOptions;
         return destination;
     }
 
-    public static Destination with(Fragment fragment, Bundle arguments, NavOptions navOptions) {
+    public static Destination with(Fragment fragment, Bundle arguments) {
         Destination destination = new Destination();
         destination.fragment = fragment;
         destination.arguments = arguments;
-        destination.navOptions = navOptions;
         return destination;
     }
 
-    public static Destination with(Ability ability, Bundle arguments, NavOptions navOptions) {
+    public static Destination with(Ability ability, Bundle arguments) {
         Destination destination = new Destination();
         destination.ability = ability;
         destination.arguments = arguments;
-        destination.navOptions = navOptions;
         return destination;
+    }
+
+    public Destination navOptions(NavOptions navOptions) {
+        this.navOptions = navOptions;
+        return this;
     }
 
     public void parseUriQueryParameter(Uri uri) {

@@ -19,10 +19,15 @@ public class UserAbility extends Ability {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    protected View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         TextView textView = new TextView(getContext());
         textView.setText("user id = " + getArguments().getInt("id"));
         return inflater.inflate(R.layout.ability_user, null);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override
@@ -43,6 +48,7 @@ public class UserAbility extends Ability {
             bundle.putInt("id", id + 1);
             nav.navigate(new UserAbility(), bundle);
         });
-
+        setStatusBarColor(getResources().getColor(R.color.purple_500) * id);
+        setStatusBarTextStyle(id % 2 == 0 ? StatusBarTextStyle.DARK : StatusBarTextStyle.LIGHT);
     }
 }

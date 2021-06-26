@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }).create(this, R.id.container);
 //        nav.navigate("user", new BundleBuilder().put("id", 0).build());
-        nav.navigate("weather", null);
+        nav.navigate(new TestFragment());
+//        new WeatherAbility().preCreateView(nav);
     }
 }

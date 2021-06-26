@@ -11,6 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.taoweiji.navigation.Ability;
+import com.taoweiji.navigation.NavController;
+
 import org.jetbrains.annotations.NotNull;
 
 public class TestFragment extends Fragment {
@@ -29,7 +32,15 @@ public class TestFragment extends Fragment {
         view.setBackgroundColor(Color.WHITE);
         TextView info = view.findViewById(R.id.info);
         info.setText("TestFragment");
-        startActivityForResult();
+        info.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Ability ability = NavController.findAbility(TestFragment.this);
+                NavController nav = NavController.findNavController(TestFragment.this);
+                ability.setStatusBarColor(Color.RED);
+                nav.navigate("weather");
+            }
+        });
     }
 
 }

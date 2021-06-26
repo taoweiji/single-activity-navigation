@@ -19,7 +19,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleEventObserver;
-import androidx.lifecycle.LifecycleOwner;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,24 +26,57 @@ import java.util.Stack;
 
 public class NavController {
     private final Map<String, AbilityRouteBuilder> routes;
-    private final FrameLayout container;
+    private final FrameLayout navContainer;
     private final Stack<Ability> abilityStack = new Stack<>();
     private final NavOptions defaultNavOptions;
     private final GenerateRoute onGenerateRoute;
-    private final Context context;
+    final Context context;
     private final OnBackPressedCallback onBackPressedCallback;
 
+    public static NavController findNavController(Fragment fragment) {
+        return findNavController(fragment.getView());
+    }
+
     public static NavController findNavController(View view) {
-        if (view instanceof AbilityViewGroup) {
-            AbilityViewGroup abilityViewGroup = (AbilityViewGroup) view;
-            return abilityViewGroup.getNavController();
+        if (view instanceof AbilityViewParent) {
+            AbilityViewParent abilityViewParent = (AbilityViewParent) view;
+            return abilityViewParent.getNavController();
         } else {
             if (view.getParent() instanceof View) {
                 return findNavController((View) view.getParent());
             }
         }
+        // TODO 需要考虑 Fragment
         return null;
     }
+
+    public static Ability findAbility(View view) {
+        if (view instanceof AbilityViewParent) {
+            AbilityViewParent abilityViewParent = (AbilityViewParent) view;
+            return abilityViewParent.getAbility();
+        } else {
+            if (view.getParent() instanceof View) {
+                return findAbility((View) view.getParent());
+            }
+        }
+        // TODO 需要考虑 Fragment
+        return null;
+    }
+
+    public static Ability findAbility(Fragment fragment) {
+
+        // TODO 需要考虑 Fragment
+//        if (view instanceof AbilityViewParent) {
+//            AbilityViewParent abilityViewParent = (AbilityViewParent) view;
+//            return abilityViewParent.getAbility();
+//        } else {
+//            if (view.getParent() instanceof View) {
+//                return findAbility((View) view.getParent());
+//            }
+//        }
+        return findAbility(fragment.getView());
+    }
+
 
     private void destroy() {
         while (!abilityStack.isEmpty()) {
@@ -67,7 +99,7 @@ public class NavController {
         if (routes == null) {
             routes = new HashMap<>();
         }
-        this.container = container;
+        this.navContainer = container;
         this.routes = routes;
         this.defaultNavOptions = defaultNavOptions;
         this.onGenerateRoute = onGenerateRoute;
@@ -83,52 +115,39 @@ public class NavController {
         };
         FragmentActivity fragmentActivity = ((FragmentActivity) context);
         fragmentActivity.getOnBackPressedDispatcher().addCallback(onBackPressedCallback);
-        fragmentActivity.getLifecycle().addObserver(new LifecycleEventObserver() {
-            @Override
-            public void onStateChanged(@NonNull LifecycleOwner source, @NonNull Lifecycle.Event event) {
-                if (event == Lifecycle.Event.ON_DESTROY) {
-                    destroy();
-                }
+        fragmentActivity.getLifecycle().addObserver((LifecycleEventObserver) (source, event) -> {
+            if (event == Lifecycle.Event.ON_DESTROY) {
+                destroy();
             }
         });
     }
-
 
     public AbilityResultContracts navigate(Uri uri) {
         return navigate(Destination.with(uri, null));
     }
 
+    public AbilityResultContracts navigate(String name) {
+        return navigate(name, null);
+    }
+
     public AbilityResultContracts navigate(String name, Bundle arguments) {
-        return navigate(Destination.with(name, arguments, null));
-    }
-
-    public AbilityResultContracts navigate(Fragment fragment, Bundle arguments) {
-        return navigate(Destination.with(new FragmentAbility(fragment), arguments, null));
-    }
-
-    public AbilityResultContracts navigate(Ability ability, Bundle arguments) {
-        return navigate(Destination.with(ability, arguments, null));
+        return navigate(Destination.with(name, arguments));
     }
 
     public AbilityResultContracts navigate(Fragment fragment) {
         return navigate(fragment, null);
     }
 
+    public AbilityResultContracts navigate(Fragment fragment, Bundle arguments) {
+        return navigate(Destination.with(new FragmentAbility(fragment), arguments));
+    }
+
     public AbilityResultContracts navigate(Ability ability) {
         return navigate(ability, null);
     }
 
-    private static class AbilityViewGroup extends FrameLayout {
-        private NavController navController;
-
-        public AbilityViewGroup(@NonNull Context context, NavController navController) {
-            super(context);
-            this.navController = navController;
-        }
-
-        public NavController getNavController() {
-            return navController;
-        }
+    public AbilityResultContracts navigate(Ability ability, Bundle arguments) {
+        return navigate(Destination.with(ability, arguments));
     }
 
     public AbilityResultContracts navigate(Destination destination) {
@@ -143,29 +162,33 @@ public class NavController {
             }
         }
 
-
-        int x = container.getWidth();
+        int x = navContainer.getWidth();
         if (destination.ability != null) {
             Ability ability = destination.ability;
             ability.setContext(context);
             ability.setArguments(destination.arguments);
-            AbilityViewGroup abilityViewGroup = new AbilityViewGroup(context, this);
-            container.addView(abilityViewGroup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             ability.onCreate(null);
-            View view = ability.onCreateView(LayoutInflater.from(context), abilityViewGroup, null);
-            abilityViewGroup.addView(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            ability.onViewCreated(view == null ? new View(context) : view, null);
+            AbilityViewParent abilityViewParent = ability.performCreateViewParent(this);
+            navContainer.addView(abilityViewParent, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            View abilityView = ability.performCreateView(null);
+            ability.onViewCreated(abilityView, null);
             if (animation) {
-                move(abilityViewGroup, 300, x, 0f);
+                move(abilityViewParent, 300, x, 0f);
             }
             ability.onStart();
             ability.onResume();
             abilityStack.add(ability);
         }
-        if (container.getChildCount() > 1) {
-            View dismiss = container.getChildAt(container.getChildCount() - 2);
-            Ability dismissAbility = abilityStack.get(container.getChildCount() - 1);
-            move(dismiss, 500, 0f, -x);
+        if (navContainer.getChildCount() > 1) {
+            View dismissAbilityView = navContainer.getChildAt(navContainer.getChildCount() - 2);
+            Ability dismissAbility = abilityStack.get(navContainer.getChildCount() - 1);
+            move(dismissAbilityView, 500, 0f, -x).addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation, boolean isReverse) {
+                    dismissAbilityView.setTranslationX(0);
+                    dismissAbilityView.setTranslationY(0);
+                }
+            });
             dismissAbility.onStop();
             dismissAbility.onPause();
         }
@@ -199,21 +222,21 @@ public class NavController {
 
     public void pop(boolean animation, boolean popRoot) {
         if (canBack() || (popRoot && stackCount() > 0)) {
-            int x = container.getWidth();
-            View dismiss = container.getChildAt(container.getChildCount() - 1);
-            Ability dismissAbility = abilityStack.get(container.getChildCount() - 1);
+            int x = navContainer.getWidth();
+            View dismiss = navContainer.getChildAt(navContainer.getChildCount() - 1);
+            Ability dismissAbility = abilityStack.get(navContainer.getChildCount() - 1);
             View show = null;
             Ability showAbility = null;
             if (stackCount() >= 2) {
-                show = container.getChildAt(container.getChildCount() - 2);
-                showAbility = abilityStack.get(container.getChildCount() - 2);
+                show = navContainer.getChildAt(navContainer.getChildCount() - 2);
+                showAbility = abilityStack.get(navContainer.getChildCount() - 2);
             }
 
             if (animation) {
                 move(dismiss, 200, 0f, x).addListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        container.removeView(dismiss);
+                        navContainer.removeView(dismiss);
                         onBackPressedCallback.setEnabled(canBack());
                         abilityStack.remove(dismissAbility);
                     }
@@ -222,12 +245,13 @@ public class NavController {
                     move(show, 300, -x, 0f);
                 }
             } else {
-                container.removeView(dismiss);
+                navContainer.removeView(dismiss);
                 abilityStack.remove(dismissAbility);
                 move(show, 0, -x, 0f);
             }
             dismissAbility.onStop();
             dismissAbility.onPause();
+            dismissAbility.onDestroy();
             if (show != null) {
                 showAbility.onStop();
                 showAbility.onResume();
@@ -237,7 +261,7 @@ public class NavController {
     }
 
     public boolean canBack() {
-        return container.getChildCount() > 1;
+        return navContainer.getChildCount() > 1;
     }
 
     public void popAndPush(Destination destination) {
