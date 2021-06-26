@@ -28,6 +28,8 @@ nav.navigate(new AbilityBuilder() {
 }, new BundleBuilder().put("msg", "Hello World").build());
 ```
 
+
+
 ### 定义 HelloAbility
 
 Ability 是框架的页面，具备和 Fragment 几乎一样的生命周期，可以按照 Fragment 的理解去使用 Ability，如果开发者本身就已经有其它的业务架构，无法继承 Ability，建议通过 AbilityBuilder 去实现跳转。
@@ -51,6 +53,8 @@ public class HelloAbility extends Ability {
 }
 ```
 
+
+
 #### 直接跳转页面
 
 ```java
@@ -61,6 +65,8 @@ NavController nav = new NavController.Builder()
 nav.navigate(new HelloAbility());
 ```
 
+
+
 #### 路由跳转页面
 
 ```java
@@ -70,6 +76,8 @@ NavController nav = new NavController.Builder()
 // 跳转页面
 nav.navigate("hello", new BundleBuilder().put("msg", "Hello World").build());
 ```
+
+
 
 #### 通过自定义路由构造器跳转页面
 
@@ -86,6 +94,8 @@ NavController nav = new NavController.Builder()
 // 通过uri跳转
 nav.navigate(Uri.parse("myScheme://host/hello?msg=Hello"));
 ```
+
+
 
 ### 通过自定义路由器解析成普通路由
 
@@ -137,17 +147,59 @@ nav.navigate(new HelloAbility()).registerForResult(result -> {
 
 
 
-### 自定义动画
-
-框架默认的动画是左右的动画，开发者也根据自己的需求开发动画
-
-
-
 ### 在 Ability 跳转 Activity 获取返回值
+
+在 Ability 是无法使用 startActivityForResult 方法，但是 Ability 实现了 ActivityResultCaller，提供更加简单获取 Activity 返回值的 registerForActivityResult 方法。
+
+```java
+registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+    String url = result.getData().getStringExtra("url");
+}).launch(new Intent(getContext(), QrcodeActivity.class));
+```
 
 
 
 ### 在 Ability 使用 ViewModel、Lifecycle、LiveData 实现 MVVM
+
+定义好 ViewModel
+
+```java
+public class WeatherViewModel extends ViewModel {
+    public MutableLiveData<Integer> weatherData = new MutableLiveData<>();
+
+    public void updateWeather() {
+        weatherData.postValue(new Random().nextInt(32));
+    }
+}
+```
+
+在 Ability 使用 LiveData 和 Fragment 是无差异的，不需要担心出现泄漏问题，框架已经管理好 Lifecycle。
+
+```java
+// WeatherAbility
+@Override
+public void onViewCreated(View view, Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+    weatherViewModel.weatherData.observe(this, new Observer<Integer>() {
+        @Override
+        public void onChanged(Integer temperature) {
+            info.setText("当前温度：" + temperature);
+        }
+    });
+    button.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            weatherViewModel.updateWeather();
+        }
+    });
+}
+```
+
+
+
+### 自定义动画
+
+框架默认的动画是左右的动画，开发者也根据自己的需求开发动画
 
 
 

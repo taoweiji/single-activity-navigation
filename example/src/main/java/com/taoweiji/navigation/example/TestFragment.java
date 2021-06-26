@@ -29,6 +29,7 @@ public class TestFragment extends Fragment {
         view.setBackgroundColor(Color.WHITE);
         TextView info = view.findViewById(R.id.info);
         info.setText("TestFragment");
+        startActivityForResult();
     }
 
 }

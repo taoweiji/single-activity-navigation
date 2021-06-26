@@ -1,5 +1,7 @@
 package com.taoweiji.navigation.example.mvvm;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -9,6 +11,9 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
@@ -39,10 +44,10 @@ public class WeatherAbility extends Ability {
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        weatherViewModel.weatherData.observe(this, new Observer<Weather>() {
+        weatherViewModel.weatherData.observe(this, new Observer<Integer>() {
             @Override
-            public void onChanged(Weather weather) {
-                info.setText("当前温度：" + weather.temperature);
+            public void onChanged(Integer temperature) {
+                info.setText("当前温度：" + temperature);
             }
         });
         button.setOnClickListener(new View.OnClickListener() {
@@ -51,5 +56,11 @@ public class WeatherAbility extends Ability {
                 weatherViewModel.updateWeather();
             }
         });
+
+        registerForActivityResult()
+
+        registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            String url = result.getData().getStringExtra("url");
+        }).launch(new Intent(getContext(), QrcodeActivity.class));
     }
 }

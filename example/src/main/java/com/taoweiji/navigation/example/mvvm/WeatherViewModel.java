@@ -6,9 +6,9 @@ import androidx.lifecycle.ViewModel;
 import java.util.Random;
 
 public class WeatherViewModel extends ViewModel {
-    public MutableLiveData<Weather> weatherData = new MutableLiveData<>();
+    public MutableLiveData<Integer> weatherData = new MutableLiveData<>();
 
     public void updateWeather() {
-        weatherData.postValue(new Weather(new Random().nextInt(32)));
+        weatherData.postValue(new Random().nextInt(32));
     }
 }
