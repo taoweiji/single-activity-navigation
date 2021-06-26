@@ -12,6 +12,7 @@ public class Destination {
     public Bundle arguments = new Bundle();
     public NavOptions navOptions;
     public String name;
+    public static final String URI_KEY = "__URI__";
 
     public static Destination with(Uri uri, NavOptions navOptions) {
         Destination destination = new Destination();
@@ -49,5 +50,6 @@ public class Destination {
         for (String key : uri.getQueryParameterNames()) {
             arguments.putString(key, uri.getQueryParameter(key));
         }
+        arguments.putParcelable(URI_KEY, uri);
     }
 }

@@ -3,6 +3,8 @@ package com.taoweiji.navigation;
 import android.os.Bundle;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 public class BundleBuilder {
     Bundle bundle = new Bundle();
 
@@ -51,6 +53,11 @@ public class BundleBuilder {
 
     public BundleBuilder put(String key, Parcelable value) {
         bundle.putParcelable(key, value);
+        return this;
+    }
+
+    public BundleBuilder put(String key, Serializable value) {
+        bundle.putSerializable(key, value);
         return this;
     }
 

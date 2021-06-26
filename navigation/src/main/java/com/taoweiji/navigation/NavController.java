@@ -17,6 +17,9 @@ import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleEventObserver;
+import androidx.lifecycle.LifecycleOwner;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,8 +46,10 @@ public class NavController {
         return null;
     }
 
-    public void destroy() {
-
+    private void destroy() {
+        while (!abilityStack.isEmpty()) {
+            pop(false, true);
+        }
     }
 
     public void registerRoute(String name, AbilityRouteBuilder abilityRouteBuilder) {
@@ -53,40 +58,6 @@ public class NavController {
 
     public interface GenerateRoute {
         Ability onGenerateRoute(Destination destination);
-    }
-
-    public static class Builder {
-        Map<String, AbilityRouteBuilder> routes = new HashMap<>();
-        NavOptions defaultNavOptions;
-        GenerateRoute onGenerateRoute;
-
-        public Builder routes(Map<String, AbilityRouteBuilder> routes) {
-            this.routes.putAll(routes);
-            return this;
-        }
-
-        public Builder registerRoute(String name, AbilityRouteBuilder abilityRouteBuilder) {
-            this.routes.put(name, abilityRouteBuilder);
-            return this;
-        }
-
-        public Builder defaultNavOptions(NavOptions defaultNavOptions) {
-            this.defaultNavOptions = defaultNavOptions;
-            return this;
-        }
-
-        public Builder onGenerateRoute(GenerateRoute onGenerateRoute) {
-            this.onGenerateRoute = onGenerateRoute;
-            return this;
-        }
-
-        public NavController create(Activity activity, @IdRes int container) {
-            return create(activity.findViewById(container));
-        }
-
-        public NavController create(FrameLayout container) {
-            return new NavController(container, routes, defaultNavOptions, onGenerateRoute);
-        }
     }
 
     private NavController(FrameLayout container, Map<String, AbilityRouteBuilder> routes, NavOptions defaultNavOptions, GenerateRoute onGenerateRoute) {
@@ -112,6 +83,14 @@ public class NavController {
         };
         FragmentActivity fragmentActivity = ((FragmentActivity) context);
         fragmentActivity.getOnBackPressedDispatcher().addCallback(onBackPressedCallback);
+        fragmentActivity.getLifecycle().addObserver(new LifecycleEventObserver() {
+            @Override
+            public void onStateChanged(@NonNull LifecycleOwner source, @NonNull Lifecycle.Event event) {
+                if (event == Lifecycle.Event.ON_DESTROY) {
+                    destroy();
+                }
+            }
+        });
     }
 
 
@@ -124,7 +103,7 @@ public class NavController {
     }
 
     public AbilityResultContracts navigate(Fragment fragment, Bundle arguments) {
-        return navigate(Destination.with(new AbilityFragmentContainer(fragment), arguments, null));
+        return navigate(Destination.with(new FragmentAbility(fragment), arguments, null));
     }
 
     public AbilityResultContracts navigate(Ability ability, Bundle arguments) {
@@ -157,6 +136,14 @@ public class NavController {
     }
 
     public AbilityResultContracts navigate(Destination destination, boolean animation) {
+        if (destination.name != null) {
+            AbilityRouteBuilder builder = routes.get(destination.name);
+            if (builder != null) {
+                destination.ability = builder.builder(context);
+            }
+        }
+
+
         int x = container.getWidth();
         if (destination.ability != null) {
             Ability ability = destination.ability;
@@ -184,7 +171,7 @@ public class NavController {
         }
         onBackPressedCallback.setEnabled(canBack());
         // TODO
-        return null;
+        return new AbilityResultContracts();
     }
 
     public void pushAnimation(View view) {
@@ -273,4 +260,47 @@ public class NavController {
     public Map<String, AbilityRouteBuilder> getRoutes() {
         return routes;
     }
+
+    public void getStartCaller(Fragment fragment) {
+
+    }
+
+    public void getStartCaller(Ability ability) {
+
+    }
+
+    public static class Builder {
+        Map<String, AbilityRouteBuilder> routes = new HashMap<>();
+        NavOptions defaultNavOptions;
+        GenerateRoute onGenerateRoute;
+
+        public Builder routes(Map<String, AbilityRouteBuilder> routes) {
+            this.routes.putAll(routes);
+            return this;
+        }
+
+        public Builder registerRoute(String name, AbilityRouteBuilder abilityRouteBuilder) {
+            this.routes.put(name, abilityRouteBuilder);
+            return this;
+        }
+
+        public Builder defaultNavOptions(NavOptions defaultNavOptions) {
+            this.defaultNavOptions = defaultNavOptions;
+            return this;
+        }
+
+        public Builder onGenerateRoute(GenerateRoute onGenerateRoute) {
+            this.onGenerateRoute = onGenerateRoute;
+            return this;
+        }
+
+        public NavController create(Activity activity, @IdRes int container) {
+            return create(activity.findViewById(container));
+        }
+
+        public NavController create(FrameLayout container) {
+            return new NavController(container, routes, defaultNavOptions, onGenerateRoute);
+        }
+    }
+
 }

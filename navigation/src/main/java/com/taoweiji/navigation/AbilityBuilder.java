@@ -8,9 +8,8 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.LifecycleRegistry;
 
-public abstract class AbilityBuilder extends AbilityContainer {
+public abstract class AbilityBuilder extends Ability {
 
     public abstract View builder(Context context, Bundle arguments);
 

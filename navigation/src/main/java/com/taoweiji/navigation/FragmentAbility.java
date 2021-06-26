@@ -11,11 +11,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
-class AbilityFragmentContainer extends AbilityContainer {
+public class FragmentAbility extends Ability {
 
     private final Fragment fragment;
 
-    public AbilityFragmentContainer(Fragment fragment) {
+    public FragmentAbility(Fragment fragment) {
         this.fragment = fragment;
     }
 

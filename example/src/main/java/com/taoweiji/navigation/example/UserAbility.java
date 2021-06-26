@@ -10,12 +10,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.taoweiji.navigation.AbilityContainer;
+import com.taoweiji.navigation.Ability;
 import com.taoweiji.navigation.NavController;
 
 import org.jetbrains.annotations.NotNull;
 
-public class UserAbility extends AbilityContainer {
+public class UserAbility extends Ability {
 
     @Nullable
     @Override
@@ -43,5 +43,6 @@ public class UserAbility extends AbilityContainer {
             bundle.putInt("id", id + 1);
             nav.navigate(new UserAbility(), bundle);
         });
+
     }
 }
