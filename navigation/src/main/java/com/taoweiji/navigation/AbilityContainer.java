@@ -9,8 +9,10 @@ import androidx.activity.result.ActivityResultCaller;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.ActivityResultRegistry;
 import androidx.activity.result.contract.ActivityResultContract;
+import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleRegistry;
 
@@ -18,6 +20,7 @@ public abstract class AbilityContainer implements Ability, ActivityResultCaller 
     LifecycleRegistry mLifecycleRegistry;
     private Context context;
     private Bundle arguments;
+
 
     @Override
     public void setContext(Context context) {
@@ -29,8 +32,16 @@ public abstract class AbilityContainer implements Ability, ActivityResultCaller 
         return context;
     }
 
+    final public FragmentActivity getActivity() {
+        return (FragmentActivity) context;
+    }
+
     @Override
+    @NonNull
     public Bundle getArguments() {
+        if (arguments == null) {
+            arguments = new Bundle();
+        }
         return arguments;
     }
 
@@ -41,32 +52,39 @@ public abstract class AbilityContainer implements Ability, ActivityResultCaller 
 
     private void initLifecycle() {
         mLifecycleRegistry = new LifecycleRegistry(this);
+
 //        mSavedStateRegistryController = SavedStateRegistryController.create(this);
         // The default factory depends on the SavedStateRegistry so it
         // needs to be reset when the SavedStateRegistry is reset
 //        mDefaultFactory = null;
     }
 
+    @CallSuper
     @Override
     public void onStart() {
 
     }
 
+    @CallSuper
     @Override
     public void onStop() {
 
     }
 
+    @CallSuper
     @Override
     public void onResume() {
     }
 
+    @CallSuper
     @Override
     public void onPause() {
     }
 
+    @CallSuper
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        mLifecycleRegistry.setCurrentState(Lifecycle.State.CREATED);
     }
 
 

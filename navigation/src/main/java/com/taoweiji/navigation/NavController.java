@@ -47,6 +47,10 @@ public class NavController {
 
     }
 
+    public void registerRoute(String name, AbilityRouteBuilder abilityRouteBuilder) {
+        routes.put(name, abilityRouteBuilder);
+    }
+
     public interface GenerateRoute {
         Ability onGenerateRoute(Destination destination);
     }
@@ -57,10 +61,14 @@ public class NavController {
         GenerateRoute onGenerateRoute;
 
         public Builder routes(Map<String, AbilityRouteBuilder> routes) {
-            this.routes = routes;
+            this.routes.putAll(routes);
             return this;
         }
 
+        public Builder registerRoute(String name, AbilityRouteBuilder abilityRouteBuilder) {
+            this.routes.put(name, abilityRouteBuilder);
+            return this;
+        }
 
         public Builder defaultNavOptions(NavOptions defaultNavOptions) {
             this.defaultNavOptions = defaultNavOptions;
@@ -262,4 +270,7 @@ public class NavController {
         boolean popUntil(AbilityRouteBuilder builder);
     }
 
+    public Map<String, AbilityRouteBuilder> getRoutes() {
+        return routes;
+    }
 }

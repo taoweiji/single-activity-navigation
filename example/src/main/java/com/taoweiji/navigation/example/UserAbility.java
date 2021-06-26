@@ -21,7 +21,7 @@ public class UserAbility extends AbilityContainer {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         TextView textView = new TextView(getContext());
-        textView.setText("user id = " + getArguments().getString("id"));
+        textView.setText("user id = " + getArguments().getInt("id"));
         return inflater.inflate(R.layout.ability_user, null);
     }
 
