@@ -2,6 +2,7 @@ package com.taoweiji.navigation;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -16,11 +17,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.LinearLayout;
 
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultCaller;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.ActivityResultRegistry;
-import androidx.activity.result.contract.ActivityResultContract;
 import androidx.annotation.CallSuper;
 import androidx.annotation.ColorInt;
 import androidx.annotation.ColorRes;
@@ -39,7 +35,7 @@ import androidx.lifecycle.LifecycleRegistry;
 
 import static android.view.View.NO_ID;
 
-public abstract class Ability implements ActivityResultCaller, LifecycleOwner {
+public abstract class Ability implements LifecycleOwner {
     AbilityResultContracts abilityResultContracts;
     LifecycleRegistry mLifecycleRegistry;
     Context context;
@@ -119,18 +115,17 @@ public abstract class Ability implements ActivityResultCaller, LifecycleOwner {
         return mLifecycleRegistry;
     }
 
-    @NonNull
-    @Override
-    public <I, O> ActivityResultLauncher<I> registerForActivityResult(@NonNull ActivityResultContract<I, O> contract, @NonNull ActivityResultCallback<O> callback) {
-        return null;
+    public void startActivityForResult(Intent intent, ActivityResultCallback callback) {
+        startActivityForResult(intent, 1, null, callback);
     }
 
-    @NonNull
-    @Override
-    public <I, O> ActivityResultLauncher<I> registerForActivityResult(@NonNull ActivityResultContract<I, O> contract, @NonNull ActivityResultRegistry registry, @NonNull ActivityResultCallback<O> callback) {
-        return null;
+    public void startActivityForResult(Intent intent, int requestCode, ActivityResultCallback callback) {
+        startActivityForResult(intent, requestCode, null, callback);
     }
 
+    public void startActivityForResult(Intent intent, int requestCode, @Nullable Bundle options, ActivityResultCallback callback) {
+        StartActivityForResultFragment.startActivityForResult(intent, requestCode, options, getActivity(), callback);
+    }
 
     public Context getContext() {
         return context;
@@ -296,7 +291,6 @@ public abstract class Ability implements ActivityResultCaller, LifecycleOwner {
         setToolbar(toolbar);
         TypedArray array = getActivity().getTheme().obtainStyledAttributes(new int[]{
                 R.attr.colorPrimary,
-                R.attr.colorOnPrimary,
         });
         setToolbarBackgroundColor(array.getColor(0, Color.WHITE));
         return toolbar;
@@ -324,7 +318,7 @@ public abstract class Ability implements ActivityResultCaller, LifecycleOwner {
         return darkness < 0.5;
     }
 
-    private void setToolbarBackgroundColor(int color) {
+    public void setToolbarBackgroundColor(int color) {
         if (this.toolbar == null) {
             return;
         }

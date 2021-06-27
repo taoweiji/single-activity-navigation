@@ -21,6 +21,8 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.taoweiji.navigation.Ability;
 import com.taoweiji.navigation.AbilityBuilder;
+import com.taoweiji.navigation.AbilityResultCallback;
+import com.taoweiji.navigation.ActivityResultCallback;
 import com.taoweiji.navigation.BundleBuilder;
 import com.taoweiji.navigation.NavController;
 import com.taoweiji.navigation.ViewUtils;
@@ -88,11 +90,13 @@ public class IndexAbility extends Ability {
             });
         });
         adapter.add("获取 Activity 返回值", () -> {
-            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-                if (result.getData() != null) {
-                    Toast.makeText(getContext(), result.getData().getExtras().getString("msg"), Toast.LENGTH_SHORT).show();
+            startActivityForResult(new Intent(getContext(), TestResultActivity.class), (requestCode, resultCode, data) -> {
+                if (data != null) {
+                    Toast.makeText(getContext(), data.getStringExtra("msg"), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "没有返回值", Toast.LENGTH_SHORT).show();
                 }
-            }).launch(new Intent(getContext(), TestResultActivity.class));
+            });
         });
 
         adapter.add("跳转页面，且关闭当前页面", () -> nav.navigate(new PopAndPushAbility()));

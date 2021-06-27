@@ -26,7 +26,6 @@ public abstract class AbilityPageAdapter extends PagerAdapter {
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
-        Log.e("AbilityPageAdapter", "instantiateItem " + position);
         Ability ability = getItem(position);
         ability.prepareCreate(context);
         container.addView(ability.getViewParent());
@@ -35,9 +34,7 @@ public abstract class AbilityPageAdapter extends PagerAdapter {
 
     @Override
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
-        Log.e("AbilityPageAdapter", "destroyItem " + position);
         Ability ability = (Ability) object;
-        //TODO   ability.onDestroy();?
         container.removeView(ability.getViewParent());
     }
 
