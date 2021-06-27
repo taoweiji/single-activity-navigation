@@ -1,6 +1,5 @@
 package com.taoweiji.navigation.example.mvvm;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -12,7 +11,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
 
 import com.taoweiji.navigation.Ability;
 
@@ -23,8 +21,14 @@ public class MvvmAbility extends Ability {
     private TextView info;
     private Button button;
 
+    public MvvmAbility() {
+
+    }
+
     @Override
     protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        createDefaultToolbar();
+        setTitle("Lifecycle、LiveData 实现 MVVM");
         LinearLayout linearLayout = new LinearLayout(getContext());
         linearLayout.setGravity(Gravity.CENTER);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
@@ -42,5 +46,6 @@ public class MvvmAbility extends Ability {
         super.onViewCreated(view, savedInstanceState);
         weatherViewModel.weatherData.observe(this, temperature -> info.setText("当前温度：" + temperature));
         button.setOnClickListener(v -> weatherViewModel.updateWeather());
+        weatherViewModel.updateWeather();
     }
 }

@@ -23,6 +23,7 @@ import androidx.annotation.CallSuper;
 import androidx.annotation.ColorInt;
 import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
+import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -33,6 +34,8 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LifecycleRegistry;
+
+import static android.view.View.NO_ID;
 
 public abstract class Ability implements ActivityResultCaller, LifecycleOwner {
     LifecycleRegistry mLifecycleRegistry;
@@ -132,9 +135,9 @@ public abstract class Ability implements ActivityResultCaller, LifecycleOwner {
     /**
      * 预创建
      */
-    public void prepareCreateView(NavController navController) {
-        context = navController.context;
-        performCreateViewParent(navController);
+    public void prepareCreateView(Context context) {
+        this.context = context;
+        performCreateViewParent(null);
         performCreateView(null);
     }
 
@@ -153,6 +156,7 @@ public abstract class Ability implements ActivityResultCaller, LifecycleOwner {
             return;
         }
         createViewed = true;
+        onCreate(null);
         view = onCreateView(LayoutInflater.from(context), viewParent, savedInstanceState);
         if (view != null) {
             viewParent.addView(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -160,13 +164,15 @@ public abstract class Ability implements ActivityResultCaller, LifecycleOwner {
         this.onViewCreated(view, null);
     }
 
-    public View getView() {
+    protected View getView() {
         return view;
     }
 
     AbilityViewParent performCreateViewParent(NavController navController) {
         if (viewParent == null) {
             viewParent = new AbilityViewParent(context, navController, this);
+        } else {
+            viewParent.navController = navController;
         }
         return viewParent;
     }
@@ -275,6 +281,7 @@ public abstract class Ability implements ActivityResultCaller, LifecycleOwner {
                 return (Toolbar) this.viewParent.getChildAt(0);
             }
         }
+        // TODO 默认主题适配
         Toolbar toolbar = new Toolbar(getContext());
         TypedArray array = getActivity().getTheme().obtainStyledAttributes(new int[]{
                 R.attr.colorPrimary,
@@ -295,6 +302,9 @@ public abstract class Ability implements ActivityResultCaller, LifecycleOwner {
 
     public void setToolbar(Toolbar toolbar) {
         this.toolbar = toolbar;
+        if (toolbar != null) {
+            this.title = toolbar.getTitle();
+        }
     }
 
     public void setTitle(CharSequence title) {
@@ -317,7 +327,14 @@ public abstract class Ability implements ActivityResultCaller, LifecycleOwner {
 
     }
 
-    public void showDialog(Dialog dialog){
+    public void showDialog(Dialog dialog) {
 
+    }
+
+    public final <T extends View> T findViewById(@IdRes int id) {
+        if (id == NO_ID) {
+            return null;
+        }
+        return getViewParent().findViewById(id);
     }
 }

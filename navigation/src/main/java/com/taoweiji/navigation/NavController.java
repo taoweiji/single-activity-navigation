@@ -23,7 +23,6 @@ import androidx.lifecycle.LifecycleEventObserver;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Stack;
 import java.util.WeakHashMap;
 
 public class NavController {
@@ -113,7 +112,7 @@ public class NavController {
     }
 
     public interface GenerateRoute {
-        Ability onGenerateRoute(Destination destination);
+        Ability onGenerateRoute(Context context, Destination destination);
     }
 
     private NavController(FrameLayout container, Map<String, AbilityRouteBuilder> routes, NavOptions defaultNavOptions, GenerateRoute onGenerateRoute) {
@@ -181,7 +180,7 @@ public class NavController {
     public AbilityResultContracts navigate(Destination destination, boolean animation) {
         if (destination.ability == null) {
             if (onGenerateRoute != null) {
-                destination.ability = onGenerateRoute.onGenerateRoute(destination);
+                destination.ability = onGenerateRoute.onGenerateRoute(context, destination);
             }
             if (destination.ability == null && destination.name != null) {
                 AbilityRouteBuilder builder = routes.get(destination.name);

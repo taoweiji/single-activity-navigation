@@ -2,22 +2,47 @@ package com.taoweiji.navigation;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 class AbilityViewParent extends LinearLayout {
-    private final NavController navController;
+    NavController navController;
     private final Ability ability;
 
-    public AbilityViewParent(@NonNull Context context, NavController navController, Ability ability) {
+    public AbilityViewParent(@NonNull Context context, @Nullable NavController navController, @NonNull Ability ability) {
         super(context);
         this.navController = navController;
         this.ability = ability;
         setOrientation(LinearLayout.VERTICAL);
         setClickable(true);
         setBackgroundColor(Color.WHITE);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        // 如果不是由 NavController 管理，那么就由 View 自己实现管理
+        if (navController == null) {
+            ability.onStart();
+            ability.onResume();
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        // 如果不是由 NavController 管理，那么就由 View 自己实现管理
+        if (navController == null) {
+            ability.onPause();
+            ability.onStop();
+        }
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
     }
 
     public NavController getNavController() {

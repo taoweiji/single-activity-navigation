@@ -2,11 +2,11 @@ package com.taoweiji.navigation.example;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -17,6 +17,7 @@ import android.widget.Toast;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 
 import com.taoweiji.navigation.Ability;
 import com.taoweiji.navigation.AbilityBuilder;
@@ -28,6 +29,8 @@ import com.taoweiji.navigation.example.mvvm.MvvmAbility;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.view.MenuItem.SHOW_AS_ACTION_ALWAYS;
+
 
 public class IndexAbility extends Ability {
 
@@ -38,6 +41,14 @@ public class IndexAbility extends Ability {
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         createDefaultToolbar();
+        getToolbar().getMenu().add("源码").setShowAsAction(SHOW_AS_ACTION_ALWAYS);
+        getToolbar().setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                getActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/taoweiji/single-activity-navigation")));
+                return true;
+            }
+        });
         setTitle("单 Activity 框架");
         setStatusBarColor(getResources().getColor(R.color.purple_500));
         list = new ListView(getContext());
@@ -55,10 +66,10 @@ public class IndexAbility extends Ability {
             }
         }));
         adapter.add("直接跳转 Ability", () -> nav.navigate(new UserAbility(), new BundleBuilder().put("id", 0).build()));
-        adapter.add("直接跳转 Fragment", () -> nav.navigate(new TestFragment()));
+        adapter.add("直接跳转 Fragment", () -> nav.navigate(new SimpleFragment()));
         adapter.add("路由跳转", () -> nav.navigate("user"));
         adapter.add("URI 跳转", () -> nav.navigate(Uri.parse("scheme://host/hello?msg=Hello")));
-        adapter.add("解析 URI 成路由跳转", () -> nav.navigate(Uri.parse("scheme://host/hello?msg=Hello")));
+        adapter.add("解析 URI 成路由跳转", () -> nav.navigate(Uri.parse("scheme://host/weather")));
 
         adapter.add("获取 Ability 返回值", () -> {
             nav.navigate(new TestResultAbility()).registerForResult(result -> {
@@ -82,12 +93,15 @@ public class IndexAbility extends Ability {
         adapter.add("跳转页面，且关闭所有页面", () -> nav.navigate(new ReLaunchAbility()));
         adapter.add("跳转页面，且有条件关闭页面", () -> nav.navigate(new PushAndRemoveUntilAbility()));
 
+
+        adapter.add("DialogAbility", () -> nav.navigate(new DialogAbility2()));
+        adapter.add("BottomSheetDialogAbility", () -> nav.navigate(new DialogAbility2()));
+
         adapter.add("Lifecycle、LiveData 实现 MVVM", () -> nav.navigate(new MvvmAbility()));
-        adapter.add("在 ViewPager 使用 Ability", () -> nav.navigate(new ViewPagerAbility()));
+        adapter.add("在 ViewPager 使用 AbilityPageAdapter", () -> nav.navigate(new ViewPagerAbility()));
         adapter.add("自定义转场动画", () -> nav.navigate(new AnimationAbility()));
         adapter.add("设置背景、状态栏颜色等", () -> nav.navigate(new UiAbility()));
         adapter.add("发送页面消息通知", () -> nav.navigate(new EventAbility()));
-        adapter.add("对话框覆盖图层", () -> nav.navigate(new DialogAbility2()));
         list.setAdapter(adapter);
         list.setOnItemClickListener((parent, view, position, id) -> adapter.tasks.get(position).run());
         return list;
