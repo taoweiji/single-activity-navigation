@@ -1,6 +1,7 @@
 package com.taoweiji.navigation;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,13 +25,18 @@ public class FragmentAbility extends Ability {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         FrameLayout layout = new FrameLayout(getContext());
-        FragmentActivity activity = (FragmentActivity) getContext();
         layout.setId(this.hashCode());
-        activity.getSupportFragmentManager().beginTransaction().add(layout.getId(), fragment, null).commit();
+        getActivity().getSupportFragmentManager().beginTransaction().add(layout.getId(), fragment, null).commit();
         return layout;
     }
 
     public Fragment getFragment() {
         return fragment;
+    }
+
+    @Override
+    public void onDestroy() {
+        getActivity().getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+        super.onDestroy();
     }
 }

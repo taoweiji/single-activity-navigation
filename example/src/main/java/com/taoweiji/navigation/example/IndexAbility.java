@@ -63,6 +63,7 @@ public class IndexAbility extends Ability {
             @Override
             public View builder(Context context, Bundle arguments) {
                 createDefaultToolbar();
+
                 setTitle("AbilityBuilder 跳转");
                 TextView hello = new TextView(context);
                 hello.setGravity(Gravity.CENTER);

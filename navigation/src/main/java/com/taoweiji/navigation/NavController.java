@@ -237,8 +237,9 @@ public class NavController {
                     }
                 });
             }
-            inviableView.getAbility().onStop();
             inviableView.getAbility().onPause();
+            inviableView.getAbility().onStop();
+
         }
         return abilityResultContracts;
     }
@@ -302,9 +303,8 @@ public class NavController {
         }
         AbilityViewParent destroyView = getAbilityViewParent(stackCount() - 1);
         AbilityViewParent showView = stackCount() < 2 ? null : getAbilityViewParent(stackCount() - 2);
-
-        destroyView.getAbility().onStop();
         destroyView.getAbility().onPause();
+        destroyView.getAbility().onStop();
         Runnable runnable = () -> {
             destroyView.getAbility().onDestroy();
             navContainer.removeView(destroyView);
@@ -324,7 +324,7 @@ public class NavController {
             runnable.run();
         }
         if (showView != null) {
-            showView.getAbility().onStop();
+            showView.getAbility().onStart();
             showView.getAbility().onResume();
             showView.setTranslationX(0);
             showView.setTranslationY(0);

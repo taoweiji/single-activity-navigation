@@ -1,6 +1,7 @@
 package com.taoweiji.navigation.example;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,12 @@ public class SimpleFragment extends Fragment {
         TextView hello = new TextView(getContext());
         hello.setGravity(Gravity.CENTER);
         hello.setText("Fragment");
+        hello.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavController.findNavController(v).navigate("user");
+            }
+        });
         return hello;
     }
 
@@ -33,5 +40,41 @@ public class SimpleFragment extends Fragment {
         Ability ability = NavController.findAbility(this);
         ability.createDefaultToolbar();
         ability.setTitle("直接跳转 Fragment");
+    }
+
+    @Override
+    public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.e("SimpleFragment", "onCreate");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.e("SimpleFragment", "onStart");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.e("SimpleFragment", "onResume");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.e("SimpleFragment", "onPause");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.e("SimpleFragment", "onStop");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.e("SimpleFragment", "onDestroy");
     }
 }

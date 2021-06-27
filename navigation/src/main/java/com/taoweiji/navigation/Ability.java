@@ -4,6 +4,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,7 +31,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.appcompat.widget.Toolbar;
-import androidx.appcompat.widget.ToolbarWidgetWrapper;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Lifecycle;
@@ -45,7 +46,6 @@ public abstract class Ability implements ActivityResultCaller, LifecycleOwner {
     private Bundle arguments;
     private Integer statusBarColor;
     private StatusBarTextStyle statusBarTextStyle;
-    private View view;
     private AbilityViewParent viewParent;
     private boolean createViewed;
 
@@ -88,17 +88,18 @@ public abstract class Ability implements ActivityResultCaller, LifecycleOwner {
         if (statusBarTextStyle != null) {
             setStatusBarTextStyleInner(statusBarTextStyle);
         }
+        resumed = true;
     }
 
-    @NonNull
     protected abstract View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState);
 
-    protected void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    protected void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 
     }
 
     @CallSuper
     protected void onPause() {
+        resumed = false;
         mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE);
     }
 
@@ -130,18 +131,6 @@ public abstract class Ability implements ActivityResultCaller, LifecycleOwner {
         return null;
     }
 
-    public Ability getStarter() {
-        return null;
-    }
-
-    /**
-     * 预创建
-     */
-    public void prepareCreate(Context context) {
-        this.context = context;
-        performCreateViewParent(null);
-        performCreateView(null);
-    }
 
     public Context getContext() {
         return context;
@@ -152,22 +141,27 @@ public abstract class Ability implements ActivityResultCaller, LifecycleOwner {
     }
 
 
-    @NonNull
+    /**
+     * 预创建
+     */
+    public void prepareCreate(Context context) {
+        this.context = context;
+        performCreateViewParent(null);
+        performCreateView(null);
+    }
+
+
     void performCreateView(@Nullable Bundle savedInstanceState) {
         if (createViewed) {
             return;
         }
         createViewed = true;
         onCreate(null);
-        view = onCreateView(LayoutInflater.from(context), viewParent, savedInstanceState);
+        View view = onCreateView(LayoutInflater.from(context), viewParent, savedInstanceState);
         if (view != null) {
             viewParent.addView(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         }
         this.onViewCreated(view, null);
-    }
-
-    protected View getView() {
-        return view;
     }
 
     AbilityViewParent performCreateViewParent(NavController navController) {
@@ -297,18 +291,14 @@ public abstract class Ability implements ActivityResultCaller, LifecycleOwner {
                 return (Toolbar) this.viewParent.getChildAt(0);
             }
         }
-        // TODO 默认主题适配
         Toolbar toolbar = new Toolbar(getContext());
+        this.viewParent.addView(toolbar, 0, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, ViewUtils.dp2px(getContext(), 56)));
+        setToolbar(toolbar);
         TypedArray array = getActivity().getTheme().obtainStyledAttributes(new int[]{
                 R.attr.colorPrimary,
                 R.attr.colorOnPrimary,
-                R.attr.actionBarSize,
         });
-        int actionBarSize = (int) array.getDimension(2, ViewUtils.dp2px(getContext(), 56));
-        toolbar.setBackgroundColor(array.getColor(0, 0));
-        toolbar.setTitleTextColor(array.getColor(1, 0));
-        this.viewParent.addView(toolbar, 0, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, actionBarSize));
-        setToolbar(toolbar);
+        setToolbarBackgroundColor(array.getColor(0, Color.WHITE));
         return toolbar;
     }
 
@@ -321,10 +311,33 @@ public abstract class Ability implements ActivityResultCaller, LifecycleOwner {
         if (toolbar != null) {
             this.title = toolbar.getTitle();
             if (findNavController() != null && !findNavController().isRootAbility(this)) {
-                toolbar.setNavigationIcon(R.drawable.ic_ab_back_material);
+                if (toolbar.getNavigationIcon() == null) {
+                    toolbar.setNavigationIcon(R.drawable.ic_ab_back_material);
+                }
             }
             toolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
         }
+    }
+
+    private boolean isLightColor(int color) {
+        double darkness = 1 - (0.299 * Color.red(color) + 0.587 * Color.green(color) + 0.114 * Color.blue(color)) / 255;
+        return darkness < 0.5;
+    }
+
+    private void setToolbarBackgroundColor(int color) {
+        if (this.toolbar == null) {
+            return;
+        }
+        boolean isLight = isLightColor(color);
+        int textColor = isLight ? Color.BLACK : Color.WHITE;
+        toolbar.setBackgroundColor(color);
+        toolbar.setTitleTextColor(isLight ? Color.BLACK : Color.WHITE);
+        if (toolbar.getNavigationIcon() != null) {
+            Drawable drawable = toolbar.getNavigationIcon();
+            drawable.setColorFilter(textColor, PorterDuff.Mode.SRC_ATOP);
+            toolbar.setNavigationIcon(drawable);
+        }
+        toolbar.setTitleTextColor(textColor);
     }
 
     public void setTitle(CharSequence title) {
@@ -350,7 +363,7 @@ public abstract class Ability implements ActivityResultCaller, LifecycleOwner {
     }
 
     public void showDialog(Dialog dialog) {
-
+        // TODO
     }
 
     public final <T extends View> T findViewById(@IdRes int id) {
@@ -358,5 +371,11 @@ public abstract class Ability implements ActivityResultCaller, LifecycleOwner {
             return null;
         }
         return getViewParent().findViewById(id);
+    }
+
+    private boolean resumed = false;
+
+    public boolean isResumed() {
+        return resumed;
     }
 }

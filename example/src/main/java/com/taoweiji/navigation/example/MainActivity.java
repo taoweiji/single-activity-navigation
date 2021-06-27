@@ -30,6 +30,5 @@ public class MainActivity extends NavControllerActivity {
             }
             return null;
         }).defaultDestination(Destination.with("index", null));
-
     }
 }
