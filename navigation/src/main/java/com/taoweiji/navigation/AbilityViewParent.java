@@ -1,6 +1,7 @@
 package com.taoweiji.navigation;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
@@ -15,6 +16,8 @@ class AbilityViewParent extends LinearLayout {
         this.navController = navController;
         this.ability = ability;
         setOrientation(LinearLayout.VERTICAL);
+        setClickable(true);
+        setBackgroundColor(Color.WHITE);
     }
 
     public NavController getNavController() {

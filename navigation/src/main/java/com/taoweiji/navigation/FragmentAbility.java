@@ -17,6 +17,7 @@ public class FragmentAbility extends Ability {
 
     public FragmentAbility(Fragment fragment) {
         this.fragment = fragment;
+        NavController.addFragmentAbility(this);
     }
 
     @Nullable
@@ -27,5 +28,9 @@ public class FragmentAbility extends Ability {
         layout.setId(this.hashCode());
         activity.getSupportFragmentManager().beginTransaction().add(layout.getId(), fragment, null).commit();
         return layout;
+    }
+
+    public Fragment getFragment() {
+        return fragment;
     }
 }

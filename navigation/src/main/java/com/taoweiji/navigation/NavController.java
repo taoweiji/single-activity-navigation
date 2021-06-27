@@ -24,6 +24,7 @@ import androidx.lifecycle.LifecycleEventObserver;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
+import java.util.WeakHashMap;
 
 public class NavController {
     private final Map<String, AbilityRouteBuilder> routes;
@@ -32,6 +33,7 @@ public class NavController {
     private final GenerateRoute onGenerateRoute;
     final Context context;
     private final OnBackPressedCallback onBackPressedCallback;
+    static Map<Integer, FragmentAbility> fragmentAbilityMap = new WeakHashMap<>();
 
     public static NavController findNavController(Fragment fragment) {
         return findNavController(fragment.getView());
@@ -62,7 +64,16 @@ public class NavController {
     }
 
     public static Ability findAbility(Fragment fragment) {
+        FragmentAbility ability = fragmentAbilityMap.get(fragment.hashCode());
+        if (ability != null) {
+            return ability;
+        }
         return findAbility(fragment.getView());
+    }
+
+
+    static void addFragmentAbility(FragmentAbility fragmentAbility) {
+        fragmentAbilityMap.put(fragmentAbility.getFragment().hashCode(), fragmentAbility);
     }
 
 

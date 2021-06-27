@@ -1,6 +1,7 @@
 package com.taoweiji.navigation.example;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,7 +12,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -20,7 +23,7 @@ import com.taoweiji.navigation.AbilityBuilder;
 import com.taoweiji.navigation.BundleBuilder;
 import com.taoweiji.navigation.NavController;
 import com.taoweiji.navigation.ViewUtils;
-import com.taoweiji.navigation.example.mvvm.WeatherAbility;
+import com.taoweiji.navigation.example.mvvm.MvvmAbility;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +47,6 @@ public class IndexAbility extends Ability {
             @Override
             public View builder(Context context, Bundle arguments) {
                 createDefaultToolbar();
-                setBackgroundColor(Color.WHITE);
                 setTitle("AbilityBuilder 跳转");
                 TextView hello = new TextView(context);
                 hello.setGravity(Gravity.CENTER);
@@ -57,17 +59,35 @@ public class IndexAbility extends Ability {
         adapter.add("路由跳转", () -> nav.navigate("user"));
         adapter.add("URI 跳转", () -> nav.navigate(Uri.parse("scheme://host/hello?msg=Hello")));
         adapter.add("解析 URI 成路由跳转", () -> nav.navigate(Uri.parse("scheme://host/hello?msg=Hello")));
-        adapter.add("获取 Ability 返回值", () -> nav.navigate(new TestResultAbility()));
-        adapter.add("获取 Fragment 返回值", () -> nav.navigate(new TestResultAbility()));
-        adapter.add("获取 Activity 返回值", () -> nav.navigate(new TestActivityResultAbility()));
-        adapter.add("跳转页面，且关闭当前页面", () -> nav.navigate(new TestActivityResultAbility()));
-        adapter.add("跳转页面，且关闭所有页面", () -> nav.navigate(new TestActivityResultAbility()));
-        adapter.add("跳转页面，且有条件关闭页面", () -> nav.navigate(new TestActivityResultAbility()));
-        adapter.add("Lifecycle、LiveData 实现 MVVM", () -> nav.navigate(new WeatherAbility()));
-        adapter.add("在 ViewPager 使用 Ability", () -> nav.navigate(new WeatherAbility()));
-        adapter.add("自定义转场动画", () -> nav.navigate(new WeatherAbility()));
-        adapter.add("设置背景、状态栏颜色等", () -> nav.navigate(new WeatherAbility()));
-        adapter.add("发送页面消息通知", () -> nav.navigate(new WeatherAbility()));
+
+        adapter.add("获取 Ability 返回值", () -> {
+            nav.navigate(new TestResultAbility()).registerForResult(result -> {
+                Toast.makeText(getContext(), result.getString("msg"), Toast.LENGTH_LONG).show();
+            });
+        });
+        adapter.add("获取 Fragment 返回值", () -> {
+            nav.navigate(new TestResultFragment()).registerForResult(result -> {
+                Toast.makeText(getContext(), result.getString("msg"), Toast.LENGTH_LONG).show();
+            });
+        });
+        adapter.add("获取 Activity 返回值", () -> {
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getData() != null) {
+                    Toast.makeText(getContext(), result.getData().getExtras().getString("msg"), Toast.LENGTH_LONG).show();
+                }
+            }).launch(new Intent(getContext(), TestResultActivity.class));
+        });
+
+        adapter.add("跳转页面，且关闭当前页面", () -> nav.navigate(new PopAndPushAbility()));
+        adapter.add("跳转页面，且关闭所有页面", () -> nav.navigate(new ReLaunchAbility()));
+        adapter.add("跳转页面，且有条件关闭页面", () -> nav.navigate(new PushAndRemoveUntilAbility()));
+
+        adapter.add("Lifecycle、LiveData 实现 MVVM", () -> nav.navigate(new MvvmAbility()));
+        adapter.add("在 ViewPager 使用 Ability", () -> nav.navigate(new ViewPagerAbility()));
+        adapter.add("自定义转场动画", () -> nav.navigate(new AnimationAbility()));
+        adapter.add("设置背景、状态栏颜色等", () -> nav.navigate(new UiAbility()));
+        adapter.add("发送页面消息通知", () -> nav.navigate(new EventAbility()));
+        adapter.add("对话框覆盖图层", () -> nav.navigate(new DialogAbility2()));
         list.setAdapter(adapter);
         list.setOnItemClickListener((parent, view, position, id) -> adapter.tasks.get(position).run());
         return list;

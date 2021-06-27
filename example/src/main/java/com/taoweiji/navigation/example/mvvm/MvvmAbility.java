@@ -18,7 +18,7 @@ import com.taoweiji.navigation.Ability;
 
 import org.jetbrains.annotations.NotNull;
 
-public class WeatherAbility extends Ability {
+public class MvvmAbility extends Ability {
     WeatherViewModel weatherViewModel = new WeatherViewModel();
     private TextView info;
     private Button button;
@@ -34,7 +34,6 @@ public class WeatherAbility extends Ability {
         button.setText("更新");
         linearLayout.addView(info, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         linearLayout.addView(button, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        setBackgroundColor(Color.WHITE);
         return linearLayout;
     }
 

@@ -1,5 +1,6 @@
 package com.taoweiji.navigation;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -41,6 +42,7 @@ public abstract class Ability implements ActivityResultCaller, LifecycleOwner {
     private StatusBarTextStyle statusBarTextStyle;
     private View view;
     private AbilityViewParent viewParent;
+    private boolean createViewed;
 
     public Ability() {
         initLifecycle();
@@ -127,7 +129,10 @@ public abstract class Ability implements ActivityResultCaller, LifecycleOwner {
         return null;
     }
 
-    public void preCreateView(NavController navController) {
+    /**
+     * 预创建
+     */
+    public void prepareCreateView(NavController navController) {
         context = navController.context;
         performCreateViewParent(navController);
         performCreateView(null);
@@ -144,11 +149,14 @@ public abstract class Ability implements ActivityResultCaller, LifecycleOwner {
 
     @NonNull
     void performCreateView(@Nullable Bundle savedInstanceState) {
-        if (view != null) {
+        if (createViewed) {
             return;
         }
+        createViewed = true;
         view = onCreateView(LayoutInflater.from(context), viewParent, savedInstanceState);
-        viewParent.addView(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        if (view != null) {
+            viewParent.addView(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        }
         this.onViewCreated(view, null);
     }
 
@@ -162,6 +170,7 @@ public abstract class Ability implements ActivityResultCaller, LifecycleOwner {
         }
         return viewParent;
     }
+
 
     public enum StatusBarTextStyle {
         LIGHT, DARK
@@ -301,5 +310,14 @@ public abstract class Ability implements ActivityResultCaller, LifecycleOwner {
 
     public CharSequence getTitle() {
         return title;
+    }
+
+
+    public void setResult(Bundle result) {
+
+    }
+
+    public void showDialog(Dialog dialog){
+
     }
 }

@@ -29,7 +29,6 @@ public class TestFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         view.setBackgroundColor(Color.WHITE);
         Ability ability = NavController.findAbility(this);
-        ability.setBackgroundColor(Color.WHITE);
         ability.createDefaultToolbar();
         ability.setTitle("直接跳转 Fragment");
         TextView info = view.findViewById(R.id.info);
