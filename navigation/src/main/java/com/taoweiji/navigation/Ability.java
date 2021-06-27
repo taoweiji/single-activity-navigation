@@ -29,6 +29,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.appcompat.widget.Toolbar;
+import androidx.appcompat.widget.ToolbarWidgetWrapper;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Lifecycle;
@@ -38,6 +39,7 @@ import androidx.lifecycle.LifecycleRegistry;
 import static android.view.View.NO_ID;
 
 public abstract class Ability implements ActivityResultCaller, LifecycleOwner {
+    AbilityResultContracts abilityResultContracts;
     LifecycleRegistry mLifecycleRegistry;
     Context context;
     private Bundle arguments;
@@ -135,7 +137,7 @@ public abstract class Ability implements ActivityResultCaller, LifecycleOwner {
     /**
      * 预创建
      */
-    public void prepareCreateView(Context context) {
+    public void prepareCreate(Context context) {
         this.context = context;
         performCreateViewParent(null);
         performCreateView(null);
@@ -260,8 +262,22 @@ public abstract class Ability implements ActivityResultCaller, LifecycleOwner {
         return viewParent;
     }
 
+    boolean finished = false;
+
+    @CallSuper
     public void finish() {
+        if (finished) {
+            return;
+        }
+        finished = true;
+        if (abilityResultContracts != null) {
+            abilityResultContracts.setResultData(resultData);
+        }
         findNavController().finish(this);
+    }
+
+    public boolean isFinishing() {
+        return finished;
     }
 
     protected void onAbilityEvent(Message message) {
@@ -304,6 +320,10 @@ public abstract class Ability implements ActivityResultCaller, LifecycleOwner {
         this.toolbar = toolbar;
         if (toolbar != null) {
             this.title = toolbar.getTitle();
+            if (findNavController() != null && !findNavController().isRootAbility(this)) {
+                toolbar.setNavigationIcon(R.drawable.ic_ab_back_material);
+            }
+            toolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
         }
     }
 
@@ -323,8 +343,10 @@ public abstract class Ability implements ActivityResultCaller, LifecycleOwner {
     }
 
 
-    public void setResult(Bundle result) {
+    Bundle resultData = new Bundle();
 
+    public void setResult(Bundle result) {
+        this.resultData = result;
     }
 
     public void showDialog(Dialog dialog) {

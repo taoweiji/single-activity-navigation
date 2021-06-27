@@ -1,6 +1,5 @@
-package com.taoweiji.navigation.example;
+package com.taoweiji.navigation.example.result;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -22,12 +21,8 @@ public class TestResultAbility extends Ability {
     @NotNull
     @Override
     protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
-        RelativeLayout layout = new RelativeLayout(getContext());
-        layout.setGravity(Gravity.CENTER);
-        Button button = new Button(getContext());
-        button.setText("跳转页面");
-        layout.addView(button);
-        return layout;
+        createDefaultToolbar().setTitle("设置返回值 msg = TestResultAbility");
+        return new View(getContext());
     }
 
     @Override

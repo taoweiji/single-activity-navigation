@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.viewpager.widget.PagerAdapter;
 
 public abstract class AbilityPageAdapter extends PagerAdapter {
@@ -29,7 +28,7 @@ public abstract class AbilityPageAdapter extends PagerAdapter {
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         Log.e("AbilityPageAdapter", "instantiateItem " + position);
         Ability ability = getItem(position);
-        ability.prepareCreateView(context);
+        ability.prepareCreate(context);
         container.addView(ability.getViewParent());
         return ability;
     }

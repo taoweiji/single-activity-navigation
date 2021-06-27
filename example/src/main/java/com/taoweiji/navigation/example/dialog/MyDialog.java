@@ -1,4 +1,4 @@
-package com.taoweiji.navigation.example;
+package com.taoweiji.navigation.example.dialog;
 
 import android.app.Dialog;
 import android.content.DialogInterface;

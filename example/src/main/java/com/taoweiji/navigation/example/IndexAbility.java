@@ -24,7 +24,12 @@ import com.taoweiji.navigation.AbilityBuilder;
 import com.taoweiji.navigation.BundleBuilder;
 import com.taoweiji.navigation.NavController;
 import com.taoweiji.navigation.ViewUtils;
+import com.taoweiji.navigation.example.dialog.DialogAbility2;
+import com.taoweiji.navigation.example.event.EventFirstAbility;
 import com.taoweiji.navigation.example.mvvm.MvvmAbility;
+import com.taoweiji.navigation.example.result.TestResultAbility;
+import com.taoweiji.navigation.example.result.TestResultActivity;
+import com.taoweiji.navigation.example.result.TestResultFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,18 +78,18 @@ public class IndexAbility extends Ability {
 
         adapter.add("获取 Ability 返回值", () -> {
             nav.navigate(new TestResultAbility()).registerForResult(result -> {
-                Toast.makeText(getContext(), result.getString("msg"), Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), result.getString("msg"), Toast.LENGTH_SHORT).show();
             });
         });
         adapter.add("获取 Fragment 返回值", () -> {
             nav.navigate(new TestResultFragment()).registerForResult(result -> {
-                Toast.makeText(getContext(), result.getString("msg"), Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), result.getString("msg"), Toast.LENGTH_SHORT).show();
             });
         });
         adapter.add("获取 Activity 返回值", () -> {
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
                 if (result.getData() != null) {
-                    Toast.makeText(getContext(), result.getData().getExtras().getString("msg"), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), result.getData().getExtras().getString("msg"), Toast.LENGTH_SHORT).show();
                 }
             }).launch(new Intent(getContext(), TestResultActivity.class));
         });
@@ -94,6 +99,13 @@ public class IndexAbility extends Ability {
         adapter.add("跳转页面，且有条件关闭页面", () -> nav.navigate(new PushAndRemoveUntilAbility()));
 
 
+        adapter.add("页面预创建 prepareCreate", () -> {
+            Ability ability = new PrepareCreateAbility();
+            long start = System.currentTimeMillis();
+            ability.prepareCreate(getContext());
+            long duration = System.currentTimeMillis() - start;
+            nav.navigate(ability, new BundleBuilder().put("duration", duration).build());
+        });
         adapter.add("DialogAbility", () -> nav.navigate(new DialogAbility2()));
         adapter.add("BottomSheetDialogAbility", () -> nav.navigate(new DialogAbility2()));
 
@@ -101,7 +113,7 @@ public class IndexAbility extends Ability {
         adapter.add("在 ViewPager 使用 AbilityPageAdapter", () -> nav.navigate(new ViewPagerAbility()));
         adapter.add("自定义转场动画", () -> nav.navigate(new AnimationAbility()));
         adapter.add("设置背景、状态栏颜色等", () -> nav.navigate(new UiAbility()));
-        adapter.add("发送页面消息通知", () -> nav.navigate(new EventAbility()));
+        adapter.add("发送页面消息通知", () -> nav.navigate(new EventFirstAbility()));
         list.setAdapter(adapter);
         list.setOnItemClickListener((parent, view, position, id) -> adapter.tasks.get(position).run());
         return list;
@@ -137,7 +149,7 @@ public class IndexAbility extends Ability {
             TextView textView = (TextView) convertView;
             if (convertView == null) {
                 textView = new TextView(parent.getContext());
-                int dp = ViewUtils.dp2px(parent.getContext(), 10);
+                int dp = ViewUtils.dp2px(parent.getContext(), 7);
                 textView.setPadding(dp, dp, dp, dp);
                 textView.setTextSize(16);
             }
