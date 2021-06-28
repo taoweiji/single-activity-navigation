@@ -5,7 +5,7 @@
 Ability 具备 Fragment 的碎片能力，具备和 Fragment 相似的生命周期，可以当做 View 去使用。也具备 Activity 丰富的功能，可以作为页面代替 Activity。
 
 - 支持配置路由跳转，支持自定义解析 uri 实现跳转；
-- 支持 Ability、View 和 Fragment 作为页面；
+- 支持 Ability、View 和 Fragment 作为页面代替 Activity 实现单 Activity 架构；
 - Ability 支持预渲染，可以提高 APP 性能；
 - 支持嵌套多个 NavController，可以实现 Instagram 的复杂页面结构；
 - 支持配合 ViewModel、Lifecycle、LiveData 实习 MVVM；
