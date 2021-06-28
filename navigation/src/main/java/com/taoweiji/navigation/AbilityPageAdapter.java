@@ -27,7 +27,7 @@ public abstract class AbilityPageAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         Ability ability = getItem(position);
-        ability.prepareCreate(context);
+        ability.prepareCreate(context, null);
         container.addView(ability.getViewParent());
         return ability;
     }

@@ -36,9 +36,9 @@ import androidx.lifecycle.LifecycleRegistry;
 import static android.view.View.NO_ID;
 
 public abstract class Ability implements LifecycleOwner {
-    AbilityResultContracts abilityResultContracts;
-    LifecycleRegistry mLifecycleRegistry;
-    Context context;
+    private AbilityResultContracts abilityResultContracts;
+    private LifecycleRegistry mLifecycleRegistry;
+    private Context context;
     private Bundle arguments;
     private Integer statusBarColor;
     private StatusBarTextStyle statusBarTextStyle;
@@ -48,6 +48,10 @@ public abstract class Ability implements LifecycleOwner {
      * 根据toolbar背景颜色自动更新状态栏颜色
      */
     private boolean autoUpdateStatusBar = true;
+    /**
+     * 自动创建返回键
+     */
+    private boolean defaultDisplayHomeAsUpEnabled = true;
 
     public Ability() {
         initLifecycle();
@@ -63,6 +67,9 @@ public abstract class Ability implements LifecycleOwner {
 
     void setArguments(Bundle arguments) {
         this.arguments = arguments;
+        if (arguments == null) {
+            this.arguments = new Bundle();
+        }
     }
 
     private void initLifecycle() {
@@ -113,6 +120,15 @@ public abstract class Ability implements LifecycleOwner {
         mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY);
     }
 
+    void performOnNewArguments(Bundle arguments) {
+        setArguments(arguments);
+        onNewArguments(getArguments());
+    }
+
+    protected void onNewArguments(Bundle arguments) {
+
+    }
+
     @NonNull
     @Override
     public Lifecycle getLifecycle() {
@@ -143,8 +159,9 @@ public abstract class Ability implements LifecycleOwner {
     /**
      * 预创建
      */
-    public void prepareCreate(Context context) {
-        this.context = context;
+    public void prepareCreate(Context context,Bundle arguments) {
+        this.setContext(context);
+        this.setArguments(arguments);
         performCreateViewParent(null);
         performCreateView(null);
     }
@@ -298,12 +315,14 @@ public abstract class Ability implements LifecycleOwner {
         this.toolbar = toolbar;
         if (toolbar != null) {
             this.title = toolbar.getTitle();
-            if (findNavController() != null && !findNavController().isRootAbility(this)) {
-                if (toolbar.getNavigationIcon() == null) {
-                    toolbar.setNavigationIcon(R.drawable.ic_ab_back_material);
+            if (isDefaultDisplayHomeAsUpEnabled()) {
+                if (findNavController() != null && !findNavController().isRootAbility(this)) {
+                    if (toolbar.getNavigationIcon() == null) {
+                        toolbar.setNavigationIcon(R.drawable.ic_ab_back_material);
+                    }
                 }
+                toolbar.setNavigationOnClickListener(v -> onBackPressed());
             }
-            toolbar.setNavigationOnClickListener(v -> onBackPressed());
         }
     }
 
@@ -401,5 +420,21 @@ public abstract class Ability implements LifecycleOwner {
 
     public boolean isAutoUpdateStatusBar() {
         return autoUpdateStatusBar;
+    }
+
+    public void setDefaultDisplayHomeAsUpEnabled(boolean defaultDisplayHomeAsUpEnabled) {
+        this.defaultDisplayHomeAsUpEnabled = defaultDisplayHomeAsUpEnabled;
+    }
+
+    public boolean isDefaultDisplayHomeAsUpEnabled() {
+        return defaultDisplayHomeAsUpEnabled;
+    }
+
+    void setContext(Context context) {
+        this.context = context;
+    }
+
+    void setAbilityResultContracts(AbilityResultContracts abilityResultContracts) {
+        this.abilityResultContracts = abilityResultContracts;
     }
 }

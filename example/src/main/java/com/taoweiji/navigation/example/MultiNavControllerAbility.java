@@ -61,8 +61,8 @@ public class MultiNavControllerAbility extends Ability {
     @Override
     public void onBackPressed() {
         TabAbility ability = abilities[currentItem];
-        if (ability.nav.canBack()) {
-            ability.nav.dispatcherOnBackPressed();
+        if (ability.getNav().canBack()) {
+            ability.getNav().dispatcherOnBackPressed();
         } else {
             super.onBackPressed();
         }
@@ -74,6 +74,10 @@ public class MultiNavControllerAbility extends Ability {
 
         public TabAbility(String title) {
             this.title = title;
+        }
+
+        public NavController getNav() {
+            return nav;
         }
 
         @Override

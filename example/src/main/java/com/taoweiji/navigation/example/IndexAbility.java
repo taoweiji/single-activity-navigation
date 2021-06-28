@@ -115,7 +115,7 @@ public class IndexAbility extends Ability {
         adapter.add("页面预创建 prepareCreate", () -> {
             Ability ability = new PrepareCreateAbility();
             long start = System.currentTimeMillis();
-            ability.prepareCreate(getContext());
+            ability.prepareCreate(getContext(), null);
             long duration = System.currentTimeMillis() - start;
             new AlertDialog.Builder(getContext()).setMessage("页面预创建耗时：" + duration + "毫秒").setPositiveButton("跳转", new DialogInterface.OnClickListener() {
                 @Override

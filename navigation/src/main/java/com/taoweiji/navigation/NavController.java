@@ -180,6 +180,7 @@ public class NavController {
         AbilityResultContracts abilityResultContracts;
         if (destination.ability != null) {
             if (destination.ability == getStackTop()) {
+                destination.ability.performOnNewArguments(destination.arguments);
                 abilityResultContracts = new AbilityResultContracts();
             } else if (navContainer.indexOfChild(destination.ability.getViewParent()) >= 0) {
                 if (getStackTop().isResumed()) {
@@ -190,6 +191,7 @@ public class NavController {
                 navContainer.addView(destination.ability.getViewParent());
                 destination.ability.onStart();
                 destination.ability.onResume();
+                destination.ability.performOnNewArguments(destination.arguments);
                 abilityResultContracts = new AbilityResultContracts();
             } else {
                 abilityResultContracts = pushInner(destination.ability, destination.arguments, animation);
@@ -203,8 +205,8 @@ public class NavController {
     private AbilityResultContracts pushInner(Ability ability, Bundle arguments, boolean animation) {
         AbilityResultContracts abilityResultContracts = new AbilityResultContracts();
         int navContainerWidth = navContainer.getWidth();
-        ability.abilityResultContracts = abilityResultContracts;
-        ability.context = context;
+        ability.setAbilityResultContracts(abilityResultContracts);
+        ability.setContext(context);
         ability.setArguments(arguments);
         AbilityViewParent abilityViewParent = ability.performCreateViewParent(this);
         // 入栈
