@@ -159,7 +159,7 @@ public abstract class Ability implements LifecycleOwner {
     /**
      * 预创建
      */
-    public void prepareCreate(Context context,Bundle arguments) {
+    public void prepareCreate(Context context, Bundle arguments) {
         this.setContext(context);
         this.setArguments(arguments);
         performCreateViewParent(null);
@@ -437,4 +437,20 @@ public abstract class Ability implements LifecycleOwner {
     void setAbilityResultContracts(AbilityResultContracts abilityResultContracts) {
         this.abilityResultContracts = abilityResultContracts;
     }
+
+    void performResume() {
+        if (!isResumed()) {
+            onStart();
+            onResume();
+        }
+    }
+
+    void performPause() {
+        if (isResumed()) {
+            onPause();
+            onStop();
+        }
+    }
+
+
 }

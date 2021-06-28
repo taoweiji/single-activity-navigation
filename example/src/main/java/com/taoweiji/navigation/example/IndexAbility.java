@@ -109,7 +109,7 @@ public class IndexAbility extends Ability {
 
         adapter.add("跳转页面，且关闭当前页面", () -> nav.navigate(new PopAndPushAbility()));
         adapter.add("跳转页面，且关闭所有页面", () -> nav.navigate(new ReLaunchAbility()));
-        adapter.add("跳转页面，且有条件关闭页面", () -> nav.navigate(new PushAndRemoveUntilAbility()));
+//        adapter.add("跳转页面，且有条件关闭页面", () -> nav.navigate(new PushAndRemoveUntilAbility()));
 
 
         adapter.add("页面预创建 prepareCreate", () -> {
@@ -132,6 +132,7 @@ public class IndexAbility extends Ability {
         adapter.add("自定义转场动画", () -> nav.navigate(new AnimationAbility()));
         adapter.add("设置背景、状态栏颜色等", () -> nav.navigate(new UiAbility()));
         adapter.add("发送页面消息通知", () -> nav.navigate(new EventFirstAbility()));
+        adapter.add("监听 Ability 的生命周期", () -> nav.navigate(new LifecycleAbility()));
         list.setAdapter(adapter);
         list.setOnItemClickListener((parent, view, position, id) -> adapter.tasks.get(position).run());
         return list;

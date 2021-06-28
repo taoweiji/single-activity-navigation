@@ -48,6 +48,16 @@ public class NavController {
         fragmentActivity.getLifecycle().addObserver((LifecycleEventObserver) (source, event) -> {
             if (event == Lifecycle.Event.ON_DESTROY) {
                 destroy();
+            } else if (event == Lifecycle.Event.ON_RESUME) {
+                Ability ability = getStackTop();
+                if (ability != null) {
+                    ability.performResume();
+                }
+            } else if (event == Lifecycle.Event.ON_PAUSE) {
+                Ability ability = getStackTop();
+                if (ability != null) {
+                    ability.performPause();
+                }
             }
         });
         if (defaultDestination != null) {
@@ -183,14 +193,10 @@ public class NavController {
                 destination.ability.performOnNewArguments(destination.arguments);
                 abilityResultContracts = new AbilityResultContracts();
             } else if (navContainer.indexOfChild(destination.ability.getViewParent()) >= 0) {
-                if (getStackTop().isResumed()) {
-                    getStackTop().onPause();
-                    getStackTop().onStop();
-                }
+                getStackTop().performPause();
                 navContainer.removeView(destination.ability.getViewParent());
                 navContainer.addView(destination.ability.getViewParent());
-                destination.ability.onStart();
-                destination.ability.onResume();
+                destination.ability.performResume();
                 destination.ability.performOnNewArguments(destination.arguments);
                 abilityResultContracts = new AbilityResultContracts();
             } else {
@@ -224,8 +230,7 @@ public class NavController {
         } else {
             new Handler(Looper.getMainLooper()).post(abilityResultContracts::setNavigationEnd);
         }
-        ability.onStart();
-        ability.onResume();
+        ability.performResume();
         if (navContainer.getChildCount() > 1) {
             AbilityViewParent inviableView = (AbilityViewParent) navContainer.getChildAt(navContainer.getChildCount() - 2);
             if (animation) {
@@ -237,8 +242,7 @@ public class NavController {
                     }
                 });
             }
-            inviableView.getAbility().onPause();
-            inviableView.getAbility().onStop();
+            inviableView.getAbility().performPause();
 
         }
         return abilityResultContracts;
@@ -287,6 +291,7 @@ public class NavController {
     public void relaunch(Destination destination) {
         destroy();
         navigate(destination, false);
+        // TODO 需要考虑首页 relaunch
     }
 
     //TODO 干掉所有的，回到首页
@@ -303,14 +308,6 @@ public class NavController {
 //    }
 //
 
-
-//    public boolean pop() {
-//        if (canBack()) {
-//            getAbilityViewParent(stackCount() - 1).getAbility().finish();
-//            return true;
-//        }
-//        return false;
-//    }
 
     /**
      * 如果方法只允许 Ability 自己调用
@@ -335,8 +332,7 @@ public class NavController {
         }
         AbilityViewParent destroyView = getAbilityViewParent(getStackCount() - 1);
         AbilityViewParent showView = getStackCount() < 2 ? null : getAbilityViewParent(getStackCount() - 2);
-        destroyView.getAbility().onPause();
-        destroyView.getAbility().onStop();
+        destroyView.getAbility().performPause();
         Runnable runnable = () -> {
             destroyView.getAbility().onDestroy();
             navContainer.removeView(destroyView);
@@ -356,15 +352,14 @@ public class NavController {
             runnable.run();
         }
         if (showView != null) {
-            showView.getAbility().onStart();
-            showView.getAbility().onResume();
+            showView.getAbility().performResume();
             showView.setTranslationX(0);
             showView.setTranslationY(0);
         }
     }
 
     /**
-     * 销毁所有页面，如果是栈顶需要调用 onPause、onStop
+     * 销毁所有页面，如果是栈顶需要调用 performPause
      */
     private void destroy() {
         for (int i = getStackCount() - 1; i >= 0; i--) {
@@ -374,12 +369,10 @@ public class NavController {
             }
             ability.finished = true;
             ability.finish();
-            if (ability.isResumed()) {
-                ability.onPause();
-                ability.onStop();
-            }
+            ability.performPause();
             ability.onDestroy();
         }
+        navContainer.removeAllViews();
     }
 
 
