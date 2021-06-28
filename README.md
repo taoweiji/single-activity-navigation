@@ -1,12 +1,15 @@
 # single-activity-navigation
-
+[![Download](https://maven-badges.herokuapp.com/maven-central/io.github.taoweiji.single-activity-navigation/navigation/badge.svg)](https://search.maven.org/search?q=io.github.taoweiji.single-activity-navigation)
 Ability 具备 Fragment 的碎片能力，具备和 Fragment 相似的生命周期，可以当做 View 去使用。也具备 Activity 丰富的功能，可以作为页面代替 Activity。
 
-- 支持 View 和 Fragment 的跳转
-- 支持获取返回值，registerForActivityResult
-- 支持Lifecycle
-- 支持页面之间的通信
 
+### 使用教程
+
+##### 引入依赖
+
+```groovy
+implementation 'io.github.taoweiji.single-activity-navigation:navigation:0.1.0'
+```
 
 
 ### 通过 AbilityBuilder 跳转页面
