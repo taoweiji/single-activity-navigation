@@ -1,6 +1,12 @@
 # single-activity-navigation
+
 [![Download](https://maven-badges.herokuapp.com/maven-central/io.github.taoweiji.single-activity-navigation/navigation/badge.svg)](https://search.maven.org/search?q=io.github.taoweiji.single-activity-navigation)
 Ability 具备 Fragment 的碎片能力，具备和 Fragment 相似的生命周期，可以当做 View 去使用。也具备 Activity 丰富的功能，可以作为页面代替 Activity。
+
+
+
+https://user-images.githubusercontent.com/3044176/123678884-775a9680-d879-11eb-868b-bdb45912d809.mp4
+
 
 
 ### 使用教程
