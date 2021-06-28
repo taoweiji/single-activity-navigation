@@ -27,7 +27,7 @@ public class UiAbility extends Ability {
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         Button setStatusBarTextStyle = new Button(getContext());
         setStatusBarTextStyle.setText("设置状态栏风格");
-        setStatusBarTextStyle.setOnClickListener(v -> setStatusBarTextStyle(StatusBarTextStyle.DARK));
+        setStatusBarTextStyle.setOnClickListener(v -> setStatusBarTextStyle(StatusBarTextStyle.BLACK));
 
         Button settingToolbarColor = new Button(getContext());
         settingToolbarColor.setText("设置标题栏颜色");
@@ -48,6 +48,6 @@ public class UiAbility extends Ability {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        setStatusBarTextStyle(StatusBarTextStyle.LIGHT);
+        setStatusBarTextStyle(StatusBarTextStyle.WHITE);
     }
 }

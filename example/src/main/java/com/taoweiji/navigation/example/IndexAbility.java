@@ -59,7 +59,7 @@ public class IndexAbility extends Ability {
             }
         });
         setTitle("单 Activity 框架");
-        setStatusBarColor(getResources().getColor(R.color.purple_500));
+        setToolbarBackgroundColor(getResources().getColor(R.color.purple_500));
         list = new ListView(getContext());
         adapter = new ListAdapter();
         NavController nav = findNavController();

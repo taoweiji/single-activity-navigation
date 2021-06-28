@@ -30,7 +30,6 @@ public class NavController {
     private final NavOptions defaultNavOptions;
     private final GenerateRoute onGenerateRoute;
     final Context context;
-    //    private final OnBackPressedCallback onBackPressedCallback;
     static Map<Integer, FragmentAbility> fragmentAbilityMap = new WeakHashMap<>();
 
     private NavController(FrameLayout container, Map<String, AbilityRouteBuilder> routes, NavOptions defaultNavOptions, GenerateRoute onGenerateRoute, Destination defaultDestination) {
@@ -45,18 +44,7 @@ public class NavController {
         this.defaultNavOptions = defaultNavOptions;
         this.onGenerateRoute = onGenerateRoute;
         this.context = container.getContext();
-//        this.onBackPressedCallback = new OnBackPressedCallback(false) {
-//
-//            @Override
-//            public void handleOnBackPressed() {
-//                if (canBack()) {
-//                    AbilityViewParent abilityViewParent = (AbilityViewParent) navContainer.getChildAt(navContainer.getChildCount() - 1);
-//                    abilityViewParent.getAbility().finish();
-//                }
-//            }
-//        };
         FragmentActivity fragmentActivity = ((FragmentActivity) context);
-//        fragmentActivity.getOnBackPressedDispatcher().addCallback(onBackPressedCallback);
         fragmentActivity.getLifecycle().addObserver((LifecycleEventObserver) (source, event) -> {
             if (event == Lifecycle.Event.ON_DESTROY) {
                 destroy();
@@ -124,10 +112,6 @@ public class NavController {
         }
     }
 
-    public boolean isRootAbility(Ability ability) {
-        return navContainer.indexOfChild(ability.getViewParent()) == 0;
-    }
-
     public interface GenerateRoute {
         Ability onGenerateRoute(Context context, Destination destination);
     }
@@ -182,20 +166,34 @@ public class NavController {
         }
     }
 
-    public void popAndNavigate(Destination destination) {
-        AbilityViewParent ability = stackCount() == 0 ? null : getAbilityViewParent(stackCount() - 1);
-        navigate(destination).registerListener(() -> {
-            if (ability != null) {
-                ability.getAbility().finish();
-            }
-        });
-    }
+//    public void popAndNavigate(Destination destination) {
+//        AbilityViewParent ability = stackCount() == 0 ? null : getAbilityViewParent(stackCount() - 1);
+//        navigate(destination).registerListener(() -> {
+//            if (ability != null) {
+//                ability.getAbility().finish();
+//            }
+//        });
+//    }
 
     public AbilityResultContracts navigate(Destination destination, boolean animation) {
         handleDestination(destination);
         AbilityResultContracts abilityResultContracts;
         if (destination.ability != null) {
-            abilityResultContracts = pushInner(destination.ability, destination.arguments, animation);
+            if (destination.ability == getStackTop()) {
+                abilityResultContracts = new AbilityResultContracts();
+            } else if (navContainer.indexOfChild(destination.ability.getViewParent()) >= 0) {
+                if (getStackTop().isResumed()) {
+                    getStackTop().onPause();
+                    getStackTop().onStop();
+                }
+                navContainer.removeView(destination.ability.getViewParent());
+                navContainer.addView(destination.ability.getViewParent());
+                destination.ability.onStart();
+                destination.ability.onResume();
+                abilityResultContracts = new AbilityResultContracts();
+            } else {
+                abilityResultContracts = pushInner(destination.ability, destination.arguments, animation);
+            }
         } else {
             abilityResultContracts = new AbilityResultContracts();
         }
@@ -251,7 +249,7 @@ public class NavController {
         return animator;
     }
 
-    public int stackCount() {
+    public int getStackCount() {
         return navContainer.getChildCount();
     }
 
@@ -259,22 +257,58 @@ public class NavController {
         return navContainer.getChildCount() > 1;
     }
 
+    public boolean isRootAbility(Ability ability) {
+        return navContainer.indexOfChild(ability.getViewParent()) == 0;
+    }
+
+    public Ability getStackTop() {
+        for (int i = getStackCount() - 1; i > -0; i--) {
+            AbilityViewParent viewParent = getAbilityViewParent(i);
+            if (viewParent.getAbility().isFinishing()) {
+                continue;
+            }
+            return viewParent.getAbility();
+        }
+        return null;
+    }
+
+    public void dispatcherOnBackPressed() {
+        if (canBack()) {
+            getStackTop().onBackPressed();
+        }
+    }
+
+    private AbilityViewParent getAbilityViewParent(int index) {
+        return (AbilityViewParent) navContainer.getChildAt(index);
+    }
+
+    public void relaunch(Destination destination) {
+        destroy();
+        navigate(destination, false);
+    }
+
+    //TODO 干掉所有的，回到首页
+    public void popUntil(PopUntil popUntil) {
+
+    }
+
+    interface PopUntil {
+        boolean popUntil(AbilityRouteBuilder builder);
+    }
 
 //    public void pushAndRemoveUntil(Destination destination) {
 //
 //    }
 //
-//    public void popUntil(PopUntil popUntil) {
-//
-//    }
 
-    public boolean pop() {
-        if (canBack()) {
-            getAbilityViewParent(stackCount() - 1).getAbility().finish();
-            return true;
-        }
-        return false;
-    }
+
+//    public boolean pop() {
+//        if (canBack()) {
+//            getAbilityViewParent(stackCount() - 1).getAbility().finish();
+//            return true;
+//        }
+//        return false;
+//    }
 
     /**
      * 如果方法只允许 Ability 自己调用
@@ -293,16 +327,12 @@ public class NavController {
         }
     }
 
-    private AbilityViewParent getAbilityViewParent(int index) {
-        return (AbilityViewParent) navContainer.getChildAt(index);
-    }
-
     void popInner(boolean animation) {
-        if (stackCount() == 0) {
+        if (getStackCount() == 0) {
             return;
         }
-        AbilityViewParent destroyView = getAbilityViewParent(stackCount() - 1);
-        AbilityViewParent showView = stackCount() < 2 ? null : getAbilityViewParent(stackCount() - 2);
+        AbilityViewParent destroyView = getAbilityViewParent(getStackCount() - 1);
+        AbilityViewParent showView = getStackCount() < 2 ? null : getAbilityViewParent(getStackCount() - 2);
         destroyView.getAbility().onPause();
         destroyView.getAbility().onStop();
         Runnable runnable = () -> {
@@ -335,14 +365,14 @@ public class NavController {
      * 销毁所有页面，如果是栈顶需要调用 onPause、onStop
      */
     private void destroy() {
-        for (int i = stackCount() - 1; i >= 0; i--) {
+        for (int i = getStackCount() - 1; i >= 0; i--) {
             Ability ability = getAbilityViewParent(i).getAbility();
             if (ability.isFinishing()) {
                 continue;
             }
             ability.finished = true;
             ability.finish();
-            if (i == stackCount() - 1) {
+            if (ability.isResumed()) {
                 ability.onPause();
                 ability.onStop();
             }
@@ -350,15 +380,6 @@ public class NavController {
         }
     }
 
-
-    public Ability peek() {
-        AbilityViewParent viewParent = getAbilityViewParent(stackCount() - 1);
-        return viewParent.getAbility();
-    }
-
-    interface PopUntil {
-        boolean popUntil(AbilityRouteBuilder builder);
-    }
 
     public Map<String, AbilityRouteBuilder> getRoutes() {
         return routes;
@@ -402,12 +423,6 @@ public class NavController {
         public Builder defaultDestination(Destination defaultDestination) {
             this.defaultDestination = defaultDestination;
             return this;
-        }
-    }
-
-    public void dispatcherOnBackPressed() {
-        if (stackCount() > 0) {
-            peek().onBackPressed();
         }
     }
 }

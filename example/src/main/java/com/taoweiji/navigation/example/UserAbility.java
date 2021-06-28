@@ -43,7 +43,8 @@ public class UserAbility extends Ability {
 
         view.findViewById(R.id.back).setOnClickListener(v -> {
             NavController nav = NavController.findNavController(view);
-            nav.pop();
+            finish();
+//            nav.pop();
         });
         view.findViewById(R.id.next).setOnClickListener(v -> {
             NavController nav = NavController.findNavController(view);
@@ -51,6 +52,6 @@ public class UserAbility extends Ability {
             bundle.putInt("id", id + 1);
             nav.navigate(new UserAbility(), bundle);
         });
-        setStatusBarColor(getResources().getColor(R.color.purple_500));
+        setToolbarBackgroundColor(getResources().getColor(R.color.purple_500));
     }
 }

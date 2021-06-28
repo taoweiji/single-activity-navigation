@@ -29,6 +29,6 @@ public class MainActivity extends NavControllerActivity {
                 destination.name = name.substring(1);
             }
             return null;
-        }).defaultDestination(Destination.with("index", null));
+        }).defaultDestination(Destination.with("index"));
     }
 }

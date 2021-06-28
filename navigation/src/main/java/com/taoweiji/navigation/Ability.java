@@ -44,6 +44,10 @@ public abstract class Ability implements LifecycleOwner {
     private StatusBarTextStyle statusBarTextStyle;
     private AbilityViewParent viewParent;
     private boolean createViewed;
+    /**
+     * 根据toolbar背景颜色自动更新状态栏颜色
+     */
+    private boolean autoUpdateStatusBar = true;
 
     public Ability() {
         initLifecycle();
@@ -116,7 +120,7 @@ public abstract class Ability implements LifecycleOwner {
     }
 
     public void startActivityForResult(Intent intent, ActivityResultCallback callback) {
-        startActivityForResult(intent, 1, null, callback);
+        startActivityForResult(intent, 1, callback);
     }
 
     public void startActivityForResult(Intent intent, int requestCode, ActivityResultCallback callback) {
@@ -170,7 +174,7 @@ public abstract class Ability implements LifecycleOwner {
 
 
     public enum StatusBarTextStyle {
-        LIGHT, DARK
+        WHITE, BLACK
     }
 
     public Resources getResources() {
@@ -199,15 +203,10 @@ public abstract class Ability implements LifecycleOwner {
         return getResources().getString(resId, formatArgs);
     }
 
-    public void setStatusBarTextStyle(StatusBarTextStyle style) {
-        this.statusBarTextStyle = style;
-        setStatusBarTextStyleInner(style);
-    }
-
     private void setStatusBarTextStyleInner(StatusBarTextStyle style) {
         this.statusBarTextStyle = style;
         Window window = getActivity().getWindow();
-        if (style == StatusBarTextStyle.DARK) {
+        if (style == StatusBarTextStyle.BLACK) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             } else {
@@ -219,11 +218,6 @@ public abstract class Ability implements LifecycleOwner {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public void setStatusBarColor(int color) {
-        this.statusBarColor = color;
-        setStatusBarColorInner(color);
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void setStatusBarColorInner(int color) {
@@ -319,6 +313,9 @@ public abstract class Ability implements LifecycleOwner {
     }
 
     public void setToolbarBackgroundColor(int color) {
+        if (isAutoUpdateStatusBar()) {
+            setStatusBarColor(color);
+        }
         if (this.toolbar == null) {
             return;
         }
@@ -332,6 +329,26 @@ public abstract class Ability implements LifecycleOwner {
             toolbar.setNavigationIcon(drawable);
         }
         toolbar.setTitleTextColor(textColor);
+    }
+
+    public void setStatusBarTextStyle(StatusBarTextStyle style) {
+        this.statusBarTextStyle = style;
+        setStatusBarTextStyleInner(style);
+    }
+
+    public void setStatusBarColor(int color) {
+        this.statusBarColor = color;
+        // TODO
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            setStatusBarColorInner(color);
+        }
+        if (isAutoUpdateStatusBar()) {
+            if (isLightColor(color)) {
+                setStatusBarTextStyle(StatusBarTextStyle.BLACK);
+            } else {
+                setStatusBarTextStyle(StatusBarTextStyle.WHITE);
+            }
+        }
     }
 
     public void setTitle(CharSequence title) {
@@ -376,5 +393,13 @@ public abstract class Ability implements LifecycleOwner {
     public void onBackPressed() {
         // TODO
         this.finish();
+    }
+
+    public void setAutoUpdateStatusBar(boolean autoUpdateStatusBar) {
+        this.autoUpdateStatusBar = autoUpdateStatusBar;
+    }
+
+    public boolean isAutoUpdateStatusBar() {
+        return autoUpdateStatusBar;
     }
 }
