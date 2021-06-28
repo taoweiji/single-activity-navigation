@@ -26,7 +26,5 @@ public class PrepareCreateAbility extends Ability {
     @Override
     protected void onResume() {
         super.onResume();
-        long duration = getArguments().getLong("duration");
-        new AlertDialog.Builder(getContext()).setMessage("页面预创建耗时：" + duration + "毫秒").create().show();
     }
 }

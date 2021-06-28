@@ -1,6 +1,8 @@
 package com.taoweiji.navigation.example;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -61,6 +63,12 @@ public class IndexAbility extends Ability {
         list = new ListView(getContext());
         adapter = new ListAdapter();
         NavController nav = findNavController();
+        adapter.add("使用多个 NavController，模仿 Ins", new Runnable() {
+            @Override
+            public void run() {
+                nav.navigate(new MultiNavControllerAbility());
+            }
+        });
         adapter.add("AbilityBuilder 跳转", () -> nav.navigate(new AbilityBuilder() {
             @Override
             public View builder(Context context, Bundle arguments) {
@@ -81,18 +89,18 @@ public class IndexAbility extends Ability {
 
         adapter.add("获取 Ability 返回值", () -> {
             nav.navigate(new TestResultAbility()).registerForResult(result -> {
-                Toast.makeText(getContext(), result.getString("msg"), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "返回值 " + result.getString("msg"), Toast.LENGTH_SHORT).show();
             });
         });
         adapter.add("获取 Fragment 返回值", () -> {
             nav.navigate(new TestResultFragment()).registerForResult(result -> {
-                Toast.makeText(getContext(), result.getString("msg"), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "返回值 " + result.getString("msg"), Toast.LENGTH_SHORT).show();
             });
         });
         adapter.add("获取 Activity 返回值", () -> {
             startActivityForResult(new Intent(getContext(), TestResultActivity.class), (requestCode, resultCode, data) -> {
                 if (data != null) {
-                    Toast.makeText(getContext(), data.getStringExtra("msg"), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "返回值 " + data.getStringExtra("msg"), Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getContext(), "没有返回值", Toast.LENGTH_SHORT).show();
                 }
@@ -109,7 +117,12 @@ public class IndexAbility extends Ability {
             long start = System.currentTimeMillis();
             ability.prepareCreate(getContext());
             long duration = System.currentTimeMillis() - start;
-            nav.navigate(ability, new BundleBuilder().put("duration", duration).build());
+            new AlertDialog.Builder(getContext()).setMessage("页面预创建耗时：" + duration + "毫秒").setPositiveButton("跳转", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    nav.navigate(ability);
+                }
+            }).show();
         });
         adapter.add("DialogAbility", () -> nav.navigate(new DialogAbility2()));
         adapter.add("BottomSheetDialogAbility", () -> nav.navigate(new DialogAbility2()));

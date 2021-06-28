@@ -309,7 +309,7 @@ public abstract class Ability implements LifecycleOwner {
                     toolbar.setNavigationIcon(R.drawable.ic_ab_back_material);
                 }
             }
-            toolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
+            toolbar.setNavigationOnClickListener(v -> onBackPressed());
         }
     }
 
@@ -371,5 +371,10 @@ public abstract class Ability implements LifecycleOwner {
 
     public boolean isResumed() {
         return resumed;
+    }
+
+    public void onBackPressed() {
+        // TODO
+        this.finish();
     }
 }

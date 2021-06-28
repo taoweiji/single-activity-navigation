@@ -12,7 +12,7 @@
         android:orientation="vertical">
 
         <ImageView
-            android:id="@+id/imageView"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:layout_editor_absoluteX="109dp"
@@ -20,7 +20,7 @@
             tools:srcCompat="@tools:sample/avatars" />
 
         <TextView
-            android:id="@+id/textView"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="TextView"
@@ -28,7 +28,7 @@
             tools:layout_editor_absoluteY="143dp" />
 
         <Button
-            android:id="@+id/button"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Button"
@@ -36,7 +36,7 @@
             tools:layout_editor_absoluteY="311dp" />
 
         <Switch
-            android:id="@+id/switch1"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Switch"
@@ -44,7 +44,7 @@
             tools:layout_editor_absoluteY="220dp" />
 
         <EditText
-            android:id="@+id/editTextNumberPassword"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -53,7 +53,7 @@
             tools:layout_editor_absoluteY="140dp" />
 
         <EditText
-            android:id="@+id/editTextTextEmailAddress"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -62,7 +62,7 @@
             tools:layout_editor_absoluteY="228dp" />
 
         <EditText
-            android:id="@+id/editTextDate"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -71,7 +71,7 @@
             tools:layout_editor_absoluteY="611dp" />
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chip4"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:layout_editor_absoluteX="188dp"
@@ -84,7 +84,7 @@
             tools:layout_editor_absoluteY="344dp" />
 
         <Switch
-            android:id="@+id/switch2"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Switch"
@@ -92,7 +92,7 @@
             tools:layout_editor_absoluteY="252dp" />
 
         <ProgressBar
-            android:id="@+id/progressBar"
+            
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -118,7 +118,7 @@
             tools:layout_editor_absoluteY="282dp" />
 
         <ImageView
-            android:id="@+id/imageView"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:layout_editor_absoluteX="109dp"
@@ -126,7 +126,7 @@
             tools:srcCompat="@tools:sample/avatars" />
 
         <TextView
-            android:id="@+id/textView"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="TextView"
@@ -134,7 +134,7 @@
             tools:layout_editor_absoluteY="143dp" />
 
         <Button
-            android:id="@+id/button"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Button"
@@ -142,7 +142,7 @@
             tools:layout_editor_absoluteY="311dp" />
 
         <Switch
-            android:id="@+id/switch1"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Switch"
@@ -150,7 +150,7 @@
             tools:layout_editor_absoluteY="220dp" />
 
         <EditText
-            android:id="@+id/editTextNumberPassword"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -159,7 +159,7 @@
             tools:layout_editor_absoluteY="140dp" />
 
         <EditText
-            android:id="@+id/editTextTextEmailAddress"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -168,7 +168,7 @@
             tools:layout_editor_absoluteY="228dp" />
 
         <EditText
-            android:id="@+id/editTextDate"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -177,7 +177,7 @@
             tools:layout_editor_absoluteY="611dp" />
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chip4"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:layout_editor_absoluteX="188dp"
@@ -190,7 +190,7 @@
             tools:layout_editor_absoluteY="344dp" />
 
         <Switch
-            android:id="@+id/switch2"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Switch"
@@ -198,7 +198,7 @@
             tools:layout_editor_absoluteY="252dp" />
 
         <ProgressBar
-            android:id="@+id/progressBar"
+            
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -224,7 +224,7 @@
             tools:layout_editor_absoluteY="282dp" />
 
         <ImageView
-            android:id="@+id/imageView"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:layout_editor_absoluteX="109dp"
@@ -232,7 +232,7 @@
             tools:srcCompat="@tools:sample/avatars" />
 
         <TextView
-            android:id="@+id/textView"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="TextView"
@@ -240,7 +240,7 @@
             tools:layout_editor_absoluteY="143dp" />
 
         <Button
-            android:id="@+id/button"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Button"
@@ -248,7 +248,7 @@
             tools:layout_editor_absoluteY="311dp" />
 
         <Switch
-            android:id="@+id/switch1"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Switch"
@@ -256,7 +256,7 @@
             tools:layout_editor_absoluteY="220dp" />
 
         <EditText
-            android:id="@+id/editTextNumberPassword"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -265,7 +265,7 @@
             tools:layout_editor_absoluteY="140dp" />
 
         <EditText
-            android:id="@+id/editTextTextEmailAddress"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -274,7 +274,7 @@
             tools:layout_editor_absoluteY="228dp" />
 
         <EditText
-            android:id="@+id/editTextDate"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -283,7 +283,7 @@
             tools:layout_editor_absoluteY="611dp" />
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chip4"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:layout_editor_absoluteX="188dp"
@@ -296,7 +296,7 @@
             tools:layout_editor_absoluteY="344dp" />
 
         <Switch
-            android:id="@+id/switch2"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Switch"
@@ -304,7 +304,7 @@
             tools:layout_editor_absoluteY="252dp" />
 
         <ProgressBar
-            android:id="@+id/progressBar"
+            
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -330,7 +330,7 @@
             tools:layout_editor_absoluteY="282dp" />
 
         <ImageView
-            android:id="@+id/imageView"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:layout_editor_absoluteX="109dp"
@@ -338,7 +338,7 @@
             tools:srcCompat="@tools:sample/avatars" />
 
         <TextView
-            android:id="@+id/textView"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="TextView"
@@ -346,7 +346,7 @@
             tools:layout_editor_absoluteY="143dp" />
 
         <Button
-            android:id="@+id/button"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Button"
@@ -354,7 +354,7 @@
             tools:layout_editor_absoluteY="311dp" />
 
         <Switch
-            android:id="@+id/switch1"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Switch"
@@ -362,7 +362,7 @@
             tools:layout_editor_absoluteY="220dp" />
 
         <EditText
-            android:id="@+id/editTextNumberPassword"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -371,7 +371,7 @@
             tools:layout_editor_absoluteY="140dp" />
 
         <EditText
-            android:id="@+id/editTextTextEmailAddress"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -380,7 +380,7 @@
             tools:layout_editor_absoluteY="228dp" />
 
         <EditText
-            android:id="@+id/editTextDate"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -389,7 +389,7 @@
             tools:layout_editor_absoluteY="611dp" />
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chip4"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:layout_editor_absoluteX="188dp"
@@ -402,7 +402,7 @@
             tools:layout_editor_absoluteY="344dp" />
 
         <Switch
-            android:id="@+id/switch2"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Switch"
@@ -410,7 +410,7 @@
             tools:layout_editor_absoluteY="252dp" />
 
         <ProgressBar
-            android:id="@+id/progressBar"
+            
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -436,7 +436,7 @@
             tools:layout_editor_absoluteY="282dp" />
 
         <ImageView
-            android:id="@+id/imageView"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:layout_editor_absoluteX="109dp"
@@ -444,7 +444,7 @@
             tools:srcCompat="@tools:sample/avatars" />
 
         <TextView
-            android:id="@+id/textView"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="TextView"
@@ -452,7 +452,7 @@
             tools:layout_editor_absoluteY="143dp" />
 
         <Button
-            android:id="@+id/button"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Button"
@@ -460,7 +460,7 @@
             tools:layout_editor_absoluteY="311dp" />
 
         <Switch
-            android:id="@+id/switch1"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Switch"
@@ -468,7 +468,7 @@
             tools:layout_editor_absoluteY="220dp" />
 
         <EditText
-            android:id="@+id/editTextNumberPassword"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -477,7 +477,7 @@
             tools:layout_editor_absoluteY="140dp" />
 
         <EditText
-            android:id="@+id/editTextTextEmailAddress"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -486,7 +486,7 @@
             tools:layout_editor_absoluteY="228dp" />
 
         <EditText
-            android:id="@+id/editTextDate"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -495,7 +495,7 @@
             tools:layout_editor_absoluteY="611dp" />
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chip4"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:layout_editor_absoluteX="188dp"
@@ -508,7 +508,7 @@
             tools:layout_editor_absoluteY="344dp" />
 
         <Switch
-            android:id="@+id/switch2"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Switch"
@@ -516,7 +516,7 @@
             tools:layout_editor_absoluteY="252dp" />
 
         <ProgressBar
-            android:id="@+id/progressBar"
+            
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -542,7 +542,7 @@
             tools:layout_editor_absoluteY="282dp" />
 
         <ImageView
-            android:id="@+id/imageView"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:layout_editor_absoluteX="109dp"
@@ -550,7 +550,7 @@
             tools:srcCompat="@tools:sample/avatars" />
 
         <TextView
-            android:id="@+id/textView"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="TextView"
@@ -558,7 +558,7 @@
             tools:layout_editor_absoluteY="143dp" />
 
         <Button
-            android:id="@+id/button"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Button"
@@ -566,7 +566,7 @@
             tools:layout_editor_absoluteY="311dp" />
 
         <Switch
-            android:id="@+id/switch1"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Switch"
@@ -574,7 +574,7 @@
             tools:layout_editor_absoluteY="220dp" />
 
         <EditText
-            android:id="@+id/editTextNumberPassword"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -583,7 +583,7 @@
             tools:layout_editor_absoluteY="140dp" />
 
         <EditText
-            android:id="@+id/editTextTextEmailAddress"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -592,7 +592,7 @@
             tools:layout_editor_absoluteY="228dp" />
 
         <EditText
-            android:id="@+id/editTextDate"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -601,7 +601,7 @@
             tools:layout_editor_absoluteY="611dp" />
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chip4"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:layout_editor_absoluteX="188dp"
@@ -614,7 +614,7 @@
             tools:layout_editor_absoluteY="344dp" />
 
         <Switch
-            android:id="@+id/switch2"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Switch"
@@ -622,7 +622,7 @@
             tools:layout_editor_absoluteY="252dp" />
 
         <ProgressBar
-            android:id="@+id/progressBar"
+            
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -648,7 +648,7 @@
             tools:layout_editor_absoluteY="282dp" />
 
         <ImageView
-            android:id="@+id/imageView"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:layout_editor_absoluteX="109dp"
@@ -656,7 +656,7 @@
             tools:srcCompat="@tools:sample/avatars" />
 
         <TextView
-            android:id="@+id/textView"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="TextView"
@@ -664,7 +664,7 @@
             tools:layout_editor_absoluteY="143dp" />
 
         <Button
-            android:id="@+id/button"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Button"
@@ -672,7 +672,7 @@
             tools:layout_editor_absoluteY="311dp" />
 
         <Switch
-            android:id="@+id/switch1"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Switch"
@@ -680,7 +680,7 @@
             tools:layout_editor_absoluteY="220dp" />
 
         <EditText
-            android:id="@+id/editTextNumberPassword"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -689,7 +689,7 @@
             tools:layout_editor_absoluteY="140dp" />
 
         <EditText
-            android:id="@+id/editTextTextEmailAddress"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -698,7 +698,7 @@
             tools:layout_editor_absoluteY="228dp" />
 
         <EditText
-            android:id="@+id/editTextDate"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -707,7 +707,7 @@
             tools:layout_editor_absoluteY="611dp" />
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chip4"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:layout_editor_absoluteX="188dp"
@@ -720,7 +720,7 @@
             tools:layout_editor_absoluteY="344dp" />
 
         <Switch
-            android:id="@+id/switch2"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Switch"
@@ -728,7 +728,7 @@
             tools:layout_editor_absoluteY="252dp" />
 
         <ProgressBar
-            android:id="@+id/progressBar"
+            
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -754,7 +754,7 @@
             tools:layout_editor_absoluteY="282dp" />
 
         <ImageView
-            android:id="@+id/imageView"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:layout_editor_absoluteX="109dp"
@@ -762,7 +762,7 @@
             tools:srcCompat="@tools:sample/avatars" />
 
         <TextView
-            android:id="@+id/textView"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="TextView"
@@ -770,7 +770,7 @@
             tools:layout_editor_absoluteY="143dp" />
 
         <Button
-            android:id="@+id/button"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Button"
@@ -778,7 +778,7 @@
             tools:layout_editor_absoluteY="311dp" />
 
         <Switch
-            android:id="@+id/switch1"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Switch"
@@ -786,7 +786,7 @@
             tools:layout_editor_absoluteY="220dp" />
 
         <EditText
-            android:id="@+id/editTextNumberPassword"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -795,7 +795,7 @@
             tools:layout_editor_absoluteY="140dp" />
 
         <EditText
-            android:id="@+id/editTextTextEmailAddress"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -804,7 +804,7 @@
             tools:layout_editor_absoluteY="228dp" />
 
         <EditText
-            android:id="@+id/editTextDate"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -813,7 +813,7 @@
             tools:layout_editor_absoluteY="611dp" />
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chip4"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:layout_editor_absoluteX="188dp"
@@ -826,7 +826,7 @@
             tools:layout_editor_absoluteY="344dp" />
 
         <Switch
-            android:id="@+id/switch2"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Switch"
@@ -834,7 +834,7 @@
             tools:layout_editor_absoluteY="252dp" />
 
         <ProgressBar
-            android:id="@+id/progressBar"
+            
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -860,7 +860,7 @@
             tools:layout_editor_absoluteY="282dp" />
 
         <ImageView
-            android:id="@+id/imageView"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:layout_editor_absoluteX="109dp"
@@ -868,7 +868,7 @@
             tools:srcCompat="@tools:sample/avatars" />
 
         <TextView
-            android:id="@+id/textView"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="TextView"
@@ -876,7 +876,7 @@
             tools:layout_editor_absoluteY="143dp" />
 
         <Button
-            android:id="@+id/button"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Button"
@@ -884,7 +884,7 @@
             tools:layout_editor_absoluteY="311dp" />
 
         <Switch
-            android:id="@+id/switch1"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Switch"
@@ -892,7 +892,7 @@
             tools:layout_editor_absoluteY="220dp" />
 
         <EditText
-            android:id="@+id/editTextNumberPassword"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -901,7 +901,7 @@
             tools:layout_editor_absoluteY="140dp" />
 
         <EditText
-            android:id="@+id/editTextTextEmailAddress"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -910,7 +910,7 @@
             tools:layout_editor_absoluteY="228dp" />
 
         <EditText
-            android:id="@+id/editTextDate"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -919,7 +919,7 @@
             tools:layout_editor_absoluteY="611dp" />
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chip4"
+            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:layout_editor_absoluteX="188dp"
@@ -937,7 +937,7 @@
                 tools:layout_editor_absoluteY="344dp" />
 
             <Switch
-                android:id="@+id/switch2"
+                
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Switch"
@@ -945,7 +945,7 @@
                 tools:layout_editor_absoluteY="252dp" />
 
             <ProgressBar
-                android:id="@+id/progressBar"
+                
                 style="?android:attr/progressBarStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -982,7 +982,7 @@
                     tools:layout_editor_absoluteY="344dp" />
 
                 <Switch
-                    android:id="@+id/switch2"
+                    
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Switch"
@@ -990,7 +990,7 @@
                     tools:layout_editor_absoluteY="252dp" />
 
                 <ProgressBar
-                    android:id="@+id/progressBar"
+                    
                     style="?android:attr/progressBarStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -1027,7 +1027,7 @@
                         tools:layout_editor_absoluteY="344dp" />
 
                     <Switch
-                        android:id="@+id/switch2"
+                        
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Switch"
@@ -1035,7 +1035,7 @@
                         tools:layout_editor_absoluteY="252dp" />
 
                     <ProgressBar
-                        android:id="@+id/progressBar"
+                        
                         style="?android:attr/progressBarStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -1072,7 +1072,7 @@
                             tools:layout_editor_absoluteY="344dp" />
 
                         <Switch
-                            android:id="@+id/switch2"
+                            
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Switch"
@@ -1080,7 +1080,7 @@
                             tools:layout_editor_absoluteY="252dp" />
 
                         <ProgressBar
-                            android:id="@+id/progressBar"
+                            
                             style="?android:attr/progressBarStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

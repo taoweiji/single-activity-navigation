@@ -24,7 +24,8 @@ public abstract class NavControllerActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (getNavController().pop()) {
+        if (getNavController().canBack()) {
+            getNavController().dispatcherOnBackPressed();
             return;
         }
         super.onBackPressed();

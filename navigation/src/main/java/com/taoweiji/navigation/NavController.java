@@ -405,4 +405,9 @@ public class NavController {
         }
     }
 
+    public void dispatcherOnBackPressed() {
+        if (stackCount() > 0) {
+            peek().onBackPressed();
+        }
+    }
 }

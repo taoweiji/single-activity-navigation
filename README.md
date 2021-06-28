@@ -1,5 +1,7 @@
 # single-activity-navigation
 
+Ability 具备 Fragment 的碎片能力，具备和 Fragment 相似的生命周期，可以当做 View 去使用。也具备 Activity 丰富的功能，可以当做页面使用，有丰富的页面功能。
+
 - 支持 View 和 Fragment 的跳转
 - 支持获取返回值，registerForActivityResult
 - 支持Lifecycle
