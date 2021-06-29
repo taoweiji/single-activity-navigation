@@ -173,12 +173,12 @@ public abstract class Ability implements LifecycleOwner {
             return;
         }
         createViewed = true;
-        Navigation.onPreCreate(this,savedInstanceState);
+        Navigation.onPreCreate(this, savedInstanceState);
         onCreate(null);
-        Navigation.onCreate(this,savedInstanceState);
+        Navigation.onCreate(this, savedInstanceState);
         Navigation.onPreCreateView(this, savedInstanceState);
         View view = onCreateView(LayoutInflater.from(context), viewParent, savedInstanceState);
-        Navigation.onCreateView(this,savedInstanceState);
+        Navigation.onCreateView(this, savedInstanceState);
         if (view != null) {
             viewParent.addView(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         }
@@ -286,7 +286,6 @@ public abstract class Ability implements LifecycleOwner {
     public boolean isFinishing() {
         return finished;
     }
-
 
 
     public void sendAbilityEvent(Message message) {

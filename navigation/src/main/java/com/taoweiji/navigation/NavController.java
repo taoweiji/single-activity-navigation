@@ -3,7 +3,6 @@ package com.taoweiji.navigation;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
-import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import androidx.annotation.IdRes;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Lifecycle;
@@ -260,15 +258,15 @@ public class NavController {
         return stack.isEmpty() ? null : stack.peek();
     }
 
+    private Stack<Ability> getStack() {
+        return viewContainer.getStack();
+    }
+
 
     public void dispatcherOnBackPressed() {
         if (canBack()) {
             getStackTop().onBackPressed();
         }
-    }
-
-    private Stack<Ability> getStack() {
-        return viewContainer.getStack();
     }
 
     private void destroyAbility(Ability ability) {
@@ -400,10 +398,6 @@ public class NavController {
         public Builder onGenerateRoute(GenerateRoute onGenerateRoute) {
             this.onGenerateRoute = onGenerateRoute;
             return this;
-        }
-
-        public NavController create(Activity activity, @IdRes int container) {
-            return create(activity.findViewById(container));
         }
 
         public NavController create(FrameLayout container) {
