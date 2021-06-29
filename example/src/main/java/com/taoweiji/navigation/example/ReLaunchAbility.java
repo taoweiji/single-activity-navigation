@@ -23,7 +23,7 @@ public class ReLaunchAbility extends Ability {
     @NonNull
     @NotNull
     @Override
-    protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable  ViewGroup container, @Nullable  Bundle savedInstanceState) {
+    protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         createDefaultToolbar();
         setTitle("跳转页面，且关闭所有页面");
         RelativeLayout layout = new RelativeLayout(getContext());
@@ -34,8 +34,7 @@ public class ReLaunchAbility extends Ability {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                findNavController().relaunch(Destination.with(new TestResultAbility()));
-                findNavController().popUntil(ability -> ability instanceof IndexAbility);
+                findNavController().relaunch(Destination.with(new TestResultAbility()));
             }
         });
         return layout;
