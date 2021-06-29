@@ -108,7 +108,7 @@ public class NavController {
     public void sendAbilityEvent(Message message) {
         Runnable runnable = () -> {
             for (int i = 0; i < navContainer.getChildCount(); i++) {
-                getAbilityViewParent(i).getAbility().onAbilityEvent(message);
+                getAbilityViewParent(i).getAbility().onEvent(message);
             }
         };
         if (Looper.myLooper() == Looper.getMainLooper()) {
@@ -205,6 +205,10 @@ public class NavController {
     }
 
     private AbilityResultContracts pushInner(Ability ability, Bundle arguments, boolean animation) {
+        Ability stackTop = getStackTop();
+        if (stackTop != null) {
+            stackTop.performOnPause();
+        }
         AbilityResultContracts abilityResultContracts = new AbilityResultContracts();
         int navContainerWidth = navContainer.getWidth();
         ability.setAbilityResultContracts(abilityResultContracts);
@@ -227,19 +231,16 @@ public class NavController {
             new Handler(Looper.getMainLooper()).post(abilityResultContracts::setNavigationEnd);
         }
         ability.performOnResume();
-        if (navContainer.getChildCount() > 1) {
-            AbilityViewParent inviableView = (AbilityViewParent) navContainer.getChildAt(navContainer.getChildCount() - 2);
+        if (stackTop != null) {
             if (animation) {
-                moveAnimation(inviableView, 400, 0f, -navContainerWidth).addListener(new AnimatorListenerAdapter() {
+                moveAnimation(stackTop.getViewParent(), 400, 0f, -navContainerWidth).addListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation, boolean isReverse) {
-                        inviableView.setTranslationX(0);
-                        inviableView.setTranslationY(0);
+                        stackTop.getViewParent().setTranslationX(0);
+                        stackTop.getViewParent().setTranslationY(0);
                     }
                 });
             }
-            inviableView.getAbility().performOnPause();
-
         }
         return abilityResultContracts;
     }
@@ -275,7 +276,7 @@ public class NavController {
     }
 
     private Ability getStackTop(int dp) {
-        for (int i = navContainer.getChildCount() - 1; i > -0; i--) {
+        for (int i = navContainer.getChildCount() - 1; i >= 0; i--) {
             AbilityViewParent viewParent = getAbilityViewParent(i);
             if (viewParent.getAbility().isFinishing()) {
                 continue;
@@ -306,20 +307,17 @@ public class NavController {
         // TODO 需要考虑首页 relaunch
     }
 
-    //TODO 干掉所有的，回到首页
-//    public void popUntil(PopUntil popUntil) {
-//
-//    }
-//
-//    interface PopUntil {
-//        boolean popUntil(AbilityRouteBuilder builder);
-//    }
 
-//    public void pushAndRemoveUntil(Destination destination) {
-//
-//    }
-//
+    public void popUntil(PopUntil popUntil) {
+        while (popUntil.popUntil(getStackTop())) {
+            getStackTop().finish();
+        }
+        // TODO
+    }
 
+    interface PopUntil {
+        boolean popUntil(Ability ability);
+    }
 
     /**
      * 如果方法只允许 Ability 自己调用
@@ -345,6 +343,9 @@ public class NavController {
         Ability destroyAbility = getStackTop();
         Ability showAbility = getStackTop(1);
         destroyAbility.performOnPause();
+        if (showAbility != null) {
+            showAbility.performOnResume();
+        }
         Runnable runnable = () -> {
             destroyAbility.performOnDestroy();
             navContainer.removeView(destroyAbility.getViewParent());
@@ -363,7 +364,6 @@ public class NavController {
         } else {
             runnable.run();
             if (showAbility != null) {
-                showAbility.performOnResume();
                 showAbility.getViewParent().setTranslationX(0);
                 showAbility.getViewParent().setTranslationY(0);
             }

@@ -33,7 +33,7 @@ public class EventFirstAbility extends Ability {
     }
 
     @Override
-    protected void onAbilityEvent(Message message) {
+    protected void onEvent(Message message) {
         if (message.what == FINISH_EVENT_FIRST_ABILITY) {
             Toast.makeText(getContext(), "收到通知关闭页面", Toast.LENGTH_SHORT).show();
             this.finish();

@@ -69,6 +69,8 @@ public class IndexAbility extends Ability {
                 nav.navigate(new MultiNavControllerAbility());
             }
         });
+        adapter.add("在 ViewPager 使用 AbilityPageAdapter", () -> nav.navigate(new ViewPagerAbility()));
+        adapter.add("搭配BottomNavigationView实现多tab切换", () -> nav.navigate(new BottomNavigationViewAbility()));
         adapter.add("AbilityBuilder 跳转", () -> nav.navigate(new AbilityBuilder() {
             @Override
             public View builder(Context context, Bundle arguments) {
@@ -128,12 +130,11 @@ public class IndexAbility extends Ability {
         adapter.add("BottomSheetDialogAbility", () -> nav.navigate(new DialogAbility2()));
 
         adapter.add("Lifecycle、LiveData 实现 MVVM", () -> nav.navigate(new MvvmAbility()));
-        adapter.add("在 ViewPager 使用 AbilityPageAdapter", () -> nav.navigate(new ViewPagerAbility()));
-        adapter.add("搭配BottomNavigationView实现多tab切换", () -> nav.navigate(new BottomNavigationViewAbility()));
         adapter.add("自定义转场动画", () -> nav.navigate(new AnimationAbility()));
         adapter.add("设置背景、状态栏颜色等", () -> nav.navigate(new UiAbility()));
         adapter.add("发送页面消息通知", () -> nav.navigate(new EventFirstAbility()));
         adapter.add("监听 Ability 的生命周期", () -> nav.navigate(new LifecycleAbility()));
+        adapter.add("全局监听 Ability 的生命周期", () -> nav.navigate(new GlobalLifecycleAbility()));
         list.setAdapter(adapter);
         list.setOnItemClickListener((parent, view, position, id) -> adapter.tasks.get(position).run());
         return list;

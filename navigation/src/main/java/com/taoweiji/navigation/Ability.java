@@ -173,12 +173,18 @@ public abstract class Ability implements LifecycleOwner {
             return;
         }
         createViewed = true;
+        Navigation.onPreCreate(this,savedInstanceState);
         onCreate(null);
+        Navigation.onCreate(this,savedInstanceState);
+        Navigation.onPreCreateView(this, savedInstanceState);
         View view = onCreateView(LayoutInflater.from(context), viewParent, savedInstanceState);
+        Navigation.onCreateView(this,savedInstanceState);
         if (view != null) {
             viewParent.addView(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         }
+        Navigation.onPreViewCreated(this);
         this.onViewCreated(view, null);
+        Navigation.onViewCreated(this);
     }
 
     AbilityViewParent performCreateViewParent(NavController navController) {
@@ -281,9 +287,7 @@ public abstract class Ability implements LifecycleOwner {
         return finished;
     }
 
-    protected void onAbilityEvent(Message message) {
 
-    }
 
     public void sendAbilityEvent(Message message) {
         findNavController().sendAbilityEvent(message);
@@ -442,23 +446,41 @@ public abstract class Ability implements LifecycleOwner {
     void performOnResume() {
         destroyed = false;
         if (!isResumed()) {
+            Navigation.onPreStart(this);
             onStart();
+            Navigation.onStart(this);
+            Navigation.onPreResume(this);
             onResume();
+            Navigation.onResume(this);
         }
     }
 
     void performOnPause() {
         if (isResumed()) {
+            Navigation.onPrePause(this);
             onPause();
+            Navigation.onPause(this);
+            Navigation.onPreStop(this);
             onStop();
+            Navigation.onStop(this);
         }
     }
 
     private boolean destroyed = false;
 
+    public boolean isDestroyed() {
+        return destroyed;
+    }
+
     void performOnDestroy() {
         if (!destroyed) {
+            Navigation.onPreDestroy(this);
             onDestroy();
+            Navigation.onDestroy(this);
         }
+    }
+
+    protected void onEvent(Message message) {
+
     }
 }

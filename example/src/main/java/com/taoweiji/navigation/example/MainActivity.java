@@ -15,6 +15,7 @@ public class MainActivity extends NavControllerActivity {
 
     @Override
     public NavController.Builder createNavControllerBuilder() {
+
         return new NavController.Builder()
                 .registerRoute("index", context -> new IndexAbility())
                 .registerRoute("user", context -> new UserAbility())
