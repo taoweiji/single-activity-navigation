@@ -117,6 +117,7 @@ public abstract class Ability implements LifecycleOwner {
 
     @CallSuper
     protected void onDestroy() {
+        destroyed = true;
         mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY);
     }
 
@@ -269,11 +270,11 @@ public abstract class Ability implements LifecycleOwner {
         if (finished) {
             return;
         }
-        finished = true;
         if (abilityResultContracts != null) {
             abilityResultContracts.setResultData(resultData);
         }
         findNavController().finish(this);
+        finished = true;
     }
 
     public boolean isFinishing() {
@@ -438,19 +439,26 @@ public abstract class Ability implements LifecycleOwner {
         this.abilityResultContracts = abilityResultContracts;
     }
 
-    void performResume() {
+    void performOnResume() {
+        destroyed = false;
         if (!isResumed()) {
             onStart();
             onResume();
         }
     }
 
-    void performPause() {
+    void performOnPause() {
         if (isResumed()) {
             onPause();
             onStop();
         }
     }
 
+    private boolean destroyed = false;
 
+    void performOnDestroy() {
+        if (!destroyed) {
+            onDestroy();
+        }
+    }
 }

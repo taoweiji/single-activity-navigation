@@ -25,8 +25,7 @@ class AbilityViewParent extends LinearLayout {
         super.onAttachedToWindow();
         // 如果不是由 NavController 管理，那么就由 View 自己实现管理
         if (navController == null) {
-            ability.onStart();
-            ability.onResume();
+            ability.performOnResume();
         }
     }
 
@@ -35,8 +34,7 @@ class AbilityViewParent extends LinearLayout {
         super.onDetachedFromWindow();
         // 如果不是由 NavController 管理，那么就由 View 自己实现管理
         if (navController == null) {
-            ability.onPause();
-            ability.onStop();
+            ability.performOnPause();
         }
     }
 

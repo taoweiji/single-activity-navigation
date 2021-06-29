@@ -15,20 +15,20 @@ public class MainActivity extends NavControllerActivity {
 
     @Override
     public NavController.Builder createNavControllerBuilder() {
-        Map<String, AbilityRouteBuilder> routes = new HashMap<>();
-        routes.put("index", context -> new IndexAbility());
-        routes.put("user", context -> new UserAbility());
-        routes.put("weather", context -> new MvvmAbility());
-        routes.put("fragment", context -> new FragmentAbility(new SimpleFragment()));
-        return new NavController.Builder().routes(routes).onGenerateRoute((context, destination) -> {
-            if (destination.uri != null && destination.uri.getPath().equals("/hello")) {
-                destination.arguments.putString("msg", destination.uri.getQueryParameter("msg"));
-                return new UserAbility();
-            } else if (destination.uri != null) {
-                String name = destination.uri.getPath();
-                destination.name = name.substring(1);
-            }
-            return null;
-        }).defaultDestination(Destination.with("index"));
+        return new NavController.Builder()
+                .registerRoute("index", context -> new IndexAbility())
+                .registerRoute("user", context -> new UserAbility())
+                .registerRoute("weather", context -> new MvvmAbility())
+                .registerRoute("fragment", context -> new FragmentAbility(new SimpleFragment()))
+                .onGenerateRoute((context, destination) -> {
+                    if (destination.uri != null && destination.uri.getPath().equals("/hello")) {
+                        destination.arguments.putString("msg", destination.uri.getQueryParameter("msg"));
+                        return new UserAbility();
+                    } else if (destination.uri != null) {
+                        String name = destination.uri.getPath();
+                        destination.name = name.substring(1);
+                    }
+                    return null;
+                }).defaultDestination(Destination.with("index"));
     }
 }
