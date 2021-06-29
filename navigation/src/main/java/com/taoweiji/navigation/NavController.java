@@ -31,6 +31,7 @@ public class NavController {
     private final GenerateRoute onGenerateRoute;
     final Context context;
     static Map<Integer, FragmentAbility> fragmentAbilityMap = new WeakHashMap<>();
+    private final LifecycleEventObserver activityEventObserver;
 
     private NavController(FrameLayout container, Map<String, AbilityRouteBuilder> routes, NavOptions defaultNavOptions, GenerateRoute onGenerateRoute, Destination defaultDestination) {
         if (defaultNavOptions == null) {
@@ -44,8 +45,7 @@ public class NavController {
         this.defaultNavOptions = defaultNavOptions;
         this.onGenerateRoute = onGenerateRoute;
         this.context = container.getContext();
-        FragmentActivity fragmentActivity = ((FragmentActivity) context);
-        fragmentActivity.getLifecycle().addObserver((LifecycleEventObserver) (source, event) -> {
+        this.activityEventObserver = (source, event) -> {
             if (event == Lifecycle.Event.ON_DESTROY) {
                 destroy();
             } else if (event == Lifecycle.Event.ON_RESUME) {
@@ -59,10 +59,15 @@ public class NavController {
                     ability.performOnPause();
                 }
             }
-        });
+        };
+        getActivity().getLifecycle().addObserver(activityEventObserver);
         if (defaultDestination != null) {
             this.navigate(defaultDestination);
         }
+    }
+
+    private FragmentActivity getActivity() {
+        return (FragmentActivity) context;
     }
 
     public static NavController findNavController(Fragment fragment) {
@@ -108,7 +113,7 @@ public class NavController {
     public void sendAbilityEvent(Message message) {
         Runnable runnable = () -> {
             for (int i = 0; i < navContainer.getChildCount(); i++) {
-                getAbilityViewParent(i).getAbility().onEvent(message);
+                getAbility(i).onEvent(message);
             }
         };
         if (Looper.myLooper() == Looper.getMainLooper()) {
@@ -255,7 +260,7 @@ public class NavController {
     public int getStackCount() {
         int count = 0;
         for (int i = 0; i < navContainer.getChildCount(); i++) {
-            if (getAbilityViewParent(i).getAbility().isFinishing()) {
+            if (getAbility(i).isFinishing()) {
                 continue;
             }
             count++;
@@ -277,15 +282,15 @@ public class NavController {
 
     private Ability getStackTop(int dp) {
         for (int i = navContainer.getChildCount() - 1; i >= 0; i--) {
-            AbilityViewParent viewParent = getAbilityViewParent(i);
-            if (viewParent.getAbility().isFinishing()) {
+            Ability ability = getAbility(i);
+            if (ability.isFinishing()) {
                 continue;
             }
             if (dp > 0) {
                 dp--;
                 continue;
             }
-            return viewParent.getAbility();
+            return ability;
         }
         return null;
     }
@@ -297,25 +302,38 @@ public class NavController {
         }
     }
 
-    private AbilityViewParent getAbilityViewParent(int index) {
-        return (AbilityViewParent) navContainer.getChildAt(index);
+    private Ability getAbility(int index) {
+        return ((AbilityViewParent) navContainer.getChildAt(index)).getAbility();
     }
 
     public void relaunch(Destination destination) {
-        destroy();
+        for (int i = navContainer.getChildCount() - 1; i >= 0; i--) {
+            Ability ability = getAbility(i);
+            if (ability == destination.ability) {
+                continue;
+            }
+            if (!ability.isFinishing()) {
+                ability.finished = true;
+                ability.finish();
+                ability.performOnPause();
+                ability.performOnDestroy();
+                navContainer.removeView(ability.getViewParent());
+            }
+        }
         navigate(destination, false);
-        // TODO 需要考虑首页 relaunch
     }
 
 
     public void popUntil(PopUntil popUntil) {
-        while (popUntil.popUntil(getStackTop())) {
+        while (canBack() && !popUntil.popUntil(getStackTop())) {
             getStackTop().finish();
         }
-        // TODO
     }
 
-    interface PopUntil {
+    public interface PopUntil {
+        /**
+         * 返回 true 终止 pop
+         */
         boolean popUntil(Ability ability);
     }
 
@@ -323,10 +341,22 @@ public class NavController {
      * 如果方法只允许 Ability 自己调用
      */
     void finish(Ability ability) {
-        int index = navContainer.indexOfChild(ability.getViewParent());
+        int tmp = -1;
+        int dp = -1;
+        for (int i = navContainer.getChildCount() - 1; i >= 0; i--) {
+            Ability it = getAbility(i);
+            if (it.isFinishing()) {
+                continue;
+            }
+            tmp++;
+            if (ability == it) {
+                dp = tmp;
+                break;
+            }
+        }
         // 如果不存在就直接返回
-        if (index < 0) return;
-        if (index == navContainer.getChildCount() - 1) {
+        if (dp < 0) return;
+        if (dp == 0) {
             // 如果是最后一个是有默认的动画
             popInner(true);
         } else {
@@ -373,9 +403,9 @@ public class NavController {
     /**
      * 销毁所有页面，如果是栈顶需要调用 performPause
      */
-    private void destroy() {
+    public void destroy() {
         for (int i = navContainer.getChildCount() - 1; i >= 0; i--) {
-            Ability ability = getAbilityViewParent(i).getAbility();
+            Ability ability = getAbility(i);
             if (ability.isFinishing()) {
                 continue;
             }
@@ -385,6 +415,7 @@ public class NavController {
             ability.performOnDestroy();
         }
         navContainer.removeAllViews();
+        getActivity().getLifecycle().removeObserver(activityEventObserver);
     }
 
 

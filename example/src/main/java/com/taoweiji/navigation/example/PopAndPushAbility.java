@@ -24,7 +24,7 @@ public class PopAndPushAbility extends Ability {
     @NonNull
     @NotNull
     @Override
-    protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+    protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable  ViewGroup container, @Nullable  Bundle savedInstanceState) {
         createDefaultToolbar();
         setTitle("跳转页面，且关闭当前页面");
         RelativeLayout layout = new RelativeLayout(getContext());

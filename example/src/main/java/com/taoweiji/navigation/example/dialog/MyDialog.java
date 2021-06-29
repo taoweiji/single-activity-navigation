@@ -27,7 +27,7 @@ public class MyDialog extends DialogFragment {
     @NonNull
     @NotNull
     @Override
-    public Dialog onCreateDialog(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+    public Dialog onCreateDialog(@Nullable  Bundle savedInstanceState) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
         dialog.setTitle("测试Dialog");
         dialog.setMessage("DialogFragment");

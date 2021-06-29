@@ -19,7 +19,7 @@ public class EventFirstAbility extends Ability {
 
     @NonNull
     @Override
-    protected View onCreateView(@NonNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+    protected View onCreateView(@NonNull LayoutInflater inflater, @Nullable  ViewGroup container, @Nullable  Bundle savedInstanceState) {
         TextView hello = new TextView(getContext());
         hello.setGravity(Gravity.CENTER);
         hello.setText("跳转到 EventSecondAbility");

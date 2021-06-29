@@ -19,7 +19,7 @@ public class MyApplication extends Application {
         super.onCreate();
         Navigation.registerAbilityLifecycleCallbacks(new Navigation.AbilityLifecycleCallbacks() {
             @Override
-            public void onAbilityCreated(@NonNull @NotNull Ability ability, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+            public void onAbilityCreated(@NonNull @NotNull Ability ability, @Nullable  Bundle savedInstanceState) {
                 logs.append(String.format("%s %s\n", ability.getClass().getSimpleName(), "onCreated"));
             }
 

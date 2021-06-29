@@ -20,13 +20,13 @@ public class TestResultAbility extends Ability {
     @NonNull
     @NotNull
     @Override
-    protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+    protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable  ViewGroup container, @Nullable  Bundle savedInstanceState) {
         createDefaultToolbar().setTitle("设置返回值 msg = TestResultAbility");
         return new View(getContext());
     }
 
     @Override
-    protected void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+    protected void onViewCreated(@NonNull @NotNull View view, @Nullable  Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         this.setResult(new BundleBuilder().put("msg", "TestResultAbility").build());
     }

@@ -19,20 +19,25 @@ import com.taoweiji.navigation.NavController;
 import org.jetbrains.annotations.NotNull;
 
 public class BottomNavigationViewAbility extends Ability {
-    private TabAbility[] abilities;
+    private final TabAbility[] abilities = new TabAbility[]{
+            new TabAbility("主页"),
+            new TabAbility("搜索"),
+            new TabAbility("通知"),
+            new TabAbility("我的")
+    };
     private int currentItem = 0;
+    private NavController tabNav;
 
     @Override
-    protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+    protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable  ViewGroup container, @Nullable  Bundle savedInstanceState) {
         return inflater.inflate(R.layout.ability_multi_nav_controller, null);
     }
 
     @Override
-    protected void onViewCreated(View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+    protected void onViewCreated(View view, @Nullable  Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         FrameLayout container = findViewById(R.id.container);
-        this.abilities = new TabAbility[]{new TabAbility("主页"), new TabAbility("搜索"), new TabAbility("通知"), new TabAbility("我的")};
-        NavController rootNav = new NavController.Builder().defaultDestination(Destination.with(abilities[currentItem])).create(container);
+        tabNav = new NavController.Builder().defaultDestination(Destination.with(abilities[currentItem])).create(container);
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
@@ -49,9 +54,20 @@ public class BottomNavigationViewAbility extends Ability {
                     currentItem = 3;
                     break;
             }
-            rootNav.navigate(Destination.with(abilities[currentItem]), false);
+            tabNav.navigate(Destination.with(abilities[currentItem]), false);
             return true;
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onDestroy() {
+        tabNav.destroy();
+        super.onDestroy();
     }
 
     static class TabAbility extends Ability {
@@ -62,7 +78,7 @@ public class BottomNavigationViewAbility extends Ability {
         }
 
         @Override
-        protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable  ViewGroup container, @Nullable  Bundle savedInstanceState) {
             setDefaultDisplayHomeAsUpEnabled(false);
             createDefaultToolbar();
             setTitle(title);

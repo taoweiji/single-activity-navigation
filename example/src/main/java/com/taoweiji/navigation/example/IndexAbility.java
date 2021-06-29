@@ -111,7 +111,7 @@ public class IndexAbility extends Ability {
 
         adapter.add("跳转页面，且关闭当前页面", () -> nav.navigate(new PopAndPushAbility()));
         adapter.add("跳转页面，且关闭所有页面", () -> nav.navigate(new ReLaunchAbility()));
-//        adapter.add("跳转页面，且有条件关闭页面", () -> nav.navigate(new PushAndRemoveUntilAbility()));
+        adapter.add("有条件关闭页面", () -> nav.navigate(new PopUntilAbility()));
 
 
         adapter.add("页面预创建 prepareCreate", () -> {

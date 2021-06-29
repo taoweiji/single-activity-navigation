@@ -27,12 +27,12 @@ public class ViewPagerAbility extends Ability {
     @NonNull
     @NotNull
     @Override
-    protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+    protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable  ViewGroup container, @Nullable  Bundle savedInstanceState) {
         return inflater.inflate(R.layout.ability_view_pager, null);
     }
 
     @Override
-    protected void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+    protected void onViewCreated(@NonNull @NotNull View view, @Nullable  Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setToolbar(findViewById(R.id.toolbar));
         setTitle("在ViewPager使用AbilityPageAdapter");
@@ -56,7 +56,7 @@ public class ViewPagerAbility extends Ability {
 
         @NonNull
         @Override
-        protected View onCreateView(@NonNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        protected View onCreateView(@NonNull LayoutInflater inflater, @Nullable  ViewGroup container, @Nullable  Bundle savedInstanceState) {
             TextView textView = new TextView(getContext());
             textView.setText(text);
             textView.setGravity(Gravity.CENTER);
@@ -64,7 +64,7 @@ public class ViewPagerAbility extends Ability {
         }
 
         @Override
-        protected void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        protected void onCreate(@Nullable  Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             Log.e(text, "onCreate");
         }

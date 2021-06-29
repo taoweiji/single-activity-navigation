@@ -23,20 +23,25 @@ import com.taoweiji.navigation.ViewUtils;
 import org.jetbrains.annotations.NotNull;
 
 public class MultiNavControllerAbility extends Ability {
-    private TabAbility[] abilities;
+    private final TabAbility[] abilities = new TabAbility[]{
+            new TabAbility("主页"),
+            new TabAbility("搜索"),
+            new TabAbility("通知"),
+            new TabAbility("我的")};
+
     private int currentItem = 0;
+    private NavController tabNav;
 
     @Override
-    protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+    protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable  ViewGroup container, @Nullable  Bundle savedInstanceState) {
         return inflater.inflate(R.layout.ability_multi_nav_controller, null);
     }
 
     @Override
-    protected void onViewCreated(View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+    protected void onViewCreated(View view, @Nullable  Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         FrameLayout container = findViewById(R.id.container);
-        this.abilities = new TabAbility[]{new TabAbility("主页"), new TabAbility("搜索"), new TabAbility("通知"), new TabAbility("我的")};
-        NavController rootNav = new NavController.Builder().defaultDestination(Destination.with(abilities[currentItem])).create(container);
+        this.tabNav = new NavController.Builder().defaultDestination(Destination.with(abilities[currentItem])).create(container);
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
@@ -53,7 +58,7 @@ public class MultiNavControllerAbility extends Ability {
                     currentItem = 3;
                     break;
             }
-            rootNav.navigate(Destination.with(abilities[currentItem]), false);
+            tabNav.navigate(Destination.with(abilities[currentItem]), false);
             return true;
         });
     }
@@ -66,6 +71,17 @@ public class MultiNavControllerAbility extends Ability {
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        for (TabAbility it : abilities) {
+            if (it.getNav() != null) {
+                it.getNav().destroy();
+            }
+        }
+        tabNav.destroy();
+        super.onDestroy();
     }
 
     static class TabAbility extends Ability {
@@ -81,7 +97,7 @@ public class MultiNavControllerAbility extends Ability {
         }
 
         @Override
-        protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable  ViewGroup container, @Nullable  Bundle savedInstanceState) {
             FrameLayout layout = new FrameLayout(getContext());
             this.nav = new NavController.Builder().defaultDestination(Destination.with(new MyAbility(title))).create(layout);
             return layout;
@@ -96,7 +112,7 @@ public class MultiNavControllerAbility extends Ability {
         }
 
         @Override
-        protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable  ViewGroup container, @Nullable  Bundle savedInstanceState) {
             createDefaultToolbar();
             getToolbar().setElevation(ViewUtils.dp2px(getContext(), 2));
             setToolbarBackgroundColor(Color.WHITE);

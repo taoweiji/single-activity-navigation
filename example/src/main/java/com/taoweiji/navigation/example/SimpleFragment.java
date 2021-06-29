@@ -35,7 +35,7 @@ public class SimpleFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull @NotNull View view, @Nullable  Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Ability ability = NavController.findAbility(this);
         ability.createDefaultToolbar();
@@ -43,7 +43,7 @@ public class SimpleFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable  Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.e("SimpleFragment", "onCreate");
     }

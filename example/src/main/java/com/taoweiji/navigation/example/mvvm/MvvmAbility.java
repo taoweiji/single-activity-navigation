@@ -26,7 +26,7 @@ public class MvvmAbility extends Ability {
     }
 
     @Override
-    protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+    protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable  ViewGroup container, @Nullable  Bundle savedInstanceState) {
         createDefaultToolbar();
         setTitle("Lifecycle、LiveData 实现 MVVM");
         LinearLayout linearLayout = new LinearLayout(getContext());
@@ -42,7 +42,7 @@ public class MvvmAbility extends Ability {
     }
 
     @Override
-    protected void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+    protected void onViewCreated(@NonNull @NotNull View view, @Nullable  Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         weatherViewModel.weatherData.observe(this, temperature -> info.setText("当前温度：" + temperature));
         button.setOnClickListener(v -> weatherViewModel.updateWeather());

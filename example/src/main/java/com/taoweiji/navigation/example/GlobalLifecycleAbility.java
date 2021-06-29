@@ -19,7 +19,7 @@ public class GlobalLifecycleAbility extends Ability {
     private TextView logTextView;
 
     @Override
-    protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+    protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable  ViewGroup container, @Nullable  Bundle savedInstanceState) {
         this.logTextView = new TextView(getContext());
         int dp20 = ViewUtils.dp2px(getContext(), 20);
         this.logTextView.setPadding(dp20, dp20, dp20, dp20);
@@ -29,7 +29,7 @@ public class GlobalLifecycleAbility extends Ability {
     }
 
     @Override
-    protected void onViewCreated(View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+    protected void onViewCreated(View view, @Nullable  Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
     }
 
