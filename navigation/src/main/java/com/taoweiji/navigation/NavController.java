@@ -269,7 +269,7 @@ public class NavController {
     }
 
     public boolean canBack() {
-        return navContainer.getChildCount() > 1;
+        return getStackCount() > 1;
     }
 
     public boolean isRootAbility(Ability ability) {
@@ -327,6 +327,12 @@ public class NavController {
     public void popUntil(PopUntil popUntil) {
         while (canBack() && !popUntil.popUntil(getStackTop())) {
             getStackTop().finish();
+        }
+    }
+
+    public void pop() {
+        if (canBack()) {
+            popInner(true);
         }
     }
 
