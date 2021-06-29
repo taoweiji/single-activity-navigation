@@ -27,7 +27,7 @@ import java.util.WeakHashMap;
 
 public class NavController {
     private final Map<String, AbilityRouteBuilder> routes;
-    private final FrameLayout navContainer;
+    private final ViewContainer viewContainer;
     private final NavOptions defaultNavOptions;
     private final GenerateRoute onGenerateRoute;
     final Context context;
@@ -41,7 +41,7 @@ public class NavController {
         if (routes == null) {
             routes = new HashMap<>();
         }
-        this.navContainer = container;
+        this.viewContainer = new ViewContainer(container);
         this.routes = routes;
         this.defaultNavOptions = defaultNavOptions;
         this.onGenerateRoute = onGenerateRoute;
@@ -200,15 +200,14 @@ public class NavController {
         ability.setContext(context);
         ability.setArguments(destination.arguments);
         ability.performCreateViewParent(this);
-        navContainer.removeView(ability.getViewParent());
-        navContainer.addView(ability.getViewParent(), ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        viewContainer.addAbility(ability);
         ability.performCreateView(null);
         if (stack.contains(ability)) {
             ability.performOnNewArguments(destination.arguments);
         }
         ability.performOnResume();
         if (stackTop != null && animation) {
-            int width = navContainer.getWidth();
+            int width = viewContainer.getWidth();
             moveAnimation(ability.getViewParent(), 200, width, 0f).addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -269,14 +268,7 @@ public class NavController {
     }
 
     private Stack<Ability> getStack() {
-        Stack<Ability> stack = new Stack<>();
-        for (int i = 0; i < navContainer.getChildCount(); i++) {
-            Ability ability = ((AbilityViewParent) navContainer.getChildAt(i)).getAbility();
-            if (!ability.isFinishing()) {
-                stack.add(ability);
-            }
-        }
-        return stack;
+        return viewContainer.getStack();
     }
 
     private void destroyAbility(Ability ability) {
@@ -287,7 +279,7 @@ public class NavController {
         ability.finish();
         ability.performOnPause();
         ability.performOnDestroy();
-        navContainer.removeView(ability.getViewParent());
+        viewContainer.removeAbility(ability);
     }
 
     public void relaunch(Destination destination) {
@@ -346,18 +338,17 @@ public class NavController {
         }
         Runnable runnable = () -> {
             destroyAbility.performOnDestroy();
-            navContainer.removeView(destroyAbility.getViewParent());
+            viewContainer.removeAbility(destroyAbility);
         };
         if (animation) {
-            int containerWidth = navContainer.getWidth();
-            moveAnimation(destroyAbility.getViewParent(), 200, 0f, containerWidth).addListener(new AnimatorListenerAdapter() {
+            moveAnimation(destroyAbility.getViewParent(), 200, 0f, viewContainer.getWidth()).addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     runnable.run();
                 }
             });
             if (showAbility != null) {
-                moveAnimation(showAbility.getViewParent(), 200, -containerWidth, 0f);
+                moveAnimation(showAbility.getViewParent(), 200, -viewContainer.getWidth(), 0f);
             }
         } else {
             runnable.run();
@@ -424,5 +415,39 @@ public class NavController {
             return this;
         }
     }
-    
+
+    private static class ViewContainer {
+        private final FrameLayout viewGroup;
+
+        public ViewContainer(FrameLayout viewGroup) {
+            viewGroup.removeAllViews();
+            this.viewGroup = viewGroup;
+        }
+
+        public void addAbility(Ability ability) {
+            if (viewGroup.indexOfChild(ability.getViewParent()) >= 0) {
+                viewGroup.removeView(ability.getViewParent());
+            }
+            viewGroup.addView(ability.getViewParent(), ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        }
+
+        public void removeAbility(Ability ability) {
+            viewGroup.removeView(ability.getViewParent());
+        }
+
+        public int getWidth() {
+            return viewGroup.getWidth();
+        }
+
+        public Stack<Ability> getStack() {
+            Stack<Ability> stack = new Stack<>();
+            for (int i = 0; i < viewGroup.getChildCount(); i++) {
+                Ability ability = ((AbilityViewParent) viewGroup.getChildAt(i)).getAbility();
+                if (!ability.isFinishing()) {
+                    stack.add(ability);
+                }
+            }
+            return stack;
+        }
+    }
 }
