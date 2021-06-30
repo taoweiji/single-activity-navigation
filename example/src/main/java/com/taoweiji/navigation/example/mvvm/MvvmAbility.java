@@ -27,7 +27,6 @@ public class MvvmAbility extends Ability {
 
     @Override
     protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable  ViewGroup container, @Nullable  Bundle savedInstanceState) {
-        createDefaultToolbar();
         setTitle("Lifecycle、LiveData 实现 MVVM");
         LinearLayout linearLayout = new LinearLayout(getContext());
         linearLayout.setGravity(Gravity.CENTER);

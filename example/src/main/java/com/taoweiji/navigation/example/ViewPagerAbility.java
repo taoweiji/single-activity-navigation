@@ -11,11 +11,13 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.taoweiji.navigation.Ability;
 import com.taoweiji.navigation.AbilityPageAdapter;
+import com.taoweiji.navigation.ViewUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -27,14 +29,25 @@ public class ViewPagerAbility extends Ability {
     @NonNull
     @NotNull
     @Override
-    protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable  ViewGroup container, @Nullable  Bundle savedInstanceState) {
+    protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.ability_view_pager, null);
     }
 
     @Override
-    protected void onViewCreated(@NonNull @NotNull View view, @Nullable  Bundle savedInstanceState) {
+    protected Toolbar createDefaultToolbar() {
+        return null;
+    }
+
+    @Override
+    protected void onViewCreated(@NonNull @NotNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setToolbar(findViewById(R.id.toolbar));
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.getLayoutParams().height = ViewUtils.getStatusBarHeight(getContext()) + ViewUtils.dp2px(getContext(), 56);
+        toolbar.setLayoutParams(toolbar.getLayoutParams());
+        toolbar.setPadding(0, ViewUtils.getStatusBarHeight(getContext()), 0, 0);
+        setToolbar(toolbar);
+
         setTitle("在ViewPager使用AbilityPageAdapter");
         ViewPager viewPager = findViewById(R.id.view_pager);
         TabLayout tabLayout = findViewById(R.id.tab_layout);
@@ -56,7 +69,7 @@ public class ViewPagerAbility extends Ability {
 
         @NonNull
         @Override
-        protected View onCreateView(@NonNull LayoutInflater inflater, @Nullable  ViewGroup container, @Nullable  Bundle savedInstanceState) {
+        protected View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             TextView textView = new TextView(getContext());
             textView.setText(text);
             textView.setGravity(Gravity.CENTER);
@@ -64,7 +77,7 @@ public class ViewPagerAbility extends Ability {
         }
 
         @Override
-        protected void onCreate(@Nullable  Bundle savedInstanceState) {
+        protected void onCreate(@Nullable Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             Log.e(text, "onCreate");
         }

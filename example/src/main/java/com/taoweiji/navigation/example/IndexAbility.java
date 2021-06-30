@@ -49,7 +49,7 @@ public class IndexAbility extends Ability {
     @NonNull
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        createDefaultToolbar();
+
         getToolbar().getMenu().add("源码").setShowAsAction(SHOW_AS_ACTION_ALWAYS);
         getToolbar().setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
@@ -74,7 +74,7 @@ public class IndexAbility extends Ability {
         adapter.add("AbilityBuilder 跳转", () -> nav.navigate(new AbilityBuilder() {
             @Override
             public View builder(Context context, Bundle arguments) {
-                createDefaultToolbar();
+
 
                 setTitle("AbilityBuilder 跳转");
                 TextView hello = new TextView(context);
@@ -135,6 +135,7 @@ public class IndexAbility extends Ability {
         adapter.add("发送页面消息通知", () -> nav.navigate(new EventFirstAbility()));
         adapter.add("监听 Ability 的生命周期", () -> nav.navigate(new LifecycleAbility()));
         adapter.add("全局监听 Ability 的生命周期", () -> nav.navigate(new GlobalLifecycleAbility()));
+        adapter.add("开启沉浸模式", () -> nav.navigate(new FullScreenAbility()));
         list.setAdapter(adapter);
         list.setOnItemClickListener((parent, view, position, id) -> adapter.tasks.get(position).run());
         return list;

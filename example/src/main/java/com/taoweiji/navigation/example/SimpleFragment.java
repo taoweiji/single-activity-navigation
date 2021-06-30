@@ -38,7 +38,6 @@ public class SimpleFragment extends Fragment {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable  Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Ability ability = NavController.findAbility(this);
-        ability.createDefaultToolbar();
         ability.setTitle("直接跳转 Fragment");
     }
 

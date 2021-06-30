@@ -21,7 +21,7 @@ public class TestResultAbility extends Ability {
     @NotNull
     @Override
     protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable  ViewGroup container, @Nullable  Bundle savedInstanceState) {
-        createDefaultToolbar().setTitle("设置返回值 msg = TestResultAbility");
+        setTitle("设置返回值 msg = TestResultAbility");
         return new View(getContext());
     }
 

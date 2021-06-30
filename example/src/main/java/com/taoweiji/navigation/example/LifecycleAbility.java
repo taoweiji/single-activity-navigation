@@ -27,7 +27,7 @@ public class LifecycleAbility extends Ability {
 
     @Override
     protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable  ViewGroup container, @Nullable  Bundle savedInstanceState) {
-        createDefaultToolbar();
+
         setTitle("监听 Ability 的生命周期");
         LinearLayout linearLayout = new LinearLayout(getContext());
         linearLayout.setGravity(Gravity.CENTER);

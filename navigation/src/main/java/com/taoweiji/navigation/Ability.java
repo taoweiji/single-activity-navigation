@@ -4,18 +4,14 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.CallSuper;
 import androidx.annotation.ColorInt;
@@ -24,7 +20,6 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.res.ResourcesCompat;
@@ -40,18 +35,10 @@ public abstract class Ability implements LifecycleOwner {
     private LifecycleRegistry mLifecycleRegistry;
     private Context context;
     private Bundle arguments;
-    private Integer statusBarColor;
-    private StatusBarTextStyle statusBarTextStyle;
     private AbilityViewParent viewParent;
     private boolean createViewed;
-    /**
-     * 根据toolbar背景颜色自动更新状态栏颜色
-     */
-    private boolean autoUpdateStatusBar = true;
-    /**
-     * 自动创建返回键
-     */
-    private boolean defaultDisplayHomeAsUpEnabled = true;
+    private final ToolbarAndStatusBarWrapper toolbarWrapper = new ToolbarAndStatusBarWrapper(this);
+    private CharSequence title;
 
     public Ability() {
         initLifecycle();
@@ -89,12 +76,7 @@ public abstract class Ability implements LifecycleOwner {
     @CallSuper
     protected void onResume() {
         mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME);
-        if (statusBarColor != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setStatusBarColorInner(statusBarColor);
-        }
-        if (statusBarTextStyle != null) {
-            setStatusBarTextStyleInner(statusBarTextStyle);
-        }
+        toolbarWrapper.onResume();
         resumed = true;
     }
 
@@ -180,7 +162,7 @@ public abstract class Ability implements LifecycleOwner {
         View view = onCreateView(LayoutInflater.from(context), viewParent, savedInstanceState);
         Navigation.onCreateView(this, savedInstanceState);
         if (view != null) {
-            viewParent.addView(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            viewParent.addContent(view);
         }
         Navigation.onPreViewCreated(this);
         this.onViewCreated(view, null);
@@ -190,15 +172,17 @@ public abstract class Ability implements LifecycleOwner {
     AbilityViewParent performCreateViewParent(NavController navController) {
         if (viewParent == null) {
             viewParent = new AbilityViewParent(context, navController, this);
+            Toolbar toolbar = createDefaultToolbar();
+            if (toolbar != null) {
+                viewParent.addToolbar(toolbar);
+                setToolbar(viewParent.getToolbar());
+            }
+
+            setToolbarBackgroundColor(Color.WHITE);
         } else {
             viewParent.navController = navController;
         }
         return viewParent;
-    }
-
-
-    public enum StatusBarTextStyle {
-        WHITE, BLACK
     }
 
     public Resources getResources() {
@@ -225,28 +209,6 @@ public abstract class Ability implements LifecycleOwner {
     @NonNull
     public final String getString(@StringRes int resId, @Nullable Object... formatArgs) {
         return getResources().getString(resId, formatArgs);
-    }
-
-    private void setStatusBarTextStyleInner(StatusBarTextStyle style) {
-        this.statusBarTextStyle = style;
-        Window window = getActivity().getWindow();
-        if (style == StatusBarTextStyle.BLACK) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            } else {
-                window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE);
-                // TODO
-            }
-        } else {
-            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
-        }
-    }
-
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void setStatusBarColorInner(int color) {
-        Window window = getActivity().getWindow();
-        window.setStatusBarColor(color);
     }
 
     public void setBackgroundColor(@ColorInt int color) {
@@ -292,93 +254,10 @@ public abstract class Ability implements LifecycleOwner {
         findNavController().sendAbilityEvent(message);
     }
 
-    private Toolbar toolbar;
-    private CharSequence title;
-
-    public Toolbar createDefaultToolbar() {
-        if (this.viewParent.getChildCount() > 0) {
-            if (this.viewParent.getChildAt(0) instanceof Toolbar) {
-                return (Toolbar) this.viewParent.getChildAt(0);
-            }
-        }
-        Toolbar toolbar = new Toolbar(getContext());
-        this.viewParent.addView(toolbar, 0, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, ViewUtils.dp2px(getContext(), 56)));
-        setToolbar(toolbar);
-        TypedArray array = getActivity().getTheme().obtainStyledAttributes(new int[]{
-                R.attr.colorPrimary,
-        });
-        setToolbarBackgroundColor(array.getColor(0, Color.WHITE));
-        return toolbar;
-    }
-
-    public Toolbar getToolbar() {
-        return toolbar;
-    }
-
-    public void setToolbar(Toolbar toolbar) {
-        this.toolbar = toolbar;
-        if (toolbar != null) {
-            this.title = toolbar.getTitle();
-            if (isDefaultDisplayHomeAsUpEnabled()) {
-                if (findNavController() != null && !findNavController().isRootAbility(this)) {
-                    if (toolbar.getNavigationIcon() == null) {
-                        toolbar.setNavigationIcon(R.drawable.ic_ab_back_material);
-                    }
-                }
-                toolbar.setNavigationOnClickListener(v -> onBackPressed());
-            }
-        }
-    }
-
-    private boolean isLightColor(int color) {
-        double darkness = 1 - (0.299 * Color.red(color) + 0.587 * Color.green(color) + 0.114 * Color.blue(color)) / 255;
-        return darkness < 0.5;
-    }
-
-    public void setToolbarBackgroundColor(int color) {
-        if (isAutoUpdateStatusBar()) {
-            setStatusBarColor(color);
-        }
-        if (this.toolbar == null) {
-            return;
-        }
-        boolean isLight = isLightColor(color);
-        int textColor = isLight ? Color.BLACK : Color.WHITE;
-        toolbar.setBackgroundColor(color);
-        toolbar.setTitleTextColor(isLight ? Color.BLACK : Color.WHITE);
-        if (toolbar.getNavigationIcon() != null) {
-            Drawable drawable = toolbar.getNavigationIcon();
-            drawable.setColorFilter(textColor, PorterDuff.Mode.SRC_ATOP);
-            toolbar.setNavigationIcon(drawable);
-        }
-        toolbar.setTitleTextColor(textColor);
-    }
-
-    public void setStatusBarTextStyle(StatusBarTextStyle style) {
-        this.statusBarTextStyle = style;
-        setStatusBarTextStyleInner(style);
-    }
-
-    public void setStatusBarColor(int color) {
-        this.statusBarColor = color;
-        // TODO
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setStatusBarColorInner(color);
-        }
-        if (isAutoUpdateStatusBar()) {
-            if (isLightColor(color)) {
-                setStatusBarTextStyle(StatusBarTextStyle.BLACK);
-            } else {
-                setStatusBarTextStyle(StatusBarTextStyle.WHITE);
-            }
-        }
-    }
 
     public void setTitle(CharSequence title) {
+        toolbarWrapper.setTitle(title);
         this.title = title;
-        if (this.toolbar != null) {
-            this.toolbar.setTitle(title);
-        }
     }
 
     public void setTitle(int titleId) {
@@ -414,24 +293,7 @@ public abstract class Ability implements LifecycleOwner {
     }
 
     public void onBackPressed() {
-        // TODO
         this.finish();
-    }
-
-    public void setAutoUpdateStatusBar(boolean autoUpdateStatusBar) {
-        this.autoUpdateStatusBar = autoUpdateStatusBar;
-    }
-
-    public boolean isAutoUpdateStatusBar() {
-        return autoUpdateStatusBar;
-    }
-
-    public void setDefaultDisplayHomeAsUpEnabled(boolean defaultDisplayHomeAsUpEnabled) {
-        this.defaultDisplayHomeAsUpEnabled = defaultDisplayHomeAsUpEnabled;
-    }
-
-    public boolean isDefaultDisplayHomeAsUpEnabled() {
-        return defaultDisplayHomeAsUpEnabled;
     }
 
     void setContext(Context context) {
@@ -481,5 +343,39 @@ public abstract class Ability implements LifecycleOwner {
 
     protected void onEvent(Message message) {
 
+    }
+
+    public Toolbar getToolbar() {
+        return toolbarWrapper.getToolbar();
+    }
+
+    public void setToolbar(Toolbar toolbar) {
+        toolbarWrapper.setToolbar(toolbar);
+    }
+
+    public void setStatusBarTextStyle(boolean isLight) {
+        toolbarWrapper.setStatusBarTextStyle(isLight);
+    }
+
+    public void setContentViewMarginTop(int marginTop) {
+        getViewParent().setContentViewMarginTop(marginTop);
+    }
+
+    public void setToolbarBackgroundColor(int color) {
+        toolbarWrapper.setToolbarBackgroundColor(color);
+    }
+
+    public void setDefaultDisplayHomeAsUpEnabled(boolean enabled) {
+        toolbarWrapper.setDefaultDisplayHomeAsUpEnabled(enabled);
+    }
+
+    protected Toolbar createDefaultToolbar() {
+        Toolbar toolbar = new Toolbar(getContext());
+        int statusBarHeight = ViewUtils.getStatusBarHeight(getContext());
+        toolbar.setPadding(0, statusBarHeight, 0, 0);
+        int height = ViewUtils.dp2px(getContext(), 56) + statusBarHeight;
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, height);
+        toolbar.setLayoutParams(lp);
+        return toolbar;
     }
 }

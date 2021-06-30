@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.taoweiji.navigation.Ability;
@@ -29,12 +30,17 @@ public class BottomNavigationViewAbility extends Ability {
     private NavController tabNav;
 
     @Override
-    protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable  ViewGroup container, @Nullable  Bundle savedInstanceState) {
+    protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.ability_multi_nav_controller, null);
     }
 
     @Override
-    protected void onViewCreated(View view, @Nullable  Bundle savedInstanceState) {
+    protected Toolbar createDefaultToolbar() {
+        return null;
+    }
+
+    @Override
+    protected void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         FrameLayout container = findViewById(R.id.container);
         tabNav = new NavController.Builder().defaultDestination(Destination.with(abilities[currentItem])).create(container);
@@ -78,9 +84,8 @@ public class BottomNavigationViewAbility extends Ability {
         }
 
         @Override
-        protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable  ViewGroup container, @Nullable  Bundle savedInstanceState) {
+        protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             setDefaultDisplayHomeAsUpEnabled(false);
-            createDefaultToolbar();
             setTitle(title);
             TextView textView = new TextView(getContext());
             textView.setGravity(Gravity.CENTER);

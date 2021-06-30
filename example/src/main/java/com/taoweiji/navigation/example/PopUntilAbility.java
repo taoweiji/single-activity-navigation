@@ -19,7 +19,7 @@ public class PopUntilAbility extends Ability {
     @NonNull
     @Override
     protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        createDefaultToolbar();
+
         setTitle("有条件关闭页面");
         RelativeLayout layout = new RelativeLayout(getContext());
         layout.setGravity(Gravity.CENTER);
@@ -34,7 +34,7 @@ public class PopUntilAbility extends Ability {
         @NonNull
         @Override
         protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            createDefaultToolbar();
+
             setTitle("SecondAbility");
             RelativeLayout layout = new RelativeLayout(getContext());
             layout.setGravity(Gravity.CENTER);

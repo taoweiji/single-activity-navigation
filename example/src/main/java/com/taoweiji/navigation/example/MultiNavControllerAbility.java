@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.taoweiji.navigation.Ability;
@@ -33,12 +34,17 @@ public class MultiNavControllerAbility extends Ability {
     private NavController tabNav;
 
     @Override
-    protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable  ViewGroup container, @Nullable  Bundle savedInstanceState) {
+    protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.ability_multi_nav_controller, null);
     }
 
     @Override
-    protected void onViewCreated(View view, @Nullable  Bundle savedInstanceState) {
+    protected Toolbar createDefaultToolbar() {
+        return null;
+    }
+
+    @Override
+    protected void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         FrameLayout container = findViewById(R.id.container);
         this.tabNav = new NavController.Builder().defaultDestination(Destination.with(abilities[currentItem])).create(container);
@@ -97,10 +103,15 @@ public class MultiNavControllerAbility extends Ability {
         }
 
         @Override
-        protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable  ViewGroup container, @Nullable  Bundle savedInstanceState) {
+        protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             FrameLayout layout = new FrameLayout(getContext());
             this.nav = new NavController.Builder().defaultDestination(Destination.with(new MyAbility(title))).create(layout);
             return layout;
+        }
+
+        @Override
+        protected Toolbar createDefaultToolbar() {
+            return null;
         }
     }
 
@@ -112,8 +123,8 @@ public class MultiNavControllerAbility extends Ability {
         }
 
         @Override
-        protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable  ViewGroup container, @Nullable  Bundle savedInstanceState) {
-            createDefaultToolbar();
+        protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
             getToolbar().setElevation(ViewUtils.dp2px(getContext(), 2));
             setToolbarBackgroundColor(Color.WHITE);
             RelativeLayout layout = new RelativeLayout(getContext());

@@ -27,7 +27,7 @@ public class TestResultFragment extends Fragment {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable  Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Ability ability = NavController.findAbility(this);
-        ability.createDefaultToolbar().setTitle("设置返回值 msg = TestResultFragment");
+        ability.setTitle("设置返回值 msg = TestResultFragment");
         ability.setResult(new BundleBuilder().put("msg", "TestResultFragment").build());
     }
 }

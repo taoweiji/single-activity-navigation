@@ -34,7 +34,6 @@ public class UserAbility extends Ability {
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable  Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        createDefaultToolbar();
         setTitle("直接跳转 Ability");
         view.setBackgroundColor(Color.WHITE);
         TextView info = view.findViewById(R.id.info);
