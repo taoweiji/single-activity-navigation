@@ -8,6 +8,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +37,8 @@ import com.taoweiji.navigation.example.result.TestResultAbility;
 import com.taoweiji.navigation.example.result.TestResultActivity;
 import com.taoweiji.navigation.example.result.TestResultFragment;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,18 +50,24 @@ public class IndexAbility extends Ability {
     private ListView list;
     private ListAdapter adapter;
 
+    @Override
+    public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.add(0, 0, 0, "源码").setShowAsAction(SHOW_AS_ACTION_ALWAYS);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull @NotNull MenuItem item) {
+        if (item.getItemId() == 0) {
+            getActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/taoweiji/single-activity-navigation")));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     @NonNull
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-        getToolbar().getMenu().add("源码").setShowAsAction(SHOW_AS_ACTION_ALWAYS);
-        getToolbar().setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                getActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/taoweiji/single-activity-navigation")));
-                return true;
-            }
-        });
         setTitle("单 Activity 框架");
         setToolbarBackgroundColor(getResources().getColor(R.color.purple_500));
         list = new ListView(getContext());

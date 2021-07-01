@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.taoweiji.navigation.Ability;
+import com.taoweiji.navigation.ViewUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -32,7 +33,8 @@ public class UiAbility extends Ability {
         setStatusBarTextStyle.setText("设置状态栏风格");
         AtomicInteger flag = new AtomicInteger();
         setStatusBarTextStyle.setOnClickListener(v -> {
-            setStatusBarTextStyle((flag.getAndIncrement()) % 2 == 0);
+//            setStatusBarTextStyle((flag.getAndIncrement()) % 2 == 0);
+            setStatusBarTextStyle(StatusBarTextStyle.TRANSPARENT);
         });
 
         Button settingToolbarColor = new Button(getContext());
@@ -43,9 +45,14 @@ public class UiAbility extends Ability {
         settingBackgroundColor.setText("设置背景颜色");
         settingBackgroundColor.setOnClickListener(v -> setBackgroundColor(Color.RED));
 
+        Button setToolbarHeight = new Button(getContext());
+        setToolbarHeight.setText("设置Toolbar高度");
+        setToolbarHeight.setOnClickListener(v -> setToolbarHeight(ViewUtils.dp2px(getContext(), 40), true));
+
         linearLayout.addView(setStatusBarTextStyle);
         linearLayout.addView(settingToolbarColor);
         linearLayout.addView(settingBackgroundColor);
+        linearLayout.addView(setToolbarHeight);
         return linearLayout;
     }
 }

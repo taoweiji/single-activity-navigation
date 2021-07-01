@@ -9,6 +9,9 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Message;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -275,9 +278,6 @@ public abstract class Ability implements LifecycleOwner {
         this.resultData = result;
     }
 
-    public void showDialog(Dialog dialog) {
-        // TODO
-    }
 
     public final <T extends View> T findViewById(@IdRes int id) {
         if (id == NO_ID) {
@@ -351,12 +351,21 @@ public abstract class Ability implements LifecycleOwner {
 
     public void setToolbar(Toolbar toolbar) {
         toolbarWrapper.setToolbar(toolbar);
+        invalidateOptionsMenu();
     }
 
-    public void setStatusBarTextStyle(boolean isLight) {
-        toolbarWrapper.setStatusBarTextStyle(isLight);
+
+    public enum StatusBarTextStyle {
+        BLACK, WHITE, TRANSPARENT
     }
 
+    public void setStatusBarTextStyle(StatusBarTextStyle style) {
+        toolbarWrapper.setStatusBarTextStyle(style);
+    }
+
+    /**
+     * @param marginTop 如果是-1，就是默认在Toolbar的下面，如果是 0就是到顶实现沉浸模式
+     */
     public void setContentViewMarginTop(int marginTop) {
         getViewParent().setContentViewMarginTop(marginTop);
     }
@@ -365,18 +374,53 @@ public abstract class Ability implements LifecycleOwner {
         toolbarWrapper.setToolbarBackgroundColor(color);
     }
 
+    /**
+     * @param height            状态栏高度
+     * @param fitsSystemWindows 自动留出到顶部的高度
+     */
+    public void setToolbarHeight(int height, boolean fitsSystemWindows) {
+        Toolbar toolbar = toolbarWrapper.getToolbar();
+        if (toolbar == null) return;
+        if (fitsSystemWindows) {
+            int statusBarHeight = ViewUtils.getStatusBarHeight(getContext());
+            toolbar.setPadding(0, statusBarHeight, 0, 0);
+            height += statusBarHeight;
+        }
+        toolbar.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, height));
+    }
+
     public void setDefaultDisplayHomeAsUpEnabled(boolean enabled) {
         toolbarWrapper.setDefaultDisplayHomeAsUpEnabled(enabled);
     }
 
     protected Toolbar createDefaultToolbar() {
         Toolbar toolbar = new Toolbar(getContext());
-        toolbar.setElevation(ViewUtils.dp2px(getContext(),2));
+        toolbar.setElevation(ViewUtils.dp2px(getContext(), 2));
+
         int statusBarHeight = ViewUtils.getStatusBarHeight(getContext());
         toolbar.setPadding(0, statusBarHeight, 0, 0);
         int height = ViewUtils.dp2px(getContext(), 56) + statusBarHeight;
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, height);
-        toolbar.setLayoutParams(lp);
+        toolbar.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, height));
         return toolbar;
+    }
+
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        return false;
+    }
+
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+
+    }
+
+    public void invalidateOptionsMenu() {
+        if (getToolbar() != null) {
+            getToolbar().getMenu().clear();
+            onCreateOptionsMenu(getToolbar().getMenu(), new MenuInflater(getContext()));
+        }
+    }
+
+
+    public void showDialog(Dialog dialog) {
+        // TODO
     }
 }

@@ -7,6 +7,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -17,7 +18,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
 
 class ToolbarAndStatusBarWrapper {
-    private Boolean statusBarTextStyle;
+    private Ability.StatusBarTextStyle statusBarTextStyle;
     /**
      * 自动创建返回键
      */
@@ -29,18 +30,22 @@ class ToolbarAndStatusBarWrapper {
         this.ability = ability;
     }
 
-    private void setStatusBarTextStyleInner(Boolean white) {
-        this.statusBarTextStyle = white;
+    private void setStatusBarTextStyleInner(Ability.StatusBarTextStyle style) {
+        this.statusBarTextStyle = style;
         // 默认开启沉浸模式，交给Ability自己实现状态栏颜色改变，
         Window window = getActivity().getWindow();
-        if (!white) {
+        if (style == Ability.StatusBarTextStyle.BLACK) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             } else {
                 window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE);
             }
-        } else {
+        } else if (style == Ability.StatusBarTextStyle.WHITE) {
             window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_VISIBLE);
+        } else if (style == Ability.StatusBarTextStyle.TRANSPARENT) {
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE);
+        } else {
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
     }
 
@@ -48,7 +53,7 @@ class ToolbarAndStatusBarWrapper {
         return ability.getActivity();
     }
 
-    public void setStatusBarTextStyle(boolean white) {
+    public void setStatusBarTextStyle(Ability.StatusBarTextStyle white) {
         this.statusBarTextStyle = white;
         setStatusBarTextStyleInner(white);
     }
@@ -70,6 +75,10 @@ class ToolbarAndStatusBarWrapper {
 
     public void setToolbar(Toolbar toolbar) {
         this.toolbar = toolbar;
+        if (toolbar != null) {
+            toolbar.setOnMenuItemClickListener(ability::onOptionsItemSelected);
+            updateDefaultDisplayHome();
+        }
     }
 
     public Toolbar getToolbar() {
@@ -94,7 +103,7 @@ class ToolbarAndStatusBarWrapper {
     }
 
     public void setToolbarBackgroundColor(int color) {
-        setStatusBarTextStyleInner(!isLightColor(color));
+//        setStatusBarTextStyleInner(!isLightColor(color)); TODO
         if (toolbar == null) return;
         boolean textColorLight = !isLightColor(color);
         toolbar.setBackgroundColor(color);
@@ -107,7 +116,7 @@ class ToolbarAndStatusBarWrapper {
         if (toolbar == null) return;
         boolean isLight = false;
         if (statusBarTextStyle != null) {
-            isLight = statusBarTextStyle;
+//            isLight = statusBarTextStyle; TODO
         }
         if (isDefaultDisplayHomeAsUpEnabled()) {
             boolean showBack = false;

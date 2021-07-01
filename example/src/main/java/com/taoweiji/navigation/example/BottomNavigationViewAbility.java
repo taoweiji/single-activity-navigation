@@ -5,7 +5,9 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,12 +22,7 @@ import com.taoweiji.navigation.NavController;
 import org.jetbrains.annotations.NotNull;
 
 public class BottomNavigationViewAbility extends Ability {
-    private final TabAbility[] abilities = new TabAbility[]{
-            new TabAbility("主页"),
-            new TabAbility("搜索"),
-            new TabAbility("通知"),
-            new TabAbility("我的")
-    };
+    private TabAbility[] abilities;
     private int currentItem = 0;
     private NavController tabNav;
 
@@ -42,6 +39,12 @@ public class BottomNavigationViewAbility extends Ability {
     @Override
     protected void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        abilities = new TabAbility[]{
+                new TabAbility("主页"),
+                new TabAbility("搜索"),
+                new TabAbility("通知"),
+                new TabAbility("我的")
+        };
         FrameLayout container = findViewById(R.id.container);
         tabNav = new NavController.Builder().defaultDestination(Destination.with(abilities[currentItem])).create(container);
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -86,11 +89,25 @@ public class BottomNavigationViewAbility extends Ability {
         @Override
         protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             setDefaultDisplayHomeAsUpEnabled(false);
+
+            LinearLayout linearLayout = new LinearLayout(getContext());
+            linearLayout.setGravity(Gravity.CENTER);
+            linearLayout.setOrientation(LinearLayout.VERTICAL);
             setTitle(title);
             TextView textView = new TextView(getContext());
             textView.setGravity(Gravity.CENTER);
             textView.setText(title);
-            return textView;
+            linearLayout.addView(textView);
+            Button button = new Button(getContext());
+            button.setText("跳转");
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    findNavController().findParentNavController().navigate(new SimpleFragment());
+                }
+            });
+            linearLayout.addView(button);
+            return linearLayout;
         }
     }
 }
