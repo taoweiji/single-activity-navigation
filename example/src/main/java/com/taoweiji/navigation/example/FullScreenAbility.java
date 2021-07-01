@@ -22,7 +22,6 @@ public class FullScreenAbility extends Ability {
     @Override
     protected void onViewCreated(View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         setToolbarBackgroundColor(Color.TRANSPARENT);
         setTitle("沉浸模式");
         setContentViewMarginTop(0);

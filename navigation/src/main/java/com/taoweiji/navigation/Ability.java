@@ -180,7 +180,6 @@ public abstract class Ability implements LifecycleOwner {
                 viewParent.addToolbar(toolbar);
                 setToolbar(viewParent.getToolbar());
             }
-
             setToolbarBackgroundColor(Color.WHITE);
         } else {
             viewParent.navController = navController;
@@ -370,6 +369,9 @@ public abstract class Ability implements LifecycleOwner {
         getViewParent().setContentViewMarginTop(marginTop);
     }
 
+    /**
+     * 会自动修改状态栏颜色和按钮颜色，如果不需要请使用 getToolbar().setBackgroundColor()
+     */
     public void setToolbarBackgroundColor(int color) {
         toolbarWrapper.setToolbarBackgroundColor(color);
     }

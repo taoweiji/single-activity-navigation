@@ -1,20 +1,12 @@
 package com.taoweiji.navigation;
 
 import android.app.Activity;
-import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
 
 class ToolbarAndStatusBarWrapper {
@@ -60,24 +52,14 @@ class ToolbarAndStatusBarWrapper {
 
     public void setDefaultDisplayHomeAsUpEnabled(boolean defaultDisplayHomeAsUpEnabled) {
         this.defaultDisplayHomeAsUpEnabled = defaultDisplayHomeAsUpEnabled;
-        if (toolbar == null) return;
-        if (!defaultDisplayHomeAsUpEnabled) {
-            toolbar.setNavigationIcon(null);
-            toolbar.setNavigationOnClickListener(null);
-        } else {
-            updateDefaultDisplayHome();
-        }
-    }
-
-    public boolean isDefaultDisplayHomeAsUpEnabled() {
-        return defaultDisplayHomeAsUpEnabled;
+        updateNavigationIcon();
     }
 
     public void setToolbar(Toolbar toolbar) {
         this.toolbar = toolbar;
         if (toolbar != null) {
             toolbar.setOnMenuItemClickListener(ability::onOptionsItemSelected);
-            updateDefaultDisplayHome();
+            updateNavigationIcon();
         }
     }
 
@@ -103,29 +85,34 @@ class ToolbarAndStatusBarWrapper {
     }
 
     public void setToolbarBackgroundColor(int color) {
-//        setStatusBarTextStyleInner(!isLightColor(color)); TODO
-        if (toolbar == null) return;
         boolean textColorLight = !isLightColor(color);
+        if (textColorLight) {
+            setStatusBarTextStyleInner(Ability.StatusBarTextStyle.WHITE);
+        } else {
+            setStatusBarTextStyleInner(Ability.StatusBarTextStyle.BLACK);
+        }
+        if (toolbar == null) return;
         toolbar.setBackgroundColor(color);
         toolbar.setTitleTextColor(textColorLight ? Color.WHITE : Color.BLACK);
         toolbar.setSubtitleTextColor(textColorLight ? Color.WHITE : Color.BLACK);
-        updateDefaultDisplayHome();
+        if (toolbar.getNavigationIcon() != null) {
+            toolbar.getNavigationIcon().setColorFilter(textColorLight ? Color.WHITE : Color.BLACK, PorterDuff.Mode.SRC_IN);
+        }
     }
 
-    private void updateDefaultDisplayHome() {
+    private void updateNavigationIcon() {
         if (toolbar == null) return;
-        boolean isLight = false;
-        if (statusBarTextStyle != null) {
-//            isLight = statusBarTextStyle; TODO
-        }
-        if (isDefaultDisplayHomeAsUpEnabled()) {
+        if (!defaultDisplayHomeAsUpEnabled) {
+            toolbar.setNavigationIcon(null);
+            toolbar.setNavigationOnClickListener(null);
+        } else {
             boolean showBack = false;
             NavController nav = ability.findNavController();
             if (nav != null && (nav.getStackCount() > 0 && !nav.isRootAbility(ability))) {
                 showBack = true;
             }
             if (showBack) {
-                toolbar.setNavigationIcon(isLight ? R.drawable.ic_ab_back_material_dark : R.drawable.ic_ab_back_material_light);
+                toolbar.setNavigationIcon(R.drawable.ic_ab_back_material_light);
             } else {
                 toolbar.setNavigationIcon(null);
             }
