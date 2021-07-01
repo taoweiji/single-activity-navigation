@@ -371,6 +371,7 @@ public abstract class Ability implements LifecycleOwner {
 
     protected Toolbar createDefaultToolbar() {
         Toolbar toolbar = new Toolbar(getContext());
+        toolbar.setElevation(ViewUtils.dp2px(getContext(),2));
         int statusBarHeight = ViewUtils.getStatusBarHeight(getContext());
         toolbar.setPadding(0, statusBarHeight, 0, 0);
         int height = ViewUtils.dp2px(getContext(), 56) + statusBarHeight;

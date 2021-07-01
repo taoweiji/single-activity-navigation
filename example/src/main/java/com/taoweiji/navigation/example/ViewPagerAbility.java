@@ -67,6 +67,11 @@ public class ViewPagerAbility extends Ability {
             this.text = text;
         }
 
+        @Override
+        protected Toolbar createDefaultToolbar() {
+            return null;
+        }
+
         @NonNull
         @Override
         protected View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

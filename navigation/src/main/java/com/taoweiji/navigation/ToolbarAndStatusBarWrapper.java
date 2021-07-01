@@ -55,11 +55,12 @@ class ToolbarAndStatusBarWrapper {
 
     public void setDefaultDisplayHomeAsUpEnabled(boolean defaultDisplayHomeAsUpEnabled) {
         this.defaultDisplayHomeAsUpEnabled = defaultDisplayHomeAsUpEnabled;
+        if (toolbar == null) return;
         if (!defaultDisplayHomeAsUpEnabled) {
-            if (toolbar != null) {
-                toolbar.setNavigationIcon(null);
-            }
-            // TODO
+            toolbar.setNavigationIcon(null);
+            toolbar.setNavigationOnClickListener(null);
+        } else {
+            updateDefaultDisplayHome();
         }
     }
 
@@ -99,9 +100,23 @@ class ToolbarAndStatusBarWrapper {
         toolbar.setBackgroundColor(color);
         toolbar.setTitleTextColor(textColorLight ? Color.WHITE : Color.BLACK);
         toolbar.setSubtitleTextColor(textColorLight ? Color.WHITE : Color.BLACK);
+        updateDefaultDisplayHome();
+    }
+
+    private void updateDefaultDisplayHome() {
+        if (toolbar == null) return;
+        boolean isLight = false;
+        if (statusBarTextStyle != null) {
+            isLight = statusBarTextStyle;
+        }
         if (isDefaultDisplayHomeAsUpEnabled()) {
-            if (ability.findNavController() != null && !ability.findNavController().isRootAbility(ability)) {
-                toolbar.setNavigationIcon(textColorLight ? R.drawable.ic_ab_back_material_dark : R.drawable.ic_ab_back_material_light);
+            boolean showBack = false;
+            NavController nav = ability.findNavController();
+            if (nav != null && (nav.getStackCount() > 0 && !nav.isRootAbility(ability))) {
+                showBack = true;
+            }
+            if (showBack) {
+                toolbar.setNavigationIcon(isLight ? R.drawable.ic_ab_back_material_dark : R.drawable.ic_ab_back_material_light);
             } else {
                 toolbar.setNavigationIcon(null);
             }
