@@ -23,6 +23,6 @@ public class FullScreenAbility extends Ability {
     protected void onViewCreated(View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getToolbar().setVisibility(View.GONE);
-        setStatusBarTextStyle(StatusBarHelper.STYLE_FULLSCREEN);
+        setStatusBarStyle(StatusBarHelper.STYLE_FULLSCREEN);
     }
 }

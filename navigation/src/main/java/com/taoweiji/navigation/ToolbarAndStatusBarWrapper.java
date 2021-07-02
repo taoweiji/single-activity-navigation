@@ -19,7 +19,7 @@ class ToolbarAndStatusBarWrapper {
     }
 
 
-    public void setStatusBarTextStyle(int style) {
+    public void setStatusBarStyle(int style) {
         this.statusBarTextStyle = style;
         StatusBarHelper.setTextStyle(ability.getActivity(), style);
     }
@@ -54,16 +54,16 @@ class ToolbarAndStatusBarWrapper {
 
     void onResume() {
         if (statusBarTextStyle != -1) {
-            setStatusBarTextStyle(statusBarTextStyle);
+            setStatusBarStyle(statusBarTextStyle);
         }
     }
 
     public void setToolbarBackgroundColor(int color) {
         boolean textColorLight = !isLightColor(color);
         if (textColorLight) {
-            setStatusBarTextStyle(StatusBarHelper.STYLE_WHITE);
+            setStatusBarStyle(StatusBarHelper.STYLE_WHITE);
         } else {
-            setStatusBarTextStyle(StatusBarHelper.STYLE_BLACK);
+            setStatusBarStyle(StatusBarHelper.STYLE_BLACK);
         }
         if (toolbar == null) return;
         toolbar.setBackgroundColor(color);

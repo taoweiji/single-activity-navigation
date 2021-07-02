@@ -34,8 +34,7 @@ public class UiAbility extends Ability {
         setStatusBarTextStyle.setText("设置状态栏风格");
         AtomicInteger flag = new AtomicInteger();
         setStatusBarTextStyle.setOnClickListener(v -> {
-//            setStatusBarTextStyle((flag.getAndIncrement()) % 2 == 0);
-            setStatusBarTextStyle(StatusBarHelper.STYLE_FULLSCREEN);
+            setStatusBarStyle((flag.getAndIncrement()) % 4);
         });
 
         Button settingToolbarColor = new Button(getContext());

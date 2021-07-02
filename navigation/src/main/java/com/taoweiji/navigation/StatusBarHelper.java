@@ -36,7 +36,7 @@ public class StatusBarHelper {
     }
 
     /**
-     * 修改状态栏的文字和图标颜色，StatusBarHelper.STYLE_WHITE,StatusBarHelper.STYLE_BLACK,StatusBarHelper.STYLE_HIDE
+     * 修改状态栏的文字和图标颜色，STYLE_WHITE, StatusBarHelper.STYLE_BLACK,StatusBarHelper.STYLE_HIDE
      */
     public static void setTextStyle(Activity activity, @Style int style) {
         Window window = activity.getWindow();

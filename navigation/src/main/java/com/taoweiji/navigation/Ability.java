@@ -353,10 +353,12 @@ public abstract class Ability implements LifecycleOwner {
         invalidateOptionsMenu();
     }
 
-
-
-    public void setStatusBarTextStyle(@StatusBarHelper.Style int style) {
-        toolbarWrapper.setStatusBarTextStyle(style);
+    /**
+     *
+     * @param style {@link StatusBarHelper#STYLE_WHITE,StatusBarHelper#STYLE_BLACK,StatusBarHelper#STYLE_FULLSCREEN,StatusBarHelper#STYLE_FULLSCREEN_WITHOUT_CUTOUT}
+     */
+    public void setStatusBarStyle(@StatusBarHelper.Style int style) {
+        toolbarWrapper.setStatusBarStyle(style);
     }
 
     /**
