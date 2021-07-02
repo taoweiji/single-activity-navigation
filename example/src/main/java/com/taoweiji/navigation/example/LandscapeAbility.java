@@ -6,6 +6,8 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -36,16 +38,38 @@ public class LandscapeAbility extends Ability {
         return inflater.inflate(R.layout.ability_player, null);
     }
 
+    Runnable task;
+
     @Override
     protected void onViewCreated(View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // 设置标题栏为透明
         getToolbar().setBackgroundColor(Color.TRANSPARENT);
+        // 隐藏状态栏
+        getToolbar().setVisibility(View.GONE);
         // 让页面内容置顶
         setContentViewMarginTop(0);
         // 设置全屏
         setStatusBarStyle(StatusBarHelper.STYLE_FULLSCREEN);
         SurfaceView surfaceView = findViewById(R.id.surface_view);
+        Handler uiHandler = new Handler(Looper.getMainLooper());
+
+        surfaceView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getToolbar().setVisibility(View.VISIBLE);
+                if (task != null) {
+                    uiHandler.removeCallbacks(task);
+                }
+                task = () -> {
+                    task = null;
+                    getToolbar().setVisibility(View.GONE);
+                };
+                // 5秒隐藏返回按钮
+                uiHandler.postDelayed(task, 5000);
+            }
+        });
+
         mediaPlayer = new MediaPlayer();
 
         surfaceView.getHolder().addCallback(new SurfaceHolder.Callback2() {
