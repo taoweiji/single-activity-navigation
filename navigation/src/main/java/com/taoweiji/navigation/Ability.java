@@ -354,11 +354,8 @@ public abstract class Ability implements LifecycleOwner {
     }
 
 
-    public enum StatusBarTextStyle {
-        BLACK, WHITE, HIDE
-    }
 
-    public void setStatusBarTextStyle(StatusBarTextStyle style) {
+    public void setStatusBarTextStyle(@StatusBarHelper.Style int style) {
         toolbarWrapper.setStatusBarTextStyle(style);
     }
 

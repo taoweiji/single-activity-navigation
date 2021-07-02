@@ -1,13 +1,12 @@
 package com.taoweiji.navigation;
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 
 import androidx.appcompat.widget.Toolbar;
 
 class ToolbarAndStatusBarWrapper {
-    private Ability.StatusBarTextStyle statusBarTextStyle;
+    private int statusBarTextStyle = -1;
     /**
      * 自动创建返回键
      */
@@ -19,20 +18,10 @@ class ToolbarAndStatusBarWrapper {
         this.ability = ability;
     }
 
-    private void setStatusBarTextStyleInner(Ability.StatusBarTextStyle style) {
-        this.statusBarTextStyle = style;
-        if (style == Ability.StatusBarTextStyle.WHITE) {
-            StatusBarHelper.setTextStyle(ability.getActivity(), StatusBarHelper.STYLE_WHITE);
-        } else if (style == Ability.StatusBarTextStyle.BLACK) {
-            StatusBarHelper.setTextStyle(ability.getActivity(), StatusBarHelper.STYLE_BLACK);
-        } else if (style == Ability.StatusBarTextStyle.HIDE) {
-            StatusBarHelper.setTextStyle(ability.getActivity(), StatusBarHelper.STYLE_HIDE);
-        }
-    }
 
-    public void setStatusBarTextStyle(Ability.StatusBarTextStyle white) {
-        this.statusBarTextStyle = white;
-        setStatusBarTextStyleInner(white);
+    public void setStatusBarTextStyle(int style) {
+        this.statusBarTextStyle = style;
+        StatusBarHelper.setTextStyle(ability.getActivity(), style);
     }
 
     public void setDefaultDisplayHomeAsUpEnabled(boolean defaultDisplayHomeAsUpEnabled) {
@@ -64,17 +53,17 @@ class ToolbarAndStatusBarWrapper {
     }
 
     void onResume() {
-        if (statusBarTextStyle != null) {
-            setStatusBarTextStyleInner(statusBarTextStyle);
+        if (statusBarTextStyle != -1) {
+            setStatusBarTextStyle(statusBarTextStyle);
         }
     }
 
     public void setToolbarBackgroundColor(int color) {
         boolean textColorLight = !isLightColor(color);
         if (textColorLight) {
-            setStatusBarTextStyleInner(Ability.StatusBarTextStyle.WHITE);
+            setStatusBarTextStyle(StatusBarHelper.STYLE_WHITE);
         } else {
-            setStatusBarTextStyleInner(Ability.StatusBarTextStyle.BLACK);
+            setStatusBarTextStyle(StatusBarHelper.STYLE_BLACK);
         }
         if (toolbar == null) return;
         toolbar.setBackgroundColor(color);

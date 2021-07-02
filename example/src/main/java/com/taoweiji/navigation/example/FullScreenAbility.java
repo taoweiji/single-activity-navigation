@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.taoweiji.navigation.Ability;
+import com.taoweiji.navigation.StatusBarHelper;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -22,6 +23,6 @@ public class FullScreenAbility extends Ability {
     protected void onViewCreated(View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getToolbar().setVisibility(View.GONE);
-        setStatusBarTextStyle(StatusBarTextStyle.HIDE);
+        setStatusBarTextStyle(StatusBarHelper.STYLE_FULLSCREEN);
     }
 }

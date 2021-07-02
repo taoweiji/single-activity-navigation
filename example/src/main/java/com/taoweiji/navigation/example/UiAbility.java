@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.taoweiji.navigation.Ability;
+import com.taoweiji.navigation.StatusBarHelper;
 import com.taoweiji.navigation.ViewUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +35,7 @@ public class UiAbility extends Ability {
         AtomicInteger flag = new AtomicInteger();
         setStatusBarTextStyle.setOnClickListener(v -> {
 //            setStatusBarTextStyle((flag.getAndIncrement()) % 2 == 0);
-            setStatusBarTextStyle(StatusBarTextStyle.HIDE);
+            setStatusBarTextStyle(StatusBarHelper.STYLE_FULLSCREEN);
         });
 
         Button settingToolbarColor = new Button(getContext());
