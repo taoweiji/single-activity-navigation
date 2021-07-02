@@ -139,7 +139,7 @@ public class IndexAbility extends Ability {
 //        adapter.add("BottomSheetDialogAbility", () -> nav.navigate(new TestBottomSheetDialogAbility()));
 //        adapter.add("复杂的转场动画", () -> nav.navigate(new FullScreenAbility()));
         adapter.add("Lifecycle、LiveData 实现 MVVM", () -> nav.navigate(new MvvmAbility()));
-//        adapter.add("自定义转场动画", () -> nav.navigate(new AnimationAbility()));
+        adapter.add("自定义转场动画", () -> nav.navigate(new AnimationAbility()));
         adapter.add("设置背景、状态栏颜色等", () -> nav.navigate(new UiAbility()));
         adapter.add("横屏视频播放", () -> nav.navigate(new LandscapeAbility()));
         adapter.add("发送页面消息通知", () -> nav.navigate(new EventFirstAbility()));

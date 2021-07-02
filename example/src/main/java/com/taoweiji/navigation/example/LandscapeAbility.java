@@ -66,7 +66,7 @@ public class LandscapeAbility extends Ability {
                     getToolbar().setVisibility(View.GONE);
                 };
                 // 5秒隐藏返回按钮
-                uiHandler.postDelayed(task, 5000);
+                uiHandler.postDelayed(task, 3000);
             }
         });
 

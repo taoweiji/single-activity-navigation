@@ -428,4 +428,7 @@ public abstract class Ability implements LifecycleOwner {
     public void showDialog(Dialog dialog) {
         // TODO
     }
+    public void overridePendingTransition(int enterAnim, int exitAnim) {
+        // TODO
+    }
 }

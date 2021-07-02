@@ -2,12 +2,19 @@ package com.taoweiji.navigation;
 
 import android.os.Bundle;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AbilityResultContracts {
+    private WeakReference<Ability> starter;
+
     private AbilityResultCallback callback;
     private final List<Listener> listeners = new ArrayList<>();
+
+    public AbilityResultContracts() {
+//        this.starter = new WeakReference<>(starter);
+    }
 
     public void registerForResult(AbilityResultCallback callback) {
         this.callback = callback;
