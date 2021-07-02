@@ -16,6 +16,7 @@ public abstract class NavControllerActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        StatusBarHelper.openImmerseStyle(this);
         super.onCreate(savedInstanceState);
         FrameLayout layout = new FrameLayout(this);
         setContentView(layout);

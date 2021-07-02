@@ -41,7 +41,6 @@ public class ViewPagerAbility extends Ability {
     @Override
     protected void onViewCreated(@NonNull @NotNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.getLayoutParams().height = ViewUtils.getStatusBarHeight(getContext()) + ViewUtils.dp2px(getContext(), 56);
         toolbar.setLayoutParams(toolbar.getLayoutParams());

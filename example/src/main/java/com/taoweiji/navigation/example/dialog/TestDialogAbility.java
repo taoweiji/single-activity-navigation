@@ -15,7 +15,7 @@ import com.taoweiji.navigation.Ability;
 
 import org.jetbrains.annotations.NotNull;
 
-public class DialogAbility extends Ability {
+public class TestDialogAbility extends Ability {
     @NonNull
     @NotNull
     @Override
@@ -39,7 +39,7 @@ public class DialogAbility extends Ability {
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MyDialog dialogFragment = new MyDialog(DialogAbility.this);
+                MyDialog dialogFragment = new MyDialog(TestDialogAbility.this);
                 dialogFragment.show(getActivity().getSupportFragmentManager(), "hello");
             }
         });

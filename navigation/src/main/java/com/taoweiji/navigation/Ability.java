@@ -355,7 +355,7 @@ public abstract class Ability implements LifecycleOwner {
 
 
     public enum StatusBarTextStyle {
-        BLACK, WHITE, TRANSPARENT
+        BLACK, WHITE, HIDE
     }
 
     public void setStatusBarTextStyle(StatusBarTextStyle style) {
@@ -374,6 +374,10 @@ public abstract class Ability implements LifecycleOwner {
      */
     public void setToolbarBackgroundColor(int color) {
         toolbarWrapper.setToolbarBackgroundColor(color);
+    }
+
+    public void setToolbarHeight(int height) {
+        setToolbarHeight(height, true);
     }
 
     /**

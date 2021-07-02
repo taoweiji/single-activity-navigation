@@ -3,9 +3,6 @@ package com.taoweiji.navigation;
 import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.os.Build;
-import android.view.View;
-import android.view.Window;
 
 import androidx.appcompat.widget.Toolbar;
 
@@ -24,25 +21,13 @@ class ToolbarAndStatusBarWrapper {
 
     private void setStatusBarTextStyleInner(Ability.StatusBarTextStyle style) {
         this.statusBarTextStyle = style;
-        // 默认开启沉浸模式，交给Ability自己实现状态栏颜色改变，
-        Window window = getActivity().getWindow();
-        if (style == Ability.StatusBarTextStyle.BLACK) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            } else {
-                window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE);
-            }
-        } else if (style == Ability.StatusBarTextStyle.WHITE) {
-            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_VISIBLE);
-        } else if (style == Ability.StatusBarTextStyle.TRANSPARENT) {
-            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE);
-        } else {
-            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        if (style == Ability.StatusBarTextStyle.WHITE) {
+            StatusBarHelper.setTextStyle(ability.getActivity(), StatusBarHelper.STYLE_WHITE);
+        } else if (style == Ability.StatusBarTextStyle.BLACK) {
+            StatusBarHelper.setTextStyle(ability.getActivity(), StatusBarHelper.STYLE_BLACK);
+        } else if (style == Ability.StatusBarTextStyle.HIDE) {
+            StatusBarHelper.setTextStyle(ability.getActivity(), StatusBarHelper.STYLE_HIDE);
         }
-    }
-
-    private Activity getActivity() {
-        return ability.getActivity();
     }
 
     public void setStatusBarTextStyle(Ability.StatusBarTextStyle white) {

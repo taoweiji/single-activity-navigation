@@ -10,7 +10,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Navigation">
-        <activity android:name=".MainActivity">
+        <!-- 解决横竖屏切换导致Activity重启问题 android:configChanges="orientation|keyboardHidden|screenSize"-->
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

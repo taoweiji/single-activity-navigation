@@ -34,7 +34,7 @@ public class UiAbility extends Ability {
         AtomicInteger flag = new AtomicInteger();
         setStatusBarTextStyle.setOnClickListener(v -> {
 //            setStatusBarTextStyle((flag.getAndIncrement()) % 2 == 0);
-            setStatusBarTextStyle(StatusBarTextStyle.TRANSPARENT);
+            setStatusBarTextStyle(StatusBarTextStyle.HIDE);
         });
 
         Button settingToolbarColor = new Button(getContext());
@@ -47,7 +47,7 @@ public class UiAbility extends Ability {
 
         Button setToolbarHeight = new Button(getContext());
         setToolbarHeight.setText("设置Toolbar高度");
-        setToolbarHeight.setOnClickListener(v -> setToolbarHeight(ViewUtils.dp2px(getContext(), 40), true));
+        setToolbarHeight.setOnClickListener(v -> setToolbarHeight(ViewUtils.dp2px(getContext(), 40)));
 
         linearLayout.addView(setStatusBarTextStyle);
         linearLayout.addView(settingToolbarColor);

@@ -18,19 +18,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 
 import com.taoweiji.navigation.Ability;
 import com.taoweiji.navigation.AbilityBuilder;
-import com.taoweiji.navigation.AbilityResultCallback;
-import com.taoweiji.navigation.ActivityResultCallback;
 import com.taoweiji.navigation.BundleBuilder;
 import com.taoweiji.navigation.NavController;
 import com.taoweiji.navigation.ViewUtils;
-import com.taoweiji.navigation.example.dialog.DialogAbility2;
+import com.taoweiji.navigation.example.dialog.TestBottomSheetDialogAbility;
+import com.taoweiji.navigation.example.dialog.TestDialogAbility;
 import com.taoweiji.navigation.example.event.EventFirstAbility;
 import com.taoweiji.navigation.example.mvvm.MvvmAbility;
 import com.taoweiji.navigation.example.result.TestResultAbility;
@@ -81,8 +78,8 @@ public class IndexAbility extends Ability {
         });
         adapter.add("在 ViewPager 使用 AbilityPageAdapter", () -> nav.navigate(new ViewPagerAbility()));
         adapter.add("搭配BottomNavigationView实现多tab切换", () -> nav.navigate(new BottomNavigationViewAbility()));
-        adapter.add("开启沉浸模式", () -> nav.navigate(new FullScreenAbility()));
-        adapter.add("复杂的转场动画", () -> nav.navigate(new FullScreenAbility()));
+        adapter.add("开启沉浸模式", () -> nav.navigate(new ImmerseAbility()));
+        adapter.add("全屏模式", () -> nav.navigate(new FullScreenAbility()));
         adapter.add("AbilityBuilder 跳转", () -> nav.navigate(new AbilityBuilder() {
             @Override
             public View builder(Context context, Bundle arguments) {
@@ -138,12 +135,13 @@ public class IndexAbility extends Ability {
                 }
             }).show();
         });
-        adapter.add("DialogAbility", () -> nav.navigate(new DialogAbility2()));
-        adapter.add("BottomSheetDialogAbility", () -> nav.navigate(new DialogAbility2()));
-
+//        adapter.add("DialogAbility", () -> nav.navigate(new TestDialogAbility()));
+//        adapter.add("BottomSheetDialogAbility", () -> nav.navigate(new TestBottomSheetDialogAbility()));
+//        adapter.add("复杂的转场动画", () -> nav.navigate(new FullScreenAbility()));
         adapter.add("Lifecycle、LiveData 实现 MVVM", () -> nav.navigate(new MvvmAbility()));
-        adapter.add("自定义转场动画", () -> nav.navigate(new AnimationAbility()));
+//        adapter.add("自定义转场动画", () -> nav.navigate(new AnimationAbility()));
         adapter.add("设置背景、状态栏颜色等", () -> nav.navigate(new UiAbility()));
+        adapter.add("横竖屏切换", () -> nav.navigate(new UiAbility()));
         adapter.add("发送页面消息通知", () -> nav.navigate(new EventFirstAbility()));
         adapter.add("监听 Ability 的生命周期", () -> nav.navigate(new LifecycleAbility()));
         adapter.add("全局监听 Ability 的生命周期", () -> nav.navigate(new GlobalLifecycleAbility()));
