@@ -162,26 +162,31 @@ public class NavController {
 
 
     private void handleDestination(Destination destination) {
-        if (destination.ability != null) {
+        if (destination.getAbility() != null) {
             return;
         }
         if (onGenerateRoute != null) {
-            destination.ability = onGenerateRoute.onGenerateRoute(context, destination);
+            destination.setAbility(onGenerateRoute.onGenerateRoute(context, destination));
         }
-        if (destination.ability != null) {
+        if (destination.getAbility() != null) {
             return;
         }
-        if (destination.name != null) {
-            AbilityRouteBuilder builder = routes.get(destination.name);
+        if (destination.getName() != null) {
+            AbilityRouteBuilder builder = routes.get(destination.getName());
             if (builder != null) {
-                destination.ability = builder.builder(context);
+                destination.setAbility(builder.builder(context));
             }
         }
     }
 
+    public AbilityResultContracts navigate(Destination destination, NavOptions navOptions) {
+        destination.setNavOptions(navOptions);
+        return navigate(destination);
+    }
+
     public AbilityResultContracts navigate(Destination destination) {
         handleDestination(destination);
-        Ability ability = destination.ability;
+        Ability ability = destination.getAbility();
         if (ability == null) {
             return new AbilityResultContracts();
         }
@@ -189,22 +194,22 @@ public class NavController {
         Ability stackTop = stack.isEmpty() ? null : stack.peek();
         // 如果是在栈顶，仅仅需要处理 arguments
         if (stackTop == ability) {
-            ability.performOnNewArguments(destination.arguments);
+            ability.performOnNewArguments(destination.getArguments());
             return new AbilityResultContracts();
         }
-        ability.enterNavOptions = destination.navOptions;
+        ability.navOptions = destination.getNavOptions();
         AbilityResultContracts abilityResultContracts = new AbilityResultContracts();
         if (stackTop != null) {
             stackTop.performOnPause();
         }
         ability.setAbilityResultContracts(abilityResultContracts);
         ability.setContext(context);
-        ability.setArguments(destination.arguments);
+        ability.setArguments(destination.getArguments());
         ability.performCreateViewParent(this);
         viewContainer.addAbility(ability);
         ability.performCreateView(null);
         if (stack.contains(ability)) {
-            ability.performOnNewArguments(destination.arguments);
+            ability.performOnNewArguments(destination.getArguments());
         }
         ability.performOnResume();
         // 如果当前栈内无页面或者页面自定义
@@ -224,7 +229,7 @@ public class NavController {
         };
         enterAnim(ability, stackTop == null).setAnimationListener(enterAnimListener);
         if (stackTop != null && ability.overrideEnterAnim < 0) {
-            exitAnim(stackTop, ability.enterNavOptions).setAnimationListener(new Animation.AnimationListener() {
+            exitAnim(stackTop, ability.navOptions).setAnimationListener(new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {
                 }
@@ -247,8 +252,8 @@ public class NavController {
         // NavController 默认的动画
         int resId = defaultNavOptions.getEnterAnim();
         // navigate 动画
-        if (ability.enterNavOptions != null && ability.enterNavOptions.getEnterAnim() != -1) {
-            resId = ability.enterNavOptions.getEnterAnim();
+        if (ability.navOptions != null && ability.navOptions.getEnterAnim() != -1) {
+            resId = ability.navOptions.getEnterAnim();
         }
         // 覆盖动画
         if (ability.overrideEnterAnim != -1) {
@@ -305,8 +310,8 @@ public class NavController {
         // NavController 默认的动画
         int resId = defaultNavOptions.getPopExitAnim();
         // navigate 动画
-        if (ability.enterNavOptions != null && ability.enterNavOptions.getPopExitAnim() != -1) {
-            resId = ability.enterNavOptions.getPopExitAnim();
+        if (ability.navOptions != null && ability.navOptions.getPopExitAnim() != -1) {
+            resId = ability.navOptions.getPopExitAnim();
         }
         // 覆盖动画
         if (ability.overrideExitAnim != -1) {
@@ -373,7 +378,7 @@ public class NavController {
     public void relaunch(Destination destination) {
         Stack<Ability> stack = getStack();
         for (Ability ability : stack) {
-            if (ability != destination.ability) {
+            if (ability != destination.getAbility()) {
                 destroyAbility(ability);
             }
         }
@@ -447,7 +452,7 @@ public class NavController {
         popExitAnim(destroyAbility).setAnimationListener(popExitAnimListener);
         // 如果存在 overrideExitAnim，那么就不显示 popEnterAnim 动画
         if (showAbility != null && destroyAbility.overrideExitAnim < 0) {
-            popEnterAnim(showAbility, destroyAbility.enterNavOptions);
+            popEnterAnim(showAbility, destroyAbility.navOptions);
         }
     }
 

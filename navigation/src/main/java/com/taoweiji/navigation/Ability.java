@@ -7,6 +7,8 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -31,10 +33,6 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LifecycleRegistry;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import static android.view.View.NO_ID;
 
 public abstract class Ability implements LifecycleOwner {
@@ -48,8 +46,7 @@ public abstract class Ability implements LifecycleOwner {
     private CharSequence title;
     int overrideEnterAnim = -1;
     int overrideExitAnim = -1;
-    NavOptions enterNavOptions;
-    final Map<Integer, NavOptions> navOptionsMap = new HashMap<>();
+    NavOptions navOptions;
 
     public Ability() {
         initLifecycle();
@@ -274,6 +271,9 @@ public abstract class Ability implements LifecycleOwner {
     }
 
     public CharSequence getTitle() {
+        if (toolbarWrapper.getToolbar() != null) {
+            return toolbarWrapper.getToolbar().getTitle();
+        }
         return title;
     }
 
@@ -438,5 +438,13 @@ public abstract class Ability implements LifecycleOwner {
     public void overridePendingTransition(int enterAnim, int exitAnim) {
         this.overrideEnterAnim = enterAnim;
         this.overrideExitAnim = exitAnim;
+    }
+
+    public final void runOnUiThread(Runnable action) {
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            new Handler(Looper.getMainLooper()).post(action);
+        } else {
+            action.run();
+        }
     }
 }

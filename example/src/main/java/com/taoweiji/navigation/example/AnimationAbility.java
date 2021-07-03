@@ -69,14 +69,7 @@ public class AnimationAbility extends Ability {
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int[] location = new int[2];
-                    v.getLocationInWindow(location);
-                    Bundle bundle = new BundleBuilder()
-                            .put("x", location[0]).put("y", location[1])
-                            .put("width", v.getWidth()).put("height", v.getHeight())
-                            .put("url", url)
-                            .build();
-                    NavController.findNavController(v).navigate(Destination.with(new ImageAbility(), bundle));
+                    ImageAbility.start(v, url);
                 }
             });
             Glide.with(parent.getContext()).load(url).into(imageView);

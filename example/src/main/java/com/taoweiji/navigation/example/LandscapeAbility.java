@@ -107,9 +107,6 @@ public class LandscapeAbility extends Ability {
     @Override
     protected void onResume() {
         super.onResume();
-        if (surfaceView.getHolder().isCreating()) {
-            mediaPlayer.setDisplay(surfaceView.getHolder());
-        }
     }
 
     @Override

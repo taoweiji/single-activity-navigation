@@ -2,91 +2,78 @@ package com.taoweiji.navigation;
 
 import androidx.annotation.AnimRes;
 import androidx.annotation.AnimatorRes;
-import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 
-/**
- * 完全兼容 androidx 的 NavOptions，实现跳转动画
- */
+
 public class NavOptions {
-    public static NavOptions LEFT_RIGHT = new NavOptions.Builder()
-            .setEnterAnim(R.anim.ability_default_enter_anim)
-            .setExitAnim(R.anim.ability_default_exit_anim)
-            .setPopEnterAnim(R.anim.ability_default_pop_enter_anim)
-            .setPopExitAnim(R.anim.ability_default_pop_exit_anim)
+    public static NavOptions UP_DOWN = new NavOptions.Builder()
+            .setEnterAnim(R.anim.slide_in_up)
+            .setExitAnim(0)
+            .setPopEnterAnim(0)
+            .setPopExitAnim(R.anim.slide_out_down)
             .build();
-    public static NavOptions TOP_DOWN = null;
+
+    public static NavOptions LEFT_RIGHT = new NavOptions.Builder()
+            .setEnterAnim(R.anim.ability_left_right_enter_anim)
+            .setExitAnim(R.anim.ability_left_right_exit_anim)
+            .setPopEnterAnim(R.anim.ability_left_right_pop_enter_anim)
+            .setPopExitAnim(R.anim.ability_left_right_pop_exit_anim)
+            .build();
+
+    public static NavOptions DEFAULT = new NavOptions.Builder()
+            .setEnterAnim(R.anim.activity_open_enter)
+            .setExitAnim(R.anim.activity_open_exit)
+            .setPopEnterAnim(R.anim.activity_close_enter)
+            .setPopExitAnim(R.anim.activity_close_exit)
+            .build();
+
     public static NavOptions NONE = new NavOptions.Builder()
             .setEnterAnim(0)
             .setExitAnim(0)
             .setPopEnterAnim(0)
             .setPopExitAnim(0)
             .build();
-    public static NavOptions DEFAULT = LEFT_RIGHT;
 
 
-    private boolean mSingleTop;
-    @IdRes
-    private int mPopUpTo;
-    private boolean mPopUpToInclusive;
-    @AnimRes
-    @AnimatorRes
-    private int mEnterAnim;
-    @AnimRes
-    @AnimatorRes
-    private int mExitAnim;
-    @AnimRes
-    @AnimatorRes
-    private int mPopEnterAnim;
-    @AnimRes
-    @AnimatorRes
-    private int mPopExitAnim;
+//    public static NavOptions getSystem(Context context) {
+//        if (SYSTEM != null) return SYSTEM;
+//        int activity_open_enter = context.getResources().getIdentifier("@android:anim/activity_open_enter", null, context.getPackageName());
+//        int activity_open_exit = context.getResources().getIdentifier("@android:anim/activity_open_exit", null, context.getPackageName());
+//        int activity_close_enter = context.getResources().getIdentifier("@android:anim/activity_close_enter", null, context.getPackageName());
+//        int activity_close_exit = context.getResources().getIdentifier("@android:anim/activity_close_exit", null, context.getPackageName());
+//        if (activity_open_enter == 0 || activity_open_exit == 0 || activity_close_enter == 0 || activity_close_exit == 0) {
+//            return DEFAULT;
+//        }
+//        SYSTEM = new NavOptions.Builder().setEnterAnim(activity_open_enter)
+//                .setExitAnim(activity_open_exit)
+//                .setPopEnterAnim(activity_close_enter)
+//                .setPopExitAnim(activity_close_exit).build();
+//        return SYSTEM;
+//    }
 
-    NavOptions(boolean singleTop, @IdRes int popUpTo, boolean popUpToInclusive,
-               @AnimRes @AnimatorRes int enterAnim, @AnimRes @AnimatorRes int exitAnim,
-               @AnimRes @AnimatorRes int popEnterAnim, @AnimRes @AnimatorRes int popExitAnim) {
-        mSingleTop = singleTop;
-        mPopUpTo = popUpTo;
-        mPopUpToInclusive = popUpToInclusive;
+
+    @AnimRes
+    @AnimatorRes
+    private final int mEnterAnim;
+    @AnimRes
+    @AnimatorRes
+    private final int mExitAnim;
+    @AnimRes
+    @AnimatorRes
+    private final int mPopEnterAnim;
+    @AnimRes
+    @AnimatorRes
+    private final int mPopExitAnim;
+
+    NavOptions(
+            @AnimRes @AnimatorRes int enterAnim, @AnimRes @AnimatorRes int exitAnim,
+            @AnimRes @AnimatorRes int popEnterAnim, @AnimRes @AnimatorRes int popExitAnim) {
         mEnterAnim = enterAnim;
         mExitAnim = exitAnim;
         mPopEnterAnim = popEnterAnim;
         mPopExitAnim = popExitAnim;
     }
 
-    /**
-     * Whether this navigation action should launch as single-top (i.e., there will be at most
-     * one copy of a given destination on the top of the back stack).
-     * <p>
-     * This functions similarly to how {@link android.content.Intent#FLAG_ACTIVITY_SINGLE_TOP}
-     * works with activites.
-     */
-    public boolean shouldLaunchSingleTop() {
-        return mSingleTop;
-    }
-
-    /**
-     * The destination to pop up to before navigating. When set, all non-matching destinations
-     * should be popped from the back stack.
-     *
-     * @return the destinationId to pop up to, clearing all intervening destinations
-     * @see Builder#setPopUpTo
-     * @see #isPopUpToInclusive
-     */
-    @IdRes
-    public int getPopUpTo() {
-        return mPopUpTo;
-    }
-
-    /**
-     * Whether the destination set in {@link #getPopUpTo} should be popped from the back stack.
-     *
-     * @see Builder#setPopUpTo
-     * @see #getPopUpTo
-     */
-    public boolean isPopUpToInclusive() {
-        return mPopUpToInclusive;
-    }
 
     /**
      * The custom enter Animation/Animator that should be run.
@@ -139,20 +126,16 @@ public class NavOptions {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         NavOptions that = (NavOptions) o;
-        return mSingleTop == that.mSingleTop
-                && mPopUpTo == that.mPopUpTo
-                && mPopUpToInclusive == that.mPopUpToInclusive
-                && mEnterAnim == that.mEnterAnim
-                && mExitAnim == that.mExitAnim
-                && mPopEnterAnim == that.mPopEnterAnim
-                && mPopExitAnim == that.mPopExitAnim;
+        return
+                mEnterAnim == that.mEnterAnim
+                        && mExitAnim == that.mExitAnim
+                        && mPopEnterAnim == that.mPopEnterAnim
+                        && mPopExitAnim == that.mPopExitAnim;
     }
 
     @Override
     public int hashCode() {
-        int result = shouldLaunchSingleTop() ? 1 : 0;
-        result = 31 * result + getPopUpTo();
-        result = 31 * result + (isPopUpToInclusive() ? 1 : 0);
+        int result = 1;
         result = 31 * result + getEnterAnim();
         result = 31 * result + getExitAnim();
         result = 31 * result + getPopEnterAnim();
@@ -164,10 +147,6 @@ public class NavOptions {
      * Builder for constructing new instances of NavOptions.
      */
     public static final class Builder {
-        boolean mSingleTop;
-        @IdRes
-        int mPopUpTo = -1;
-        boolean mPopUpToInclusive;
         @AnimRes
         @AnimatorRes
         int mEnterAnim = -1;
@@ -182,36 +161,6 @@ public class NavOptions {
         int mPopExitAnim = -1;
 
         public Builder() {
-        }
-
-        /**
-         * Launch a navigation target as single-top if you are making a lateral navigation
-         * between instances of the same target (e.g. detail pages about similar data items)
-         * that should not preserve history.
-         *
-         * @param singleTop true to launch as single-top
-         */
-        @NonNull
-        public Builder setLaunchSingleTop(boolean singleTop) {
-            mSingleTop = singleTop;
-            return this;
-        }
-
-        /**
-         * Pop up to a given destination before navigating. This pops all non-matching destinations
-         * from the back stack until this destination is found.
-         *
-         * @param destinationId The destination to pop up to, clearing all intervening destinations.
-         * @param inclusive     true to also pop the given destination from the back stack.
-         * @return this Builder
-         * @see NavOptions#getPopUpTo
-         * @see NavOptions#isPopUpToInclusive
-         */
-        @NonNull
-        public Builder setPopUpTo(@IdRes int destinationId, boolean inclusive) {
-            mPopUpTo = destinationId;
-            mPopUpToInclusive = inclusive;
-            return this;
         }
 
         /**
@@ -281,8 +230,7 @@ public class NavOptions {
          */
         @NonNull
         public NavOptions build() {
-            return new NavOptions(mSingleTop, mPopUpTo, mPopUpToInclusive,
-                    mEnterAnim, mExitAnim, mPopEnterAnim, mPopExitAnim);
+            return new NavOptions(mEnterAnim, mExitAnim, mPopEnterAnim, mPopExitAnim);
         }
     }
 }

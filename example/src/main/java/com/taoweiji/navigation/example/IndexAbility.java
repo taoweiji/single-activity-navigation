@@ -78,7 +78,9 @@ public class IndexAbility extends Ability {
         });
         adapter.add("在 ViewPager 使用 AbilityPageAdapter", () -> nav.navigate(new ViewPagerAbility()));
         adapter.add("搭配BottomNavigationView实现多tab切换", () -> nav.navigate(new BottomNavigationViewAbility()));
-        adapter.add("实现复杂的转场动画", () -> nav.navigate(new AnimationAbility()));
+        adapter.add("转场动画", () -> nav.navigate(new TransitionAnimationAbility()));
+        adapter.add("自定义复杂转场动画", () -> nav.navigate(new AnimationAbility()));
+        adapter.add("横屏视频播放", () -> nav.navigate(new LandscapeAbility()));
         adapter.add("开启沉浸模式", () -> nav.navigate(new ImmerseAbility()));
         adapter.add("全屏模式", () -> nav.navigate(new FullScreenAbility()));
         adapter.add("AbilityBuilder 跳转", () -> nav.navigate(new AbilityBuilder() {
@@ -138,11 +140,11 @@ public class IndexAbility extends Ability {
         });
 //        adapter.add("DialogAbility", () -> nav.navigate(new TestDialogAbility()));
 //        adapter.add("BottomSheetDialogAbility", () -> nav.navigate(new TestBottomSheetDialogAbility()));
-//        adapter.add("复杂的转场动画", () -> nav.navigate(new FullScreenAbility()));
+
         adapter.add("Lifecycle、LiveData 实现 MVVM", () -> nav.navigate(new MvvmAbility()));
 
         adapter.add("设置背景、状态栏颜色等", () -> nav.navigate(new UiAbility()));
-        adapter.add("横屏视频播放", () -> nav.navigate(new LandscapeAbility()));
+
         adapter.add("发送页面消息通知", () -> nav.navigate(new EventFirstAbility()));
         adapter.add("监听 Ability 的生命周期", () -> nav.navigate(new LifecycleAbility()));
         adapter.add("全局监听 Ability 的生命周期", () -> nav.navigate(new GlobalLifecycleAbility()));

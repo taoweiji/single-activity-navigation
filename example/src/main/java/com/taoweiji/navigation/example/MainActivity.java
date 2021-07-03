@@ -1,23 +1,13 @@
 package com.taoweiji.navigation.example;
 
-import android.content.res.Configuration;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.webkit.WebView;
 
-import com.taoweiji.navigation.AbilityRouteBuilder;
 import com.taoweiji.navigation.Destination;
 import com.taoweiji.navigation.FragmentAbility;
 import com.taoweiji.navigation.NavController;
 import com.taoweiji.navigation.NavControllerActivity;
+import com.taoweiji.navigation.NavOptions;
 import com.taoweiji.navigation.example.mvvm.MvvmAbility;
-
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class MainActivity extends NavControllerActivity {
@@ -30,15 +20,16 @@ public class MainActivity extends NavControllerActivity {
                 .registerRoute("weather", context -> new MvvmAbility())
                 .registerRoute("fragment", context -> new FragmentAbility(new SimpleFragment()))
                 .onGenerateRoute((context, destination) -> {
-                    if (destination.uri != null && destination.uri.getPath().equals("/hello")) {
-                        destination.arguments.putString("msg", destination.uri.getQueryParameter("msg"));
+                    if (destination.getUri() != null && destination.getUri().getPath().equals("/hello")) {
+                        destination.getArguments().putString("msg", destination.getUri().getQueryParameter("msg"));
                         return new UserAbility();
-                    } else if (destination.uri != null) {
-                        String name = destination.uri.getPath();
-                        destination.name = name.substring(1);
+                    } else if (destination.getUri() != null) {
+                        String name = destination.getUri().getPath();
+                        destination.setName(name.substring(1));
                     }
                     return null;
-                }).defaultDestination(Destination.with("index"));
+                }).defaultDestination(Destination.with("index"))
+                .defaultNavOptions(NavOptions.DEFAULT);
     }
 
     @Override
