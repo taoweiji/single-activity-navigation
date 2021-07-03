@@ -31,8 +31,8 @@ public class AnimationAbility extends Ability {
         ListView listView = new ListView(getContext());
         MyAdapter adapter = new MyAdapter();
         adapter.urls.add("https://k.zol-img.com.cn/dcbbs/15926/a15925795_s.jpg");
-        adapter.urls.add("https://k.zol-img.com.cn/dcbbs/15926/a15925795_s.jpg");
-        adapter.urls.add("https://k.zol-img.com.cn/dcbbs/15926/a15925795_s.jpg");
+        adapter.urls.add("https://alifei03.cfp.cn/creative/vcg/veer/800/new/VCG41N677399580.jpg");
+        adapter.urls.add("https://alifei05.cfp.cn/creative/vcg/veer/800/new/VCG41N857293320.jpg");
         adapter.urls.add("https://k.zol-img.com.cn/dcbbs/15926/a15925795_s.jpg");
         adapter.urls.add("https://k.zol-img.com.cn/dcbbs/15926/a15925795_s.jpg");
         adapter.urls.add("https://k.zol-img.com.cn/dcbbs/15926/a15925795_s.jpg");
@@ -75,7 +75,7 @@ public class AnimationAbility extends Ability {
                             .put("width", v.getWidth()).put("height", v.getHeight())
                             .put("url", url)
                             .build();
-                    NavController.findNavController(v).navigate(Destination.with(new ImageAbility(), bundle), false);
+                    NavController.findNavController(v).navigate(Destination.with(new ImageAbility(), bundle));
                 }
             });
             Glide.with(parent.getContext()).load(url).into(imageView);

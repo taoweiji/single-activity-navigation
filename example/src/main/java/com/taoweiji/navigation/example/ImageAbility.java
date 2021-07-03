@@ -1,5 +1,7 @@
 package com.taoweiji.navigation.example;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.graphics.Color;
@@ -8,7 +10,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -26,13 +27,17 @@ public class ImageAbility extends Ability {
     private int topMargin;
     private int width;
     private int height;
+    private int targetTopMargin;
+    private ImageView imageView;
+    private int screenWidth;
 
     @Override
     protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         setContentViewMarginTop(0);
         setBackgroundColor(Color.TRANSPARENT);
+        setToolbarBackgroundColor(Color.TRANSPARENT);
         RelativeLayout relativeLayout = new RelativeLayout(getContext());
-        ImageView imageView = new ImageView(getContext());
+        this.imageView = new ImageView(getContext());
         this.leftMargin = getArguments().getInt("x");
         this.topMargin = getArguments().getInt("y");
         this.width = getArguments().getInt("width");
@@ -43,9 +48,17 @@ public class ImageAbility extends Ability {
         lp.topMargin = topMargin;
         relativeLayout.addView(imageView, lp);
         Glide.with(getContext()).load(url).into(imageView);
-        int screenWidth = ViewUtils.getScreenWidth(getContext());
-        int targetTopMargin = ViewUtils.dp2px(getContext(), 56) + ViewUtils.getStatusBarHeight(getContext());
-        ValueAnimator objectAnimator = ObjectAnimator.ofFloat(0, 1);
+        this.screenWidth = ViewUtils.getScreenWidth(getContext());
+        int screenHeight = ViewUtils.getScreenHeight(getContext());
+        int targetHeight = (int) (height / (float) width * screenWidth);
+        this.targetTopMargin = (screenHeight - targetHeight) / 2;
+        startAnimation(0, 1);
+        overridePendingTransition(0, 0);
+        return relativeLayout;
+    }
+
+    private ValueAnimator startAnimation(float f0, float f1) {
+        ValueAnimator objectAnimator = ObjectAnimator.ofFloat(f0, f1);
         objectAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -63,12 +76,16 @@ public class ImageAbility extends Ability {
         });
         objectAnimator.setDuration(300);
         objectAnimator.start();
-        return relativeLayout;
+        return objectAnimator;
     }
 
     @Override
     public void finish() {
-        super.finish();
-
+        startAnimation(1, 0).addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                ImageAbility.super.finish();
+            }
+        });
     }
 }

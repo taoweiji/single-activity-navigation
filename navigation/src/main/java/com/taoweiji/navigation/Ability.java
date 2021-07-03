@@ -42,6 +42,8 @@ public abstract class Ability implements LifecycleOwner {
     private boolean createViewed;
     private final ToolbarAndStatusBarWrapper toolbarWrapper = new ToolbarAndStatusBarWrapper(this);
     private CharSequence title;
+    int enterAnim = -1;
+    int exitAnim = -1;
 
     public Ability() {
         initLifecycle();
@@ -235,7 +237,6 @@ public abstract class Ability implements LifecycleOwner {
 
     boolean finished = false;
 
-    @CallSuper
     public void finish() {
         if (finished) {
             return;
@@ -354,7 +355,6 @@ public abstract class Ability implements LifecycleOwner {
     }
 
     /**
-     *
      * @param style {@link StatusBarHelper#STYLE_WHITE,StatusBarHelper#STYLE_BLACK,StatusBarHelper#STYLE_FULLSCREEN,StatusBarHelper#STYLE_FULLSCREEN_WITHOUT_CUTOUT}
      */
     public void setStatusBarStyle(@StatusBarHelper.Style int style) {
@@ -428,7 +428,9 @@ public abstract class Ability implements LifecycleOwner {
     public void showDialog(Dialog dialog) {
         // TODO
     }
+
     public void overridePendingTransition(int enterAnim, int exitAnim) {
-        // TODO
+        this.enterAnim = enterAnim;
+        this.exitAnim = exitAnim;
     }
 }

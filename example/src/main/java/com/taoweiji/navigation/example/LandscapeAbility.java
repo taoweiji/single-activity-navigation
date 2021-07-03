@@ -3,7 +3,6 @@ package com.taoweiji.navigation.example;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,6 +25,7 @@ import java.io.IOException;
 
 public class LandscapeAbility extends Ability {
     private MediaPlayer mediaPlayer;
+    private SurfaceView surfaceView;
 
     @Override
     protected void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
@@ -44,14 +44,14 @@ public class LandscapeAbility extends Ability {
     protected void onViewCreated(View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // 设置标题栏为透明
-        getToolbar().setBackgroundColor(Color.TRANSPARENT);
+        setToolbarBackgroundColor(Color.TRANSPARENT);
         // 隐藏状态栏
         getToolbar().setVisibility(View.GONE);
         // 让页面内容置顶
         setContentViewMarginTop(0);
         // 设置全屏
         setStatusBarStyle(StatusBarHelper.STYLE_FULLSCREEN);
-        SurfaceView surfaceView = findViewById(R.id.surface_view);
+        this.surfaceView = findViewById(R.id.surface_view);
         Handler uiHandler = new Handler(Looper.getMainLooper());
 
         surfaceView.setOnClickListener(new View.OnClickListener() {
@@ -71,24 +71,23 @@ public class LandscapeAbility extends Ability {
         });
 
         mediaPlayer = new MediaPlayer();
-
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                mediaPlayer.setDataSource(getContext().getAssets().openFd("video_demo2.mp4"));
+            }
+            mediaPlayer.prepareAsync();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         surfaceView.getHolder().addCallback(new SurfaceHolder.Callback2() {
             @Override
             public void surfaceRedrawNeeded(@NonNull SurfaceHolder holder) {
-
             }
 
             @Override
             public void surfaceCreated(@NonNull SurfaceHolder holder) {
-                try {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        mediaPlayer.setDataSource(getContext().getAssets().openFd("video_demo2.mp4"));
-                    }
-                    mediaPlayer.prepare();
-                    mediaPlayer.setDisplay(holder);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                mediaPlayer.setDisplay(holder);
+                mediaPlayer.start();
             }
 
             @Override
@@ -98,12 +97,25 @@ public class LandscapeAbility extends Ability {
 
             @Override
             public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
-
+                if (mediaPlayer.isPlaying()) {
+                    mediaPlayer.pause();
+                }
             }
         });
-        mediaPlayer.setOnPreparedListener(MediaPlayer::start);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (surfaceView.getHolder().isCreating()) {
+            mediaPlayer.setDisplay(surfaceView.getHolder());
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
 
     @Override
     public void finish() {

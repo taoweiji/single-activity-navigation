@@ -205,6 +205,10 @@ public class NavController {
             ability.performOnNewArguments(destination.arguments);
         }
         ability.performOnResume();
+        if (ability.enterAnim == 0) {
+            // TODO
+            animation = false;
+        }
         if (stackTop != null && animation) {
             int width = viewContainer.getWidth();
             moveAnimation(ability.getViewParent(), 200, width, 0f).addListener(new AnimatorListenerAdapter() {
@@ -339,6 +343,11 @@ public class NavController {
             destroyAbility.performOnDestroy();
             viewContainer.removeAbility(destroyAbility);
         };
+
+        if (destroyAbility.exitAnim == 0) {
+            // TODO
+            animation = false;
+        }
         if (animation) {
             moveAnimation(destroyAbility.getViewParent(), 200, 0f, viewContainer.getWidth()).addListener(new AnimatorListenerAdapter() {
                 @Override
