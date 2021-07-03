@@ -38,6 +38,7 @@ public class ImageAbility extends Ability {
         setToolbarBackgroundColor(Color.TRANSPARENT);
         RelativeLayout relativeLayout = new RelativeLayout(getContext());
         this.imageView = new ImageView(getContext());
+        imageView.setClickable(true);
         this.leftMargin = getArguments().getInt("x");
         this.topMargin = getArguments().getInt("y");
         this.width = getArguments().getInt("width");
@@ -54,6 +55,7 @@ public class ImageAbility extends Ability {
         this.targetTopMargin = (screenHeight - targetHeight) / 2;
         startAnimation(0, 1);
         overridePendingTransition(0, 0);
+        relativeLayout.setOnClickListener(v -> finish());
         return relativeLayout;
     }
 

@@ -1,8 +1,5 @@
 package com.taoweiji.navigation;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,8 +8,12 @@ import android.os.Looper;
 import android.os.Message;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -27,22 +28,25 @@ import java.util.WeakHashMap;
 public class NavController {
     private final Map<String, AbilityRouteBuilder> routes;
     private final ViewContainer viewContainer;
+    @NonNull
     private final NavOptions defaultNavOptions;
     private final GenerateRoute onGenerateRoute;
     final Context context;
     static Map<Integer, FragmentAbility> fragmentAbilityMap = new WeakHashMap<>();
     private final LifecycleEventObserver activityEventObserver;
 
-    private NavController(FrameLayout container, Map<String, AbilityRouteBuilder> routes, NavOptions defaultNavOptions, GenerateRoute onGenerateRoute, Destination defaultDestination) {
-        if (defaultNavOptions == null) {
-            defaultNavOptions = NavOptions.DEFAULT;
-        }
-        if (routes == null) {
-            routes = new HashMap<>();
-        }
+    private NavController(FrameLayout container, Map<String, AbilityRouteBuilder> routes, @Nullable NavOptions defaultNavOptions, GenerateRoute onGenerateRoute, Destination defaultDestination) {
         this.viewContainer = new ViewContainer(container);
-        this.routes = routes;
-        this.defaultNavOptions = defaultNavOptions;
+        if (routes != null) {
+            this.routes = routes;
+        } else {
+            this.routes = new HashMap<>();
+        }
+        if (defaultNavOptions != null) {
+            this.defaultNavOptions = defaultNavOptions;
+        } else {
+            this.defaultNavOptions = NavOptions.DEFAULT;
+        }
         this.onGenerateRoute = onGenerateRoute;
         this.context = container.getContext();
         this.activityEventObserver = (source, event) -> {
@@ -156,9 +160,6 @@ public class NavController {
         return navigate(Destination.with(ability, arguments));
     }
 
-    public AbilityResultContracts navigate(Destination destination) {
-        return navigate(destination, true);
-    }
 
     private void handleDestination(Destination destination) {
         if (destination.ability != null) {
@@ -178,7 +179,7 @@ public class NavController {
         }
     }
 
-    public AbilityResultContracts navigate(Destination destination, boolean animation) {
+    public AbilityResultContracts navigate(Destination destination) {
         handleDestination(destination);
         Ability ability = destination.ability;
         if (ability == null) {
@@ -191,6 +192,7 @@ public class NavController {
             ability.performOnNewArguments(destination.arguments);
             return new AbilityResultContracts();
         }
+        ability.enterNavOptions = destination.navOptions;
         AbilityResultContracts abilityResultContracts = new AbilityResultContracts();
         if (stackTop != null) {
             stackTop.performOnPause();
@@ -205,36 +207,119 @@ public class NavController {
             ability.performOnNewArguments(destination.arguments);
         }
         ability.performOnResume();
-        if (ability.enterAnim == 0) {
-            // TODO
-            animation = false;
-        }
-        if (stackTop != null && animation) {
-            int width = viewContainer.getWidth();
-            moveAnimation(ability.getViewParent(), 200, width, 0f).addListener(new AnimatorListenerAdapter() {
+        // 如果当前栈内无页面或者页面自定义
+        Animation.AnimationListener enterAnimListener = new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                abilityResultContracts.setNavigationEnd();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        };
+        enterAnim(ability, stackTop == null).setAnimationListener(enterAnimListener);
+        if (stackTop != null && ability.overrideEnterAnim < 0) {
+            exitAnim(stackTop, ability.enterNavOptions).setAnimationListener(new Animation.AnimationListener() {
                 @Override
-                public void onAnimationEnd(Animator animation) {
-                    abilityResultContracts.setNavigationEnd();
+                public void onAnimationStart(Animation animation) {
                 }
-            });
-            moveAnimation(stackTop.getViewParent(), 400, 0f, -width).addListener(new AnimatorListenerAdapter() {
+
                 @Override
-                public void onAnimationEnd(Animator animation, boolean isReverse) {
+                public void onAnimationEnd(Animation animation) {
                     stackTop.getViewParent().setTranslationX(0);
                     stackTop.getViewParent().setTranslationY(0);
                 }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                }
             });
-        } else {
-            new Handler(Looper.getMainLooper()).post(abilityResultContracts::setNavigationEnd);
         }
         return abilityResultContracts;
     }
 
-    private ObjectAnimator moveAnimation(View view, long duration, float start, float end) {
-        ObjectAnimator animator = ObjectAnimator.ofFloat(view, "translationX", start, end);
-        animator.setDuration(duration);
-        animator.start();
-        return animator;
+    private Animation enterAnim(Ability ability, boolean forceNoAnimation) {
+        // NavController 默认的动画
+        int resId = defaultNavOptions.getEnterAnim();
+        // navigate 动画
+        if (ability.enterNavOptions != null && ability.enterNavOptions.getEnterAnim() != -1) {
+            resId = ability.enterNavOptions.getEnterAnim();
+        }
+        // 覆盖动画
+        if (ability.overrideEnterAnim != -1) {
+            resId = ability.overrideEnterAnim;
+        }
+        if (forceNoAnimation) {
+            resId = 0;
+        }
+        Animation animation;
+        if (resId == 0 || resId == -1) {
+            animation = new TranslateAnimation(0, 0, 0, 0);
+        } else {
+            animation = AnimationUtils.loadAnimation(getActivity(), resId);
+        }
+        ability.getViewParent().startAnimation(animation);
+        return animation;
+    }
+
+    private Animation exitAnim(Ability ability, NavOptions navOptions) {
+        // NavController 默认的动画
+        int resId = defaultNavOptions.getExitAnim();
+        // navigate 动画
+        if (navOptions != null && navOptions.getExitAnim() != -1) {
+            resId = navOptions.getExitAnim();
+        }
+        Animation animation;
+        if (resId == 0 || resId == -1) {
+            animation = new TranslateAnimation(0, 0, 0, 0);
+        } else {
+            animation = AnimationUtils.loadAnimation(getActivity(), resId);
+        }
+        ability.getViewParent().startAnimation(animation);
+        return animation;
+    }
+
+    private Animation popEnterAnim(Ability ability, NavOptions navOptions) {
+        // NavController 默认的动画
+        int resId = defaultNavOptions.getPopEnterAnim();
+        // navigate 动画
+        if (navOptions != null && navOptions.getPopEnterAnim() != -1) {
+            resId = navOptions.getPopEnterAnim();
+        }
+        Animation animation;
+        if (resId == 0 || resId == -1) {
+            animation = new TranslateAnimation(0, 0, 0, 0);
+        } else {
+            animation = AnimationUtils.loadAnimation(getActivity(), resId);
+        }
+        ability.getViewParent().startAnimation(animation);
+        return animation;
+    }
+
+    private Animation popExitAnim(Ability ability) {
+        // NavController 默认的动画
+        int resId = defaultNavOptions.getPopExitAnim();
+        // navigate 动画
+        if (ability.enterNavOptions != null && ability.enterNavOptions.getPopExitAnim() != -1) {
+            resId = ability.enterNavOptions.getPopExitAnim();
+        }
+        // 覆盖动画
+        if (ability.overrideExitAnim != -1) {
+            resId = ability.overrideExitAnim;
+        }
+        Animation animation;
+        if (resId == 0 || resId == -1) {
+            animation = new TranslateAnimation(0, 0, 0, 0);
+        } else {
+            animation = AnimationUtils.loadAnimation(getActivity(), resId);
+        }
+        ability.getViewParent().startAnimation(animation);
+        return animation;
     }
 
     public int getStackCount() {
@@ -292,7 +377,7 @@ public class NavController {
                 destroyAbility(ability);
             }
         }
-        navigate(destination, false);
+        navigate(destination);
     }
 
 
@@ -304,7 +389,7 @@ public class NavController {
 
     public void pop() {
         if (canBack()) {
-            popInner(true);
+            popInner();
         }
     }
 
@@ -323,13 +408,13 @@ public class NavController {
         int index = stack.indexOf(ability);
         if (index < 0) return;
         if (index == stack.size() - 1) {
-            popInner(true);
+            popInner();
         } else {
             destroyAbility(ability);
         }
     }
 
-    void popInner(boolean animation) {
+    void popInner() {
         if (getStackCount() == 0) {
             return;
         }
@@ -343,27 +428,26 @@ public class NavController {
             destroyAbility.performOnDestroy();
             viewContainer.removeAbility(destroyAbility);
         };
+        Animation.AnimationListener popExitAnimListener = new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
 
-        if (destroyAbility.exitAnim == 0) {
-            // TODO
-            animation = false;
-        }
-        if (animation) {
-            moveAnimation(destroyAbility.getViewParent(), 200, 0f, viewContainer.getWidth()).addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    runnable.run();
-                }
-            });
-            if (showAbility != null) {
-                moveAnimation(showAbility.getViewParent(), 200, -viewContainer.getWidth(), 0f);
             }
-        } else {
-            runnable.run();
-            if (showAbility != null) {
-                showAbility.getViewParent().setTranslationX(0);
-                showAbility.getViewParent().setTranslationY(0);
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                runnable.run();
             }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        };
+        popExitAnim(destroyAbility).setAnimationListener(popExitAnimListener);
+        // 如果存在 overrideExitAnim，那么就不显示 popEnterAnim 动画
+        if (showAbility != null && destroyAbility.overrideExitAnim < 0) {
+            popEnterAnim(showAbility, destroyAbility.enterNavOptions);
         }
     }
 

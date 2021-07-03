@@ -18,6 +18,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.taoweiji.navigation.Ability;
 import com.taoweiji.navigation.Destination;
 import com.taoweiji.navigation.NavController;
+import com.taoweiji.navigation.NavOptions;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -63,7 +64,7 @@ public class BottomNavigationViewAbility extends Ability {
                     currentItem = 3;
                     break;
             }
-            tabNav.navigate(Destination.with(abilities[currentItem]), false);
+            tabNav.navigate(Destination.with(abilities[currentItem]).withNavOptions(NavOptions.NONE));
             return true;
         });
     }

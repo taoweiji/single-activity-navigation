@@ -9,11 +9,20 @@ import androidx.annotation.NonNull;
  * 完全兼容 androidx 的 NavOptions，实现跳转动画
  */
 public class NavOptions {
-
-    public static NavOptions DEFAULT = null;
-    public static NavOptions LEFT_RIGHT = null;
+    public static NavOptions LEFT_RIGHT = new NavOptions.Builder()
+            .setEnterAnim(R.anim.ability_default_enter_anim)
+            .setExitAnim(R.anim.ability_default_exit_anim)
+            .setPopEnterAnim(R.anim.ability_default_pop_enter_anim)
+            .setPopExitAnim(R.anim.ability_default_pop_exit_anim)
+            .build();
     public static NavOptions TOP_DOWN = null;
-    public static NavOptions NONE = null;
+    public static NavOptions NONE = new NavOptions.Builder()
+            .setEnterAnim(0)
+            .setExitAnim(0)
+            .setPopEnterAnim(0)
+            .setPopExitAnim(0)
+            .build();
+    public static NavOptions DEFAULT = LEFT_RIGHT;
 
 
     private boolean mSingleTop;

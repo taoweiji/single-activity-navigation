@@ -46,7 +46,7 @@ public class Destination {
         return destination;
     }
 
-    public Destination navOptions(NavOptions navOptions) {
+    public Destination withNavOptions(NavOptions navOptions) {
         this.navOptions = navOptions;
         return this;
     }

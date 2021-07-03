@@ -19,6 +19,7 @@ import com.taoweiji.navigation.Ability;
 import com.taoweiji.navigation.BundleBuilder;
 import com.taoweiji.navigation.Destination;
 import com.taoweiji.navigation.NavController;
+import com.taoweiji.navigation.NavOptions;
 import com.taoweiji.navigation.ViewUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -64,7 +65,7 @@ public class MultiNavControllerAbility extends Ability {
                     currentItem = 3;
                     break;
             }
-            tabNav.navigate(Destination.with(abilities[currentItem]), false);
+            tabNav.navigate(Destination.with(abilities[currentItem]).withNavOptions(NavOptions.NONE));
             return true;
         });
     }

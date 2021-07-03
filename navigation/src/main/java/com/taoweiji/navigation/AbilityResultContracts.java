@@ -12,7 +12,7 @@ public class AbilityResultContracts {
     private AbilityResultCallback callback;
     private final List<Listener> listeners = new ArrayList<>();
 
-    public AbilityResultContracts() {
+     AbilityResultContracts() {
 //        this.starter = new WeakReference<>(starter);
     }
 

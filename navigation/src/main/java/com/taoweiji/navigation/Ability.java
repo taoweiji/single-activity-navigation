@@ -31,6 +31,10 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LifecycleRegistry;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import static android.view.View.NO_ID;
 
 public abstract class Ability implements LifecycleOwner {
@@ -42,8 +46,10 @@ public abstract class Ability implements LifecycleOwner {
     private boolean createViewed;
     private final ToolbarAndStatusBarWrapper toolbarWrapper = new ToolbarAndStatusBarWrapper(this);
     private CharSequence title;
-    int enterAnim = -1;
-    int exitAnim = -1;
+    int overrideEnterAnim = -1;
+    int overrideExitAnim = -1;
+    NavOptions enterNavOptions;
+    final Map<Integer, NavOptions> navOptionsMap = new HashMap<>();
 
     public Ability() {
         initLifecycle();
@@ -425,12 +431,12 @@ public abstract class Ability implements LifecycleOwner {
     }
 
 
-    public void showDialog(Dialog dialog) {
+    private void showDialog(Dialog dialog) {
         // TODO
     }
 
     public void overridePendingTransition(int enterAnim, int exitAnim) {
-        this.enterAnim = enterAnim;
-        this.exitAnim = exitAnim;
+        this.overrideEnterAnim = enterAnim;
+        this.overrideExitAnim = exitAnim;
     }
 }
