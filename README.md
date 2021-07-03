@@ -8,11 +8,15 @@ Ability 具备 Fragment 的碎片能力，具备和 Fragment 相似的生命周�
 - 支持 Ability、View 和 Fragment 作为页面代替 Activity 实现单 Activity 架构；
 - Ability 支持预渲染，可以有效提高复杂页面跳转性能；
 - 支持嵌套多个 NavController，可以实现 Instagram 的复杂页面结构；
-- 支持配合 ViewModel、Lifecycle、LiveData 实习 MVVM；
+- 支持配合 ViewModel、Lifecycle、LiveData 实现 MVVM；
 - 内置多种转场动画，支持自定义转场动画；
 
 
-https://user-images.githubusercontent.com/3044176/123678884-775a9680-d879-11eb-868b-bdb45912d809.mp4
+
+
+https://user-images.githubusercontent.com/3044176/124356698-f5d48100-dc49-11eb-8dda-8712564841fc.mp4
+
+
 
 
 
