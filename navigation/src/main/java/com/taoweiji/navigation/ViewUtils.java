@@ -1,8 +1,7 @@
 package com.taoweiji.navigation;
 
-import android.app.Activity;
 import android.content.Context;
-import android.view.WindowMetrics;
+import android.view.WindowManager;
 
 public class ViewUtils {
 
@@ -20,11 +19,13 @@ public class ViewUtils {
     }
 
     public static int getScreenWidth(Context context) {
-        return ((Activity) context).getWindowManager().getDefaultDisplay().getWidth();
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        return windowManager.getDefaultDisplay().getWidth();
     }
 
     public static int getScreenHeight(Context context) {
-        return ((Activity) context).getWindowManager().getDefaultDisplay().getHeight();
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        return windowManager.getDefaultDisplay().getHeight();
     }
 
 }

@@ -5,18 +5,21 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 
-class AbilityViewParent extends RelativeLayout {
+public class AbilityViewParent extends FrameLayout {
     NavController navController;
     private final Ability ability;
     private Toolbar toolbar;
     private View content;
     private int contentViewMarginTop = -1;
+    private RelativeLayout contentLayout;
+    private FrameLayout coverLayout;
 
     public AbilityViewParent(@NonNull Context context, @Nullable NavController navController, @NonNull Ability ability) {
         super(context);
@@ -24,6 +27,15 @@ class AbilityViewParent extends RelativeLayout {
         this.ability = ability;
         setClickable(true);
         setBackgroundColor(Color.WHITE);
+        contentLayout = new RelativeLayout(getContext());
+        coverLayout = new FrameLayout(getContext()){
+            @Override
+            protected LayoutParams generateDefaultLayoutParams() {
+                return super.generateDefaultLayoutParams();
+            }
+        };
+        addView(contentLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        addView(coverLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
     }
 
     @Override
@@ -49,36 +61,36 @@ class AbilityViewParent extends RelativeLayout {
         super.finalize();
     }
 
-    public NavController getNavController() {
+    NavController getNavController() {
         return navController;
     }
 
-    public Ability getAbility() {
+    Ability getAbility() {
         return ability;
     }
 
-    public void addContent(View content) {
+    void addContent(View content) {
         this.content = content;
         updateView();
-        this.addView(content, 0);
+        contentLayout.addView(content, 0);
     }
 
     void addToolbar(Toolbar toolbar) {
         toolbar.setId(toolbar.hashCode());
         this.toolbar = toolbar;
-        this.addView(toolbar, getChildCount());
+        contentLayout.addView(toolbar);
         updateView();
     }
 
-    public void setContentViewMarginTop(int marginTop) {
+    void setContentViewMarginTop(int marginTop) {
         this.contentViewMarginTop = marginTop;
         if (content == null) return;
         updateView();
     }
 
-    public void updateView() {
+    private void updateView() {
         if (content == null) return;
-        LayoutParams lp = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         if (contentViewMarginTop >= 0) {
             lp.topMargin = contentViewMarginTop;
         } else if (toolbar != null) {
@@ -87,7 +99,57 @@ class AbilityViewParent extends RelativeLayout {
         content.setLayoutParams(lp);
     }
 
+    public FrameLayout getCoverView() {
+        return coverLayout;
+    }
+
     Toolbar getToolbar() {
         return toolbar;
     }
+
+    /**
+     * {@link #getCoverView()}.
+     */
+    @Deprecated
+    @Override
+    public void addView(View child, int index, ViewGroup.LayoutParams params) {
+        super.addView(child, index, params);
+    }
+
+    /**
+     * {@link #getCoverView()}.
+     */
+    @Deprecated
+    @Override
+    public void addView(View child) {
+        super.addView(child);
+    }
+
+    /**
+     * {@link #getCoverView()}.
+     */
+    @Deprecated
+    @Override
+    public void addView(View child, int index) {
+        super.addView(child, index);
+    }
+
+    /**
+     * {@link #getCoverView()}.
+     */
+    @Deprecated
+    @Override
+    public void addView(View child, int width, int height) {
+        super.addView(child, width, height);
+    }
+
+    /**
+     * {@link #getCoverView()}.
+     */
+    @Deprecated
+    @Override
+    public void addView(View child, ViewGroup.LayoutParams params) {
+        super.addView(child, params);
+    }
+
 }

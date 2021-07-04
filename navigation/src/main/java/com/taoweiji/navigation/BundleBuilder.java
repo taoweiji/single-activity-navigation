@@ -111,4 +111,11 @@ public class BundleBuilder {
     public Bundle build() {
         return bundle;
     }
+
+    public BundleBuilder putAll(Bundle extras) {
+        if (extras != null) {
+            bundle.putAll(extras);
+        }
+        return this;
+    }
 }

@@ -16,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.CallSuper;
@@ -234,7 +235,7 @@ public abstract class Ability implements LifecycleOwner {
         return NavController.findNavController(viewParent);
     }
 
-    public AbilityViewParent getViewParent() {
+    public AbilityViewParent getDecorView() {
         return viewParent;
     }
 
@@ -289,7 +290,7 @@ public abstract class Ability implements LifecycleOwner {
         if (id == NO_ID) {
             return null;
         }
-        return getViewParent().findViewById(id);
+        return getDecorView().findViewById(id);
     }
 
     private boolean resumed = false;
@@ -371,7 +372,7 @@ public abstract class Ability implements LifecycleOwner {
      * @param marginTop 如果是-1，就是默认在Toolbar的下面，如果是 0就是到顶实现沉浸模式
      */
     public void setContentViewMarginTop(int marginTop) {
-        getViewParent().setContentViewMarginTop(marginTop);
+        getDecorView().setContentViewMarginTop(marginTop);
     }
 
     /**
@@ -430,11 +431,6 @@ public abstract class Ability implements LifecycleOwner {
         }
     }
 
-
-    private void showDialog(Dialog dialog) {
-        // TODO
-    }
-
     public void overridePendingTransition(int enterAnim, int exitAnim) {
         this.overrideEnterAnim = enterAnim;
         this.overrideExitAnim = exitAnim;
@@ -446,5 +442,9 @@ public abstract class Ability implements LifecycleOwner {
         } else {
             action.run();
         }
+    }
+
+    public FrameLayout getCoverView() {
+        return getDecorView().getCoverView();
     }
 }

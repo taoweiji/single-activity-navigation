@@ -185,6 +185,7 @@ public class NavController {
     }
 
     public AbilityResultContracts navigate(Destination destination) {
+        checkThread();
         handleDestination(destination);
         Ability ability = destination.getAbility();
         if (ability == null) {
@@ -236,8 +237,8 @@ public class NavController {
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
-                    stackTop.getViewParent().setTranslationX(0);
-                    stackTop.getViewParent().setTranslationY(0);
+                    stackTop.getDecorView().setTranslationX(0);
+                    stackTop.getDecorView().setTranslationY(0);
                 }
 
                 @Override
@@ -246,6 +247,12 @@ public class NavController {
             });
         }
         return abilityResultContracts;
+    }
+
+    private void checkThread() {
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            throw new RuntimeException("必须在主线程执行");
+        }
     }
 
     private Animation enterAnim(Ability ability, boolean forceNoAnimation) {
@@ -268,7 +275,7 @@ public class NavController {
         } else {
             animation = AnimationUtils.loadAnimation(getActivity(), resId);
         }
-        ability.getViewParent().startAnimation(animation);
+        ability.getDecorView().startAnimation(animation);
         return animation;
     }
 
@@ -285,7 +292,7 @@ public class NavController {
         } else {
             animation = AnimationUtils.loadAnimation(getActivity(), resId);
         }
-        ability.getViewParent().startAnimation(animation);
+        ability.getDecorView().startAnimation(animation);
         return animation;
     }
 
@@ -302,7 +309,7 @@ public class NavController {
         } else {
             animation = AnimationUtils.loadAnimation(getActivity(), resId);
         }
-        ability.getViewParent().startAnimation(animation);
+        ability.getDecorView().startAnimation(animation);
         return animation;
     }
 
@@ -323,7 +330,7 @@ public class NavController {
         } else {
             animation = AnimationUtils.loadAnimation(getActivity(), resId);
         }
-        ability.getViewParent().startAnimation(animation);
+        ability.getDecorView().startAnimation(animation);
         return animation;
     }
 
@@ -392,10 +399,12 @@ public class NavController {
         }
     }
 
-    public void pop() {
+    public boolean pop() {
         if (canBack()) {
             popInner();
+            return true;
         }
+        return false;
     }
 
     public interface PopUntil {
@@ -522,14 +531,14 @@ public class NavController {
         }
 
         public void addAbility(Ability ability) {
-            if (viewGroup.indexOfChild(ability.getViewParent()) >= 0) {
-                viewGroup.removeView(ability.getViewParent());
+            if (viewGroup.indexOfChild(ability.getDecorView()) >= 0) {
+                viewGroup.removeView(ability.getDecorView());
             }
-            viewGroup.addView(ability.getViewParent(), ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            viewGroup.addView(ability.getDecorView(), ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         }
 
         public void removeAbility(Ability ability) {
-            viewGroup.removeView(ability.getViewParent());
+            viewGroup.removeView(ability.getDecorView());
         }
 
         public int getWidth() {

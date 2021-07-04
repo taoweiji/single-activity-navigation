@@ -26,8 +26,6 @@ import com.taoweiji.navigation.AbilityBuilder;
 import com.taoweiji.navigation.BundleBuilder;
 import com.taoweiji.navigation.NavController;
 import com.taoweiji.navigation.ViewUtils;
-import com.taoweiji.navigation.example.dialog.TestBottomSheetDialogAbility;
-import com.taoweiji.navigation.example.dialog.TestDialogAbility;
 import com.taoweiji.navigation.example.event.EventFirstAbility;
 import com.taoweiji.navigation.example.mvvm.MvvmAbility;
 import com.taoweiji.navigation.example.result.TestResultAbility;
@@ -138,12 +136,11 @@ public class IndexAbility extends Ability {
                 }
             }).show();
         });
-//        adapter.add("DialogAbility", () -> nav.navigate(new TestDialogAbility()));
-//        adapter.add("BottomSheetDialogAbility", () -> nav.navigate(new TestBottomSheetDialogAbility()));
 
         adapter.add("Lifecycle、LiveData 实现 MVVM", () -> nav.navigate(new MvvmAbility()));
 
         adapter.add("设置背景、状态栏颜色等", () -> nav.navigate(new UiAbility()));
+        adapter.add("覆盖层", () -> nav.navigate(new TestOverViewAbility()));
 
         adapter.add("发送页面消息通知", () -> nav.navigate(new EventFirstAbility()));
         adapter.add("监听 Ability 的生命周期", () -> nav.navigate(new LifecycleAbility()));

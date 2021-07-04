@@ -1,7 +1,6 @@
 package com.taoweiji.navigation;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -20,7 +19,7 @@ public abstract class AbilityPageAdapter extends PagerAdapter {
 
     @Override
     public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
-        return view == ((Ability) object).getViewParent();
+        return view == ((Ability) object).getDecorView();
     }
 
     @NonNull
@@ -28,14 +27,14 @@ public abstract class AbilityPageAdapter extends PagerAdapter {
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         Ability ability = getItem(position);
         ability.prepareCreate(context, null);
-        container.addView(ability.getViewParent());
+        container.addView(ability.getDecorView());
         return ability;
     }
 
     @Override
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         Ability ability = (Ability) object;
-        container.removeView(ability.getViewParent());
+        container.removeView(ability.getDecorView());
     }
 
     public abstract Ability getItem(int position);
