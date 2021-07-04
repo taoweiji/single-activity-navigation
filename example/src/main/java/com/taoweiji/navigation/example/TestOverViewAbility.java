@@ -18,10 +18,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentActivity;
 
 import com.taoweiji.navigation.Ability;
 import com.taoweiji.navigation.ViewUtils;
@@ -35,6 +33,7 @@ public class TestOverViewAbility extends Ability {
     @Override
     protected View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         LinearLayout linearLayout = new LinearLayout(getContext());
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setGravity(Gravity.CENTER);
         Button button = new Button(getContext());
         button.setText("显示覆盖层");
@@ -47,6 +46,16 @@ public class TestOverViewAbility extends Ability {
             }
         });
         linearLayout.addView(button);
+
+        Button button2 = new Button(getContext());
+        button2.setText("显示 BottomSheetAbility");
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new TestBottomSheetAbility().show(findNavController());
+            }
+        });
+        linearLayout.addView(button2);
         return linearLayout;
     }
 
@@ -133,7 +142,7 @@ public class TestOverViewAbility extends Ability {
             drawable.setCornerRadii(new float[]{dp20, dp20, dp20, dp20, 0, 0, 0, 0});
             this.container = new RelativeLayout(getContext());
             container.setBackground(drawable);
-            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, ViewUtils.dp2px(getContext(), 500));
+            LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, ViewUtils.dp2px(getContext(), 500));
             lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
             addView(container, lp);
 
@@ -147,7 +156,7 @@ public class TestOverViewAbility extends Ability {
             imageView.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
             int dp10 = ViewUtils.dp2px(getContext(), 10);
             imageView.setPadding(dp10, dp10, dp10, dp10);
-            RelativeLayout.LayoutParams closeLP = new RelativeLayout.LayoutParams(ViewUtils.dp2px(getContext(), 50), ViewUtils.dp2px(getContext(), 50));
+            LayoutParams closeLP = new LayoutParams(ViewUtils.dp2px(getContext(), 50), ViewUtils.dp2px(getContext(), 50));
             closeLP.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
             container.addView(imageView, closeLP);
         }

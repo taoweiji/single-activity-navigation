@@ -18,8 +18,8 @@ public class AbilityViewParent extends FrameLayout {
     private Toolbar toolbar;
     private View content;
     private int contentViewMarginTop = -1;
-    private RelativeLayout contentLayout;
-    private FrameLayout coverLayout;
+    private final RelativeLayout contentLayout;
+    private final FrameLayout coverLayout;
 
     public AbilityViewParent(@NonNull Context context, @Nullable NavController navController, @NonNull Ability ability) {
         super(context);
@@ -28,7 +28,7 @@ public class AbilityViewParent extends FrameLayout {
         setClickable(true);
         setBackgroundColor(Color.WHITE);
         contentLayout = new RelativeLayout(getContext());
-        coverLayout = new FrameLayout(getContext()){
+        coverLayout = new FrameLayout(getContext()) {
             @Override
             protected LayoutParams generateDefaultLayoutParams() {
                 return super.generateDefaultLayoutParams();
@@ -97,6 +97,10 @@ public class AbilityViewParent extends FrameLayout {
             lp.addRule(RelativeLayout.BELOW, toolbar.getId());
         }
         content.setLayoutParams(lp);
+    }
+
+    public View getContentView() {
+        return content;
     }
 
     public FrameLayout getCoverView() {
