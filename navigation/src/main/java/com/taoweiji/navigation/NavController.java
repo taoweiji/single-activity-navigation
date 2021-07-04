@@ -8,6 +8,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
@@ -329,6 +330,12 @@ public class NavController {
             animation = new TranslateAnimation(0, 0, 0, 0);
         } else {
             animation = AnimationUtils.loadAnimation(getActivity(), resId);
+        }
+
+        // 在页面popEnter进来的同时进行popExit，会出现动画冲突
+        if (ability.getDecorView().getAnimation() != null) {
+            ability.getDecorView().clearAnimation();
+            animation = new AlphaAnimation(1, 1);
         }
         ability.getDecorView().startAnimation(animation);
         return animation;

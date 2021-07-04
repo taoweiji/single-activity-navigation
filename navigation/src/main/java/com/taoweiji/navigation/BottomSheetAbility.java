@@ -19,6 +19,10 @@ public abstract class BottomSheetAbility extends Ability {
     @Override
     protected void onAttach(@NonNull Context context) {
         super.onAttach(context);
+        int displayAnimation = displayAnimation();
+        if (displayAnimation == 0) {
+            return;
+        }
         getToolbar().setVisibility(View.GONE);
         ValueAnimator objectAnimator = ObjectAnimator.ofFloat(0, 1);
         objectAnimator.addUpdateListener(animation -> {
@@ -31,7 +35,7 @@ public abstract class BottomSheetAbility extends Ability {
         });
         objectAnimator.setDuration(300);
         objectAnimator.start();
-        Animation animation = AnimationUtils.loadAnimation(getContext(), displayAnimation());
+        Animation animation = AnimationUtils.loadAnimation(getContext(), displayAnimation);
         getDecorView().getContentLayout().startAnimation(animation);
         if (canceledOnTouchOutside) {
             getDecorView().setOnClickListener(v -> finish());
@@ -58,6 +62,11 @@ public abstract class BottomSheetAbility extends Ability {
 
     @Override
     public void finish() {
+        int dismissAnimation = dismissAnimation();
+        if (dismissAnimation == 0) {
+            super.finish();
+            return;
+        }
         ValueAnimator objectAnimator = ObjectAnimator.ofFloat(1, 0);
         objectAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -95,5 +104,4 @@ public abstract class BottomSheetAbility extends Ability {
     public void setCanceledOnTouchOutside(boolean canceledOnTouchOutside) {
         this.canceledOnTouchOutside = canceledOnTouchOutside;
     }
-
 }
