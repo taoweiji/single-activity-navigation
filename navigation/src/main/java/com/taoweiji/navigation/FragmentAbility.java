@@ -36,6 +36,7 @@ public class FragmentAbility extends Ability {
 
     @Override
     public void onDestroy() {
+        NavController.fragmentAbilityMap.remove(getFragment().hashCode());
         getActivity().getSupportFragmentManager().beginTransaction().remove(fragment).commit();
         super.onDestroy();
     }

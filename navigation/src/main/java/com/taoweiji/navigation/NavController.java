@@ -402,7 +402,10 @@ public class NavController {
 
     public void popUntil(PopUntil popUntil) {
         while (canBack() && !popUntil.popUntil(getStackTop())) {
-            getStackTop().finish();
+            destroyAbility(getStackTop());
+        }
+        if (getStackTop() != null) {
+            getStackTop().performOnResume();
         }
     }
 
