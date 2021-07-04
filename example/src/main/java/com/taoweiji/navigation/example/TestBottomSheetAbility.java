@@ -36,7 +36,7 @@ public class TestBottomSheetAbility extends BottomSheetAbility {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dismiss();
+                finish();
             }
         });
         imageView.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);

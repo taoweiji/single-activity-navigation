@@ -44,6 +44,7 @@ public class AbilityViewParent extends FrameLayout {
         // 如果不是由 NavController 管理，那么就由 View 自己实现管理
         if (navController == null) {
             ability.performOnResume();
+            ability.onAttach(getContext());
         }
     }
 
@@ -53,6 +54,7 @@ public class AbilityViewParent extends FrameLayout {
         // 如果不是由 NavController 管理，那么就由 View 自己实现管理
         if (navController == null) {
             ability.performOnPause();
+            ability.onDetach();
         }
     }
 
@@ -99,8 +101,8 @@ public class AbilityViewParent extends FrameLayout {
         content.setLayoutParams(lp);
     }
 
-    public View getContentView() {
-        return content;
+    View getContentLayout() {
+        return contentLayout;
     }
 
     public FrameLayout getCoverView() {

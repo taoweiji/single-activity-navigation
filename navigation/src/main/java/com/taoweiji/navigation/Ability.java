@@ -444,6 +444,15 @@ public abstract class Ability implements LifecycleOwner {
         }
     }
 
+    @CallSuper
+    protected void onAttach(@NonNull Context context) {
+
+    }
+    @CallSuper
+    public void onDetach() {
+
+    }
+
     public FrameLayout getCoverView() {
         return getDecorView().getCoverView();
     }

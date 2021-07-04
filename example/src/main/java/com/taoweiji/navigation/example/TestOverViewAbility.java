@@ -52,7 +52,7 @@ public class TestOverViewAbility extends Ability {
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new TestBottomSheetAbility().show(findNavController());
+                findNavController().navigate(new TestBottomSheetAbility());
             }
         });
         linearLayout.addView(button2);

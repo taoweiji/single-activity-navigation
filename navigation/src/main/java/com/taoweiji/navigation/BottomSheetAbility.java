@@ -2,18 +2,23 @@ package com.taoweiji.navigation;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.content.Context;
 import android.graphics.Color;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+
+import androidx.annotation.NonNull;
 
 public abstract class BottomSheetAbility extends Ability {
 
     private boolean canceledOnTouchOutside = true;
     private int outsideBackgroundColor = Color.parseColor("#80000000");
 
-    public void show(NavController navController) {
-        navController.navigate(Destination.with(this), NavOptions.NONE);
+
+    @Override
+    protected void onAttach(@NonNull Context context) {
+        super.onAttach(context);
         getToolbar().setVisibility(View.GONE);
         ValueAnimator objectAnimator = ObjectAnimator.ofFloat(0, 1);
         objectAnimator.addUpdateListener(animation -> {
@@ -24,14 +29,19 @@ public abstract class BottomSheetAbility extends Ability {
             int blue = Color.blue(outsideBackgroundColor);
             setBackgroundColor(Color.argb((int) (alpha * value), red, green, blue));
         });
-        objectAnimator.setDuration(400);
+        objectAnimator.setDuration(300);
         objectAnimator.start();
         Animation animation = AnimationUtils.loadAnimation(getContext(), displayAnimation());
-        getDecorView().getContentView().startAnimation(animation);
+        getDecorView().getContentLayout().startAnimation(animation);
         if (canceledOnTouchOutside) {
-            getDecorView().setOnClickListener(v -> dismiss());
+            getDecorView().setOnClickListener(v -> finish());
         }
-        this.setCanceledOnTouchOutside(true);
+    }
+
+    @Override
+    protected void onResume() {
+        overridePendingTransition(0, 0);
+        super.onResume();
     }
 
     protected int displayAnimation() {
@@ -47,11 +57,7 @@ public abstract class BottomSheetAbility extends Ability {
     }
 
     @Override
-    public void onBackPressed() {
-        dismiss();
-    }
-
-    public void dismiss() {
+    public void finish() {
         ValueAnimator objectAnimator = ObjectAnimator.ofFloat(1, 0);
         objectAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -64,7 +70,7 @@ public abstract class BottomSheetAbility extends Ability {
                 setBackgroundColor(Color.argb((int) (alpha * value), red, green, blue));
             }
         });
-        objectAnimator.setDuration(400);
+        objectAnimator.setDuration(300);
         objectAnimator.start();
         Animation animation = AnimationUtils.loadAnimation(getContext(), dismissAnimation());
         animation.setAnimationListener(new Animation.AnimationListener() {
@@ -75,7 +81,7 @@ public abstract class BottomSheetAbility extends Ability {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                finish();
+                BottomSheetAbility.super.finish();
             }
 
             @Override
@@ -83,7 +89,7 @@ public abstract class BottomSheetAbility extends Ability {
 
             }
         });
-        getDecorView().getContentView().startAnimation(animation);
+        getDecorView().getContentLayout().startAnimation(animation);
     }
 
     public void setCanceledOnTouchOutside(boolean canceledOnTouchOutside) {

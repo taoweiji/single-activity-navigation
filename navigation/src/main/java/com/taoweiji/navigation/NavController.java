@@ -535,10 +535,12 @@ public class NavController {
                 viewGroup.removeView(ability.getDecorView());
             }
             viewGroup.addView(ability.getDecorView(), ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            ability.onAttach(viewGroup.getContext());
         }
 
         public void removeAbility(Ability ability) {
             viewGroup.removeView(ability.getDecorView());
+            ability.onDetach();
         }
 
         public int getWidth() {

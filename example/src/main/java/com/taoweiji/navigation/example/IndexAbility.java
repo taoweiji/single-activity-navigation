@@ -82,7 +82,7 @@ public class IndexAbility extends Ability {
         adapter.add("开启沉浸模式", () -> nav.navigate(new ImmerseAbility()));
         adapter.add("全屏模式", () -> nav.navigate(new FullScreenAbility()));
         adapter.add("覆盖层", () -> nav.navigate(new TestOverViewAbility()));
-        adapter.add("BottomSheetAbility", () -> new TestBottomSheetAbility().show(findNavController()));
+        adapter.add("BottomSheetAbility", () -> nav.navigate(new TestBottomSheetAbility()));
         adapter.add("AbilityBuilder 跳转", () -> nav.navigate(new AbilityBuilder() {
             @Override
             public View builder(Context context, Bundle arguments) {
