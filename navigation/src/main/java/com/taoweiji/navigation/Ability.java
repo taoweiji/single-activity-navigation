@@ -104,6 +104,7 @@ public abstract class Ability implements LifecycleOwner {
     @CallSuper
     protected void onStop() {
         mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP);
+        SoftKeyboardHelper.hideSoftKeyboard(getActivity());
     }
 
     @CallSuper
@@ -144,7 +145,11 @@ public abstract class Ability implements LifecycleOwner {
     }
 
     public final FragmentActivity getActivity() {
-        return (FragmentActivity) context;
+        if (context instanceof FragmentActivity) {
+            return (FragmentActivity) context;
+        } else {
+            return null;
+        }
     }
 
 
@@ -448,6 +453,7 @@ public abstract class Ability implements LifecycleOwner {
     protected void onAttach(@NonNull Context context) {
 
     }
+
     @CallSuper
     public void onDetach() {
 

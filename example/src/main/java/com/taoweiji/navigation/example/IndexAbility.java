@@ -145,6 +145,7 @@ public class IndexAbility extends Ability {
         adapter.add("发送页面消息通知", () -> nav.navigate(new EventFirstAbility()));
         adapter.add("监听 Ability 的生命周期", () -> nav.navigate(new LifecycleAbility()));
         adapter.add("全局监听 Ability 的生命周期", () -> nav.navigate(new GlobalLifecycleAbility()));
+        adapter.add("软键盘", () -> nav.navigate(new SoftKeyboardAbility()));
 
         list.setAdapter(adapter);
         list.setOnItemClickListener((parent, view, position, id) -> adapter.tasks.get(position).run());
