@@ -1,21 +1,30 @@
-# single-activity-navigation
+# Android Single Activity Application Framework
 
  [![Maven Central](https://img.shields.io/maven-central/v/io.github.taoweiji.single-activity-navigation/navigation)](https://search.maven.org/search?q=io.github.taoweiji.single-activity-navigation)
 
 
 Ability 具备 Fragment 的碎片能力，具备和 Fragment 相似的生命周期，可以当做 View 去使用。也具备 Activity 丰富的功能，可以作为页面代替 Activity。
 
-- 支持配置路由跳转，支持自定义 uri 跳转；
-- 支持 Ability、View 和 Fragment 作为页面代替 Activity 实现单 Activity 架构；
+- 支持配置 Deep Link，支持外部 url 跳转；
+- 支持 Ability、View 和 Fragment 作为页面；
 - Ability 支持预渲染，可以有效提高复杂页面跳转性能；
-- 支持嵌套多个 NavController，可以实现 Instagram 的复杂页面结构；
+- 支持页面栈嵌套使用，实现 Instagram 的复杂页面结构；
 - 支持配合 ViewModel、Lifecycle、LiveData 实现 MVVM；
 - 内置多种转场动画，支持自定义转场动画；
+- 支持页面之间跳转传递参数，支持申请权限，跳转 Activity 获取返回值；
 
-
+### Ability 解决 Android 存在的问题
+- Activity 性能差，页面启动耗时过程。
+- Activity 受到 Manifest 控制，无法在 Hook 增加页面。
+- Fragment 生命周期不受开发者控制，难以实现理想的生命周期。
+- Fragment、Activity 动画支持较差。
 
 
 https://user-images.githubusercontent.com/3044176/124356698-f5d48100-dc49-11eb-8dda-8712564841fc.mp4
+
+
+
+#### demo二维码
 
 
 
@@ -35,7 +44,7 @@ implementation 'io.github.taoweiji.single-activity-navigation:navigation:+'
 跳转一个新页面就是如此简单
 
 ```java
-NavController nav = new NavController.Builder().create(this, R.id.container);
+NavController nav = new NavController.Builder().create(this, frameLayout);
 nav.navigate(new AbilityBuilder() {
     @Override
     public View builder(Context context, Bundle arguments) {
@@ -235,30 +244,13 @@ public void onViewCreated(View view, Bundle savedInstanceState) {
 
 
 
-### 自定义动画
-
-框架默认的动画是左右的动画，开发者也根据自己的需求开发动画
-
-
-
 ### 在 ViewPager 使用 Ability
 
 
 
-### Ability
+Single-top
 
-为什么不直接使用 Fragment，而要定义新的 Ability？首先框架是支持 Fragment 跳转的，但是也是封装了一层 AbilityFragmentContainer 实现的。Ability 相比 Fragment，还增加预创建能力，我们可以根据业务的需求提高页面的跳转性能，同时也提供了更加简单的方法把数据返回到上一个页面。
+single instance
 
-- 支持页面预创建
-- 返回上一个页面数据更加简单
-
-
-
-
-
-
-
-
-
-
+Single 
 
