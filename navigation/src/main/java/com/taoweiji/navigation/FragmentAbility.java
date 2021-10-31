@@ -24,6 +24,9 @@ public class FragmentAbility extends Ability {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        if (!getArguments().isEmpty()) {
+            fragment.setArguments(getArguments());
+        }
         FrameLayout layout = new FrameLayout(getContext());
         layout.setId(this.hashCode());
         getActivity().getSupportFragmentManager().beginTransaction().add(layout.getId(), fragment, null).commit();

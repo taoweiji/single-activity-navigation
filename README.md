@@ -19,12 +19,19 @@ Ability 具备 Fragment 的碎片能力，具备和 Fragment 相似的生命周�
 - Fragment 生命周期不受开发者控制，难以实现理想的生命周期。
 - Fragment、Activity 动画支持较差。
 
+#### demo二维码
+
+[示例APP下载](https://github.com/taoweiji/single-activity-navigation/releases/download/0.1.0/example-release.apk)
+
+
+![nav](https://user-images.githubusercontent.com/3044176/132284737-1a9ec82a-bcea-40f2-aff4-7382d9f1ccad.png)
+
 
 https://user-images.githubusercontent.com/3044176/124356698-f5d48100-dc49-11eb-8dda-8712564841fc.mp4
 
 
 
-#### demo二维码
+
 
 
 

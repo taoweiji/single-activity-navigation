@@ -77,6 +77,12 @@ public class ViewPagerAbility extends Ability {
             TextView textView = new TextView(getContext());
             textView.setText(text);
             textView.setGravity(Gravity.CENTER);
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    findNavController().navigate(new SimpleAbility());
+                }
+            });
             return textView;
         }
 

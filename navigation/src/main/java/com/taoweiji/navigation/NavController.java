@@ -82,6 +82,9 @@ public class NavController {
     public static NavController findNavController(View view) {
         if (view instanceof AbilityViewParent) {
             AbilityViewParent abilityViewParent = (AbilityViewParent) view;
+            if (abilityViewParent.getNavController() == null) {
+                return findNavController((View) abilityViewParent.getParent());
+            }
             return abilityViewParent.getNavController();
         } else {
             if (view.getParent() instanceof View) {
@@ -238,8 +241,10 @@ public class NavController {
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
-                    stackTop.getDecorView().setTranslationX(0);
-                    stackTop.getDecorView().setTranslationY(0);
+                    if (stackTop.getDecorView() != null) {
+                        stackTop.getDecorView().setTranslationX(0);
+                        stackTop.getDecorView().setTranslationY(0);
+                    }
                 }
 
                 @Override
@@ -331,6 +336,10 @@ public class NavController {
         } else {
             animation = AnimationUtils.loadAnimation(getActivity(), resId);
         }
+//        if (ability.getDecorView() == null){
+//            animation.start();
+//            return animation;
+//        }
 
         // 在页面popEnter进来的同时进行popExit，会出现动画冲突
         if (ability.getDecorView().getAnimation() != null) {
@@ -358,6 +367,14 @@ public class NavController {
         return getStackTop(0);
     }
 
+    public Ability getRootAbility() {
+        Stack<Ability> stack = getStack();
+        if (!stack.isEmpty()) {
+            return stack.get(0);
+        }
+        return null;
+    }
+
     private Ability getStackTop(int dp) {
         Stack<Ability> stack = getStack();
         while (dp > 0 && !stack.isEmpty()) {
@@ -367,7 +384,8 @@ public class NavController {
         return stack.isEmpty() ? null : stack.peek();
     }
 
-    private Stack<Ability> getStack() {
+
+    public Stack<Ability> getStack() {
         return viewContainer.getStack();
     }
 
@@ -449,8 +467,8 @@ public class NavController {
             showAbility.performOnResume();
         }
         Runnable runnable = () -> {
-            destroyAbility.performOnDestroy();
             viewContainer.removeAbility(destroyAbility);
+            destroyAbility.performOnDestroy();
         };
         Animation.AnimationListener popExitAnimListener = new Animation.AnimationListener() {
             @Override

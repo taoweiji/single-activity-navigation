@@ -101,7 +101,7 @@ public class AbilityViewParent extends FrameLayout {
         content.setLayoutParams(lp);
     }
 
-    View getContentLayout() {
+    ViewGroup getContentLayout() {
         return contentLayout;
     }
 

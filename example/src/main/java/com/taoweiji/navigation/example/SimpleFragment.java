@@ -61,6 +61,11 @@ public class SimpleFragment extends Fragment {
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         Log.e("SimpleFragment", "onStart");

@@ -1,6 +1,5 @@
 package com.taoweiji.navigation;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -33,10 +32,15 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LifecycleRegistry;
+import androidx.lifecycle.ViewModelStore;
+import androidx.lifecycle.ViewModelStoreOwner;
 
 import static android.view.View.NO_ID;
 
-public abstract class Ability implements LifecycleOwner {
+import java.util.HashMap;
+import java.util.Map;
+
+public abstract class Ability implements LifecycleOwner, ViewModelStoreOwner {
     private AbilityResultContracts abilityResultContracts;
     private LifecycleRegistry mLifecycleRegistry;
     private Context context;
@@ -48,9 +52,14 @@ public abstract class Ability implements LifecycleOwner {
     int overrideEnterAnim = -1;
     int overrideExitAnim = -1;
     NavOptions navOptions;
+    private String abilityId;
+    // attribute
+    private final Map<String, Object> tags = new HashMap<>();
+    ViewModelStore viewModelStore;
 
     public Ability() {
         initLifecycle();
+        viewModelStore = new ViewModelStore();
     }
 
     @NonNull
@@ -59,6 +68,22 @@ public abstract class Ability implements LifecycleOwner {
             arguments = new Bundle();
         }
         return arguments;
+    }
+
+    public String getAbilityId() {
+        return abilityId;
+    }
+
+    public void setAbilityId(String abilityId) {
+        this.abilityId = abilityId;
+    }
+
+    public void setTag(String name, Object object) {
+        tags.put(name, object);
+    }
+
+    public Object getTag(String name) {
+        return tags.get(name);
     }
 
     void setArguments(Bundle arguments) {
@@ -175,7 +200,7 @@ public abstract class Ability implements LifecycleOwner {
         Navigation.onPreCreateView(this, savedInstanceState);
         View view = onCreateView(LayoutInflater.from(context), viewParent, savedInstanceState);
         Navigation.onCreateView(this, savedInstanceState);
-        if (view != null) {
+        if (view != null && view != viewParent) {
             viewParent.addContent(view);
         }
         Navigation.onPreViewCreated(this);
@@ -348,6 +373,11 @@ public abstract class Ability implements LifecycleOwner {
     void performOnDestroy() {
         if (!destroyed) {
             Navigation.onPreDestroy(this);
+            createViewed = false;
+//            viewParent = null;
+//            arguments = null;
+            // TODO 需要测试
+            onDestroyView();
             onDestroy();
             Navigation.onDestroy(this);
         }
@@ -355,6 +385,10 @@ public abstract class Ability implements LifecycleOwner {
 
     protected void onEvent(Message message) {
 
+    }
+
+    public void setEvent(Message message) {
+        onEvent(message);
     }
 
     public Toolbar getToolbar() {
@@ -450,6 +484,11 @@ public abstract class Ability implements LifecycleOwner {
     }
 
     @CallSuper
+    public void onDestroyView() {
+
+    }
+
+    @CallSuper
     protected void onAttach(@NonNull Context context) {
 
     }
@@ -461,5 +500,11 @@ public abstract class Ability implements LifecycleOwner {
 
     public FrameLayout getCoverView() {
         return getDecorView().getCoverView();
+    }
+
+    @NonNull
+    @Override
+    public ViewModelStore getViewModelStore() {
+        return viewModelStore;
     }
 }
